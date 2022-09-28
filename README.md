@@ -20,7 +20,7 @@
     + We're not used to the Technologies
 - This is created for learning purposes
 
-## Database model:</br>
+## Database model</br>
    ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/snova%20database%20diagram.png)
 ## Functional list
 
