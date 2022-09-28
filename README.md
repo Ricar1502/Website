@@ -7,7 +7,7 @@
     + SQLite3
     + Javascript
 - Intended audience: 
-    + Van Lang University Falcuty of Engineering, 
+    + Van Lang University Faculty of Engineering, 
     + Falcuty member: Huỳnh Phước Danh
 - Collabarator: 
     + Nguyễn Minh Thiên
