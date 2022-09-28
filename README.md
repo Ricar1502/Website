@@ -10,7 +10,7 @@
     + Phan Nguyễn Đăng Khoa
     + Phạm Minh Lâm
 - This is created for learning purposes
-- Database model
-![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/snova%20database%20diagram.png)
+- Database model:
+    ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/snova%20database%20diagram.png)
 ## Link to roadmap
 https://smnova.atlassian.net/jira/software/projects/SNOV/boards/1/roadmap
