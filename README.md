@@ -8,7 +8,7 @@
     + Javascript
 - Intended audience: 
     + Van Lang University Faculty of Engineering, 
-    + Falcuty member: Huỳnh Phước Danh
+    + Faculty member: Huỳnh Phước Danh
 - Collabarator: 
     + Nguyễn Minh Thiên
     + Phan Nguyễn Đăng Khoa
