@@ -20,8 +20,12 @@
     + We're not used to the Technologies
 - This is created for learning purposes
 
-## Database model:&nbsp;</br>
-    ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/snova%20database%20diagram.png)
+## Database model;</br>
+   ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/snova%20database%20diagram.png)
+## Functional list
+
+## Non-functional list
+
 ## Link to roadmap
 https://smnova.atlassian.net/jira/software/projects/SNOV/boards/1/roadmap
 ## How to run this project
