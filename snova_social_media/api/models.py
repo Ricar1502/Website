@@ -31,8 +31,10 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-# class Vote(models.Model):
-#     pass
+class Vote(models.Model):
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    v_flag = models.BooleanField()
 
 
 class Ranks(models.Model):
@@ -43,5 +45,5 @@ class Ranks(models.Model):
     controversial = models.FloatField()
     top = models.FloatField()
 
-# Post.objects.all().delete()
+
 # UserModel = get_user_model()

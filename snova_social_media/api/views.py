@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .serializers import PostSerializer, UserSerializer
-from .models import Post, User
+from .serializers import PostSerializer, UserSerializer, RanksSerializer
+from .models import Post, User, Ranks
 # Create your views here.
 
 
@@ -15,3 +15,8 @@ class PostView(generics.CreateAPIView):
 class UserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class RanksView(generics.CreateAPIView):
+    queryset = Ranks.objects.all()
+    serializer_class = RanksSerializer
