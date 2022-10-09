@@ -21,13 +21,13 @@ class Post(models.Model):
     parent_id = models.IntegerField(max_length=50)
     title = models.CharField(max_length=200, default="0")
     content = models.CharField(max_length=200, default="0")
-    link = models.CharField(max_length=2083, default="")
+    link = models.CharField(max_length=2083, default="", blank=True, null=True)
     user_id = models.ForeignKey(
         User, on_delete=models.CASCADE, blank=True, null=True)
-    pic = models.ImageField(upload_to="files/post", null=True)
+    pic = models.ImageField(upload_to="files/post", blank=True, null=True)
     status = models.CharField(max_length=15, default="activate")
     type = models.CharField(max_length=15, )
-    votes = models.IntegerField()
+    votes = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -35,6 +35,7 @@ class Vote(models.Model):
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     v_flag = models.BooleanField()
+    last_update_time = models.DateTimeField(auto_now_add=True)
 
 
 class Ranks(models.Model):

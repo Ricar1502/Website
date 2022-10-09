@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, User, Ranks
+from .models import Post, User, Ranks, Vote
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -21,3 +21,9 @@ class RanksSerializer(serializers.ModelSerializer):
         model = Ranks
         fields = ('post_id', 'hot', 'new', 'raising', 'controversial',
                   'top')
+
+
+class VotesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vote
+        fields = '__all__'

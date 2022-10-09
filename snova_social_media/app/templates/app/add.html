@@ -1,0 +1,15 @@
+{% extends 'app/base.html' %}
+{% block title %}Add page{% endblock title %}
+
+{% block content %}
+<form action="/add/" method="post">
+    {% csrf_token %}
+    <label for="inp1">num1: </label><input type="number" name="inp1" id="inp_1" value="not None">
+    <label for="inp2">num2: <input type="number" name="inp2" id="inp_2">
+    <input type="submit" name="submit" value="submit">
+
+</form>
+<p>result: {{ result }}</p>
+{% endblock content %}
+
+
