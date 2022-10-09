@@ -29,7 +29,7 @@
 ## Link to roadmap
 https://smnova.atlassian.net/jira/software/projects/SNOV/boards/1/roadmap
 ## How to run this project
-    + Download django using: pip install Django
-    + Cd into your project
-    + Run this command:  python manage.py runserver
-    
+- Download django using: pip install Django
+- Cd into your project
+- Run this command:  python manage.py runserver
+
