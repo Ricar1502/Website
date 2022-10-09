@@ -4,8 +4,9 @@
 {% block content %}
 <form action="/add/" method="post">
     {% csrf_token %}
-    <label for="inp1">num1: </label><input type="number" name="inp1" id="inp_1" value="not None">
-    <label for="inp2">num2: <input type="number" name="inp2" id="inp_2">
+    <label for="inp1">num1:<input type="number" name="inp1" id="inp_1" value="not None"> </label>
+    <label for="inp2">num2: <input type="number" name="inp2" id="inp_2" value="not None"></label>
+    
     <input type="submit" name="submit" value="submit">
 
 </form>

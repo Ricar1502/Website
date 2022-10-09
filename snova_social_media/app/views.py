@@ -35,7 +35,6 @@ def create_post_form(request):
             status = post_form.cleaned_data["status"]
             type = post_form.cleaned_data["type"]
             votes = post_form.cleaned_data["votes"]
-
             t = Post(parent_id=parent_id, title=title, content=content, link=link, user_id=user_id,
                      pic=pic, status=status, type=type, votes=votes)
             t.save()
