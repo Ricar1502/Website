@@ -1,0 +1,11 @@
+{% extends 'app/base.html' %}
+{% block title %}Create User{% endblock title %}
+
+{% block content %}
+<form enctype="multipart/form-data" action="/create_user/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="createUser">Create user</button>
+</form>
+
+{% endblock content %}

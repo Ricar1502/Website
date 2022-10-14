@@ -13,8 +13,6 @@
     + Nguyễn Minh Thiên
     + Phan Nguyễn Đăng Khoa
     + Phạm Minh Lâm
-- Helper:
-    + Phan Quốc Đăng Quang 
 - Challenges:
     + New to us
     + We're not used to the Technologies
@@ -29,4 +27,7 @@
 ## Link to roadmap
 https://smnova.atlassian.net/jira/software/projects/SNOV/boards/1/roadmap
 ## How to run this project
-- Just go to this link which is provided by the github host:
+- Download django using: pip install Django
+- Cd into your project
+- Run this command:  python manage.py runserver
+
