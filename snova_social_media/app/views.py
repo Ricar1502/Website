@@ -10,7 +10,7 @@ from .forms import *
 
 
 def home(request):
-    return render(request, 'app/base.html')
+    return render(request, 'app/home.html')
 
 
 def add(request):
@@ -28,7 +28,7 @@ def create_post_form(request):
         "type": "post",
     }
     if is_post(request):
-        post_form = CreateNewPostForm(request.POST)
+        post_form = CreateNewPostForm(request.POST, request.FILES)
         if post_form.is_valid():
             parent_id = post_form.cleaned_data['parent_id']
             title = post_form.cleaned_data["title"]
@@ -71,9 +71,19 @@ def create_user_form(request):
     return render(request, 'app/createUser.html', {'form': form})
 
 
-def post(request, id):
+def viewPost(request, id):
     post = Post.objects.get(id=id)
-    return render(request, 'app/viewPost.html', {'post': post})
+    posts = Post.objects.all()
+    for i in posts:
+        print(i.id)
+    return render(request, 'app/viewPost.html', {'post': post, 'postList': posts})
+
+
+def viewPostList(request):
+    posts = Post.objects.all()
+    for i in posts:
+        print(i.id)
+    return render(request, 'app/viewPostList.html', {'postList': posts})
 
 
 def user(request, id):

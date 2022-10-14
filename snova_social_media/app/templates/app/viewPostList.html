@@ -1,0 +1,13 @@
+{% extends 'app/base.html' %}
+{% block title %}Post list{% endblock title %}
+{% block content %}
+
+{%for post in postList %}
+
+    <h1>Title:{{post.title}}</h1>
+    <h2>Content:{{post.content}}</h2>
+    <h5 class="text-dark">Link:<a href = "/{{post.id}}" > {{post.id}}</a></h5>
+    
+{%endfor%}
+
+{% endblock content %}
