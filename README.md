@@ -13,8 +13,6 @@
     + Nguyễn Minh Thiên
     + Phan Nguyễn Đăng Khoa
     + Phạm Minh Lâm
-- Helper:
-    + Phan Quốc Đăng Quang 
 - Challenges:
     + New to us
     + We're not used to the Technologies
