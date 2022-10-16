@@ -2,12 +2,12 @@
 {% block title %}Post list{% endblock title %}
 {% block content %}
 
-{%for post in postList %}
-
+{%for post in post_list %}
+    {% if post.type == 'post' %}
     <h1>Title:{{post.title}}</h1>
     <h2>Content:{{post.content}}</h2>
-    <h5 class="text-dark">Link:<a href = "/{{post.id}}" > {{post.id}}</a></h5>
-    
+    <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number: {{post.id}}</a></h5>
+    {% endif %}
 {%endfor%}
 
 {% endblock content %}

@@ -6,8 +6,15 @@
         {{post.title}}
     </h1>
     <h3>
-        
         {{post.content}}
     </h3>
+    <hr>
+    {% for comment in comment_list %}
+    
+    {% if comment.post_id == post %}
+        <p>{{comment.user_id}}: {{comment.content}}</p>
+    {% endif %}
+    
+    {% endfor %}
 
 {% endblock content %}

@@ -5,7 +5,7 @@ from .models import Post, User, Ranks, Vote
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id', 'parent_id', 'title', 'content', 'link',
+        fields = ('id', 'title', 'content', 'link',
                   'user_id', 'pic', 'status', 'type', 'votes', 'created_at')
 
 
