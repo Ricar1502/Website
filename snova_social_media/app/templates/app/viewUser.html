@@ -10,8 +10,15 @@
         {{user.nickname}}
     </h3>
     <h3>
-        
         {{user.birthday}}
     </h3>
-
+    <h4>follower list:</h4>
+    {% for f in follower_list %}
+        <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
+        
+    {% endfor %}
+    <h4>following list:</h4>
+    {% for f in following_list %}
+        <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
+    {% endfor %}
 {% endblock content %}

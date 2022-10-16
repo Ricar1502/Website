@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .static.python import *
 from .func import *
-from api.models import Post
+from api.models import Post, Comment
 from .forms import *
 
 
@@ -10,7 +10,9 @@ from .forms import *
 
 
 def home(request):
-    return render(request, 'app/home.html')
+    posts = Post.objects.all()
+
+    return render(request, 'app/home.html', {'post_list': posts})
 
 
 def add(request):
@@ -30,17 +32,16 @@ def create_post_form(request):
     if is_post(request):
         post_form = CreateNewPostForm(request.POST, request.FILES)
         if post_form.is_valid():
-            parent_id = post_form.cleaned_data['parent_id']
+            subreddit_id = post_form.cleaned_data['subreddit_id']
             title = post_form.cleaned_data["title"]
             content = post_form.cleaned_data["content"]
             link = post_form.cleaned_data["link"]
             user_id = post_form.cleaned_data["user_id"]
             pic = post_form.cleaned_data["pic"]
             status = post_form.cleaned_data["status"]
-            type = post_form.cleaned_data["type"]
             votes = post_form.cleaned_data["votes"]
-            t = Post(parent_id=parent_id, title=title, content=content, link=link, user_id=user_id,
-                     pic=pic, status=status, type=type, votes=votes)
+            t = Post(subreddit_id=subreddit_id, title=title, content=content, link=link, user_id=user_id,
+                     pic=pic, status=status, votes=votes)
             t.save()
             return HttpResponseRedirect(f"/{t.id}")
     else:
@@ -73,19 +74,19 @@ def create_user_form(request):
 
 def viewPost(request, id):
     post = Post.objects.get(id=id)
+    comment_list = Comment.objects.all()
+    return render(request, 'app/viewPost.html', {'post': post, 'comment_list': comment_list})
+
+
+def view_post_list(request):
     posts = Post.objects.all()
     for i in posts:
         print(i.id)
-    return render(request, 'app/viewPost.html', {'post': post, 'postList': posts})
-
-
-def viewPostList(request):
-    posts = Post.objects.all()
-    for i in posts:
-        print(i.id)
-    return render(request, 'app/viewPostList.html', {'postList': posts})
+    return render(request, 'app/viewPostList.html', {'post_list': posts})
 
 
 def user(request, id):
     user = User.objects.get(id=id)
-    return render(request, 'app/viewUser.html', {'user': user})
+    follower_list = get_follower_list(user)
+    following_list = get_following_list(user)
+    return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list})
