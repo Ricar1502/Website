@@ -1,20 +1,19 @@
 {% extends 'app/base.html' %}
 {% block title %}post{% endblock title %}
 {% block content %}
-
+    
     <h1>
         {{post.title}}
     </h1>
     <h3>
         {{post.content}}
     </h3>
+    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.name}}</a></h5>
     <hr>
     {% for comment in comment_list %}
-    
-    {% if comment.post_id == post %}
-        <p>{{comment.user_id}}: {{comment.content}}</p>
-    {% endif %}
-    
+        {% if comment.post_id == post %}
+            <p>{{comment.user_id.name}}: {{comment.content}}</p>
+        {% endif %}
     {% endfor %}
 
 {% endblock content %}

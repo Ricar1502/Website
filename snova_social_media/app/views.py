@@ -87,6 +87,13 @@ def view_post_list(request):
 
 def user(request, id):
     user = User.objects.get(id=id)
+    comment_list = Comment.objects.all()
+    post_list = Post.objects.all()
     follower_list = get_follower_list(user)
     following_list = get_following_list(user)
-    return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list})
+    return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list, 'post_list': post_list, 'comment_list': comment_list})
+
+
+def view_user_list(request):
+    user_list = User.objects.all()
+    return render(request, 'app/viewUserList.html', {'user_list': user_list})
