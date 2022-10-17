@@ -2,12 +2,10 @@
 {% block title %}Home page{% endblock title %}
 {% block content %}
 
-{%for post in post_list %}
-    {% if post.type == 'post' %}
+{%for post in post_list  %}
     <h1>Title:{{post.title}}</h1>
     <h2>Content:{{post.content}}</h2>
     <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
-    {% endif %}
 {%endfor%}
 
 {% endblock content %}
