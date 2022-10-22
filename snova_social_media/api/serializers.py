@@ -12,7 +12,7 @@ class PostSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('name', 'password', 'nickname', 'avatar',
+        fields = ('id', 'name', 'password', 'nickname', 'avatar',
                   'email', 'bio', 'birthday')
 
 

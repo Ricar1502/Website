@@ -21,3 +21,8 @@ def get_following_list(user):
         if f.followed_user == user:
             following_user_list.append(f.following_user)
     return following_user_list
+
+
+def up_vote_post(user, post):
+
+    pass

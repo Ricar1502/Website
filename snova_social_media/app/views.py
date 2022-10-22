@@ -11,8 +11,32 @@ from .forms import *
 
 def home(request):
     posts = Post.objects.all()
+    if 'upvote' in request.POST:
+        upvote = request.POST['upvote']
+        for post in posts:
 
+            print(f'{request.posts} ')
+    else:
+        upvote = False
+    if 'downvote' in request.POST:
+        downvote = request.POST['downvote']
+    else:
+        downvote = False
     return render(request, 'app/home.html', {'post_list': posts})
+
+
+# def vote(request):
+#     if is_post(request):
+#         if 'upvote' in request.POST:
+#             upvote = request.POST['upvote']
+#             print('this is upvote')
+#         else:
+#             upvote = False
+#         if 'downvote' in request.POST:
+#             downvote = request.POST['downvote']
+#         else:
+#             downvote = False
+#     return render(request, 'app/home.html')
 
 
 def add(request):
@@ -69,6 +93,7 @@ def create_user_form(request):
             return HttpResponseRedirect(f"/user/{t.id}")
     else:
         form = CreateNewUserForm()
+
     return render(request, 'app/createUser.html', {'form': form})
 
 
@@ -91,6 +116,7 @@ def user(request, id):
     post_list = Post.objects.all()
     follower_list = get_follower_list(user)
     following_list = get_following_list(user)
+
     return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list, 'post_list': post_list, 'comment_list': comment_list})
 
 
