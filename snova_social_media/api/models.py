@@ -15,7 +15,7 @@ class User(models.Model):
 
 
 class Post(models.Model):
-    subreddit_id = models.IntegerField(max_length=50)
+    subNova_id = models.IntegerField(max_length=50)
     title = models.CharField(max_length=200, default="0")
     content = models.CharField(max_length=200, default="0")
     link = models.CharField(max_length=2083, default="", blank=True, null=True)
@@ -26,11 +26,14 @@ class Post(models.Model):
     votes = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def get_id(self):
+        return self.id
+
 
 class Vote(models.Model):
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    v_flag = models.BooleanField()
+    v_flag = models.BooleanField(null=True, blank=True)
     last_update_time = models.DateTimeField(auto_now_add=True)
 
 

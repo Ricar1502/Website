@@ -10,5 +10,5 @@ urlpatterns = [
     path("user/<int:id>", user),
     path("post_list/", view_post_list),
     path("user_list/",  view_user_list),
-
+    # path("vote/", vote)
 ]
