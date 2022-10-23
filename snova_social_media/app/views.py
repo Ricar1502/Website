@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .static.python import *
 from .func import *
-from api.models import Post, Comment
+from api.models import Post, Comment, Vote
 from .forms import *
 
 
@@ -11,17 +11,15 @@ from .forms import *
 
 def home(request):
     posts = Post.objects.all()
-    if 'upvote' in request.POST:
-        upvote = request.POST['upvote']
-        for post in posts:
+    votes = Vote.objects.all()
+    for post in posts:
+        selected_up_vote = f'upvote-{post.get_id()}'
+        selected_down_vote = f'downvote-{post.get_id()}'
+        post_id = post
+        user_id = post.user_id
+        vote(request, selected_up_vote, selected_down_vote,
+             post_id, user_id)
 
-            print(f'{request.posts} ')
-    else:
-        upvote = False
-    if 'downvote' in request.POST:
-        downvote = request.POST['downvote']
-    else:
-        downvote = False
     return render(request, 'app/home.html', {'post_list': posts})
 
 
