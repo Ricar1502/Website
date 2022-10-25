@@ -19,7 +19,7 @@
 - This is created for learning purposes
 
 ## Database model</br>
-   ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/snova%20database%20diagram.png)
+   ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/Database%20diagram.jpg)
 ## Functional list
 
 ## Non-functional list
