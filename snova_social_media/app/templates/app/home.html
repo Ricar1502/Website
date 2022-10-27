@@ -1,17 +1,18 @@
 {% extends 'app/base.html' %}
-{% block title %}Home page{% endblock title %}
+{% block title %}Snova{% endblock title %}
 {% block content %}
 
-{%for post in post_list  %}
-    <h1>Title:{{post.title}}</h1>
-    <h2>Content:{{post.content}}</h2>
-    <form action="/" method="post">
-    {% csrf_token %}
-    <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
-    <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
-    </form>
-    <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
-    <hr>
-{%endfor%}
-
+    {%for post in post_list  %}
+        <h1>Title:{{post.title}}</h1>
+        <h2>Content:{{post.content}}</h2>
+        <form action="/" method="post">
+        {% csrf_token %}
+        <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
+        {{counted_vote.v_flag}}
+        <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
+        </form>
+        
+        <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
+        <hr>
+    {%endfor%}
 {% endblock content %}
