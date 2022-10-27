@@ -1,24 +1,25 @@
 {% extends 'app/base.html' %}
-{% block title %}post{% endblock title %}
+{% block title %}{{user.nickname}}{% endblock title %}
 {% block content %}
 
     <img src = "../../../{{user.avatar}}" alt="avatar" width='240px' height='240px'>
-    <h1>
-        {{user.name}}
-    </h1>
+    <form action="/{user.id}" method="post">
+        <button type="submit" name = 'follow-{{user.id}}'>follow</button>
+    </form>
+
     <h3>
-        
         {{user.nickname}}
     </h3>
     <h3>
         {{user.birthday}}
     </h3>
-    <h4>follower list:</h4>
-    {% for f in follower_list %}
-        <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
-        
-    {% endfor %}
     <h4>following list:</h4>
+    {% for f in follower_list %}
+    <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
+    
+    {% endfor %}
+    
+    <h4>follower list:</h4>
     {% for f in following_list %}
         <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
     {% endfor %}
