@@ -11,16 +11,18 @@ from django.shortcuts import redirect
 
 def home(request):
     posts = Post.objects.all()
-    votes = Vote.objects.all()
+    votes = {}
     for post in posts:
         selected_up_vote = f'upvote-{post.get_id()}'
         selected_down_vote = f'downvote-{post.get_id()}'
+        current_vote = Vote.objects.filter(post_id=post)
+        votes[post] = current_vote
         post_id = post
         user_id = post.user_id
         vote(request, selected_up_vote, selected_down_vote,
              post_id, user_id)
-
-    return render(request, 'app/home.html', {'post_list': posts})
+    print(votes)
+    return render(request, 'app/home.html', {'post_list': posts, 'votes': votes})
 
 
 # def vote(request):
@@ -132,14 +134,11 @@ def search(request):
         user_object = User.objects.filter(name__icontains=username)
         for user in user_object:
             username_profile_list.append(user)
-
             follower = Follow.objects.filter(
                 followed_user=user)
             follower_list[user] = follower
             following = Follow.objects.filter(
                 following_user=user)
             following_list[user] = following
-            print('this is follower', follower)
-            print('this is following', following)
 
     return render(request, 'app/search.html', {'username_profile_list': username_profile_list, 'following_list': following_list, 'follower_list': follower_list})

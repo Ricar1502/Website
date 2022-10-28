@@ -8,7 +8,11 @@
         <form action="/" method="post">
         {% csrf_token %}
         <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
-        {{counted_vote.v_flag}}
+        {% for key,value in votes.items %}
+            {% if key == post%}
+                {{value|length}}
+            {% endif %}
+        {% endfor %}
         <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
         </form>
         
