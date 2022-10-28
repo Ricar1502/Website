@@ -10,10 +10,20 @@
             <div class="mx-5">
                 
                 <h5 class="mb-5"><a class ="text-dark" href="/user/{{user.id}}"><strong>u/{{user.name}}</strong></a></h5>
-                
-                    <p>follower: {{follower_list}}</p>
-                
-                    <p>following: {{following_list}}</p>
+                <p>follower:
+                    {% for key,value in follower_list.items %}
+                        {% if key == user %}
+                            {{value|length}}
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                <p>following:
+                    {% for key,value in following_list.items %}
+                        {% if key == user %}
+                            {{value|length}}
+                        {% endif %}
+                    {% endfor %}
+                </p>
             </div>
         </div>
         <hr>
