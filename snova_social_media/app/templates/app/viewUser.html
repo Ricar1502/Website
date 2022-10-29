@@ -2,30 +2,30 @@
 {% block title %}{{user.nickname}}{% endblock title %}
 {% block content %}
 
-    <img src = "../../../{{user.avatar}}" alt="avatar" width='240px' height='240px'>
-    <form action="/{user.id}" method="post">
+<h3>
+    {{profile.user}}
+</h3>
+    <img src = "../../../{{profile.avatar}}" alt="avatar" width='240px' height='240px'>
+    {% comment %} <form action="/{user.id}" method="post">
         <button type="submit" name = 'follow-{{user.id}}'>follow</button>
-    </form>
+    </form> {% endcomment %}
 
     <h3>
-        {{user.nickname}}
-    </h3>
-    <h3>
-        {{user.birthday}}
+        {{profile.birthday}}
     </h3>
     <h4>following list:</h4>
     {% for f in follower_list %}
-    <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
+    <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
     
     {% endfor %}
     
     <h4>follower list:</h4>
     {% for f in following_list %}
-        <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
+        <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
     {% endfor %}
     <hr>
     {% for post in post_list %}
-        {% if post.user_id == user %}
+        {% if post.user_id == profile.user %}
         <h1>
             {{post.title}}
         </h1>
@@ -35,7 +35,7 @@
         <hr>
         {% for comment in comment_list %}
             {% if comment.post_id == post %}
-                <p>{{comment.user_id.name}}: {{comment.content}}</p>
+                <p>{{comment.user_id}}: {{comment.content}}</p>
             {% endif %}
         {% endfor %}
         {% endif %}

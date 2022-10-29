@@ -54,17 +54,16 @@ def down_vote(data, post_data, user_data):
         post_id=post_data, user_id=user_data).update(v_flag=False)
 
 
-def vote(request, selected_up_vote, selected_down_vote, post_id, user_id):
-    if selected_up_vote in request.POST:
+def vote(request, selected_up_vote_btn, selected_down_vote_btn, post_id, user_id):
+    if selected_up_vote_btn in request.POST:
         create_if_vote_dont_exist(Vote, post_id, user_id)
         current_selected_vote = Vote.objects.get(
             post_id=post_id, user_id=user_id)
-        f = current_selected_vote.v_flag
         if current_selected_vote.v_flag != True:
             up_vote(Vote, post_id, user_id)
         else:
             un_vote(Vote, post_id, user_id)
-    if selected_down_vote in request.POST:
+    if selected_down_vote_btn in request.POST:
         create_if_vote_dont_exist(Vote, post_id, user_id)
         current_selected_vote = Vote.objects.get(
             post_id=post_id, user_id=user_id)

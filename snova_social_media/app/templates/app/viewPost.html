@@ -12,7 +12,7 @@
     <hr>
     {% for comment in comment_list %}
         {% if comment.post_id == post %}
-            <p>{{comment.user_id.name}}: {{comment.content}}</p>
+            <p>{{user}}: {{comment.content}}</p>
         {% endif %}
     {% endfor %}
 
