@@ -116,15 +116,18 @@ def view_post_list(request):
 
 
 def user(request, id):
+
     profile = Profile.objects.get(id=id)
+
+    current_user_profile = Profile.objects.get(user=request.user)
     comment_list = Comment.objects.all()
     post_list = Post.objects.all()
+    follow(request, id)
     follower_list = get_follower_list(profile)
     following_list = get_following_list(profile)
     print(follower_list)
-    print(following_list)
     context = {'follower_list': follower_list, 'following_list': following_list,
-               'post_list': post_list, 'comment_list': comment_list, 'profile': profile}
+               'post_list': post_list, 'comment_list': comment_list, 'profile': profile, 'current_user_profile': current_user_profile}
     return render(request, 'app/viewUser.html', context)
 
 
@@ -178,7 +181,6 @@ def loginPage(request):
 
 
 def registerPage(request):
-
     if is_post(request):
         form = UserCreationForm(request.POST)
         print('hi')
@@ -192,22 +194,27 @@ def registerPage(request):
     return render(request, 'app/register.html', {'form': form})
 
 
-def follow(request):
-    following_user = request.user
-    followed_user = request.POST['user']
-    print('hello world')
+def follow(request, user_id):
+    current_user_profile = Profile.objects.get(user=request.user)
+    following_user = current_user_profile
+    selected_user = Profile.objects.get(id=user_id)
+    followed_user = selected_user
+    print('current_user', request.user)
+    print('selected_user', selected_user.user)
     # print('following user: %s' % following_user)
     # print('followed user: %s' % followed_user)
     if is_post(request):
         if Follow.objects.filter(following_user=following_user, followed_user=followed_user).first():
+            print('this delete')
             delete_follow = Follow.objects.filter(
                 following_user=following_user)
             delete_follow.delete()
-            return redirect(f'/user')
-
+            return redirect(f'/user/{user_id}')
         else:
+            print('this add')
             new_follow = Follow.objects.create(
                 following_user=following_user, followed_user=followed_user)
-
+            new_follow.save()
+            return redirect(f'/user/{user_id}')
     else:
         return redirect('/')

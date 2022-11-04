@@ -1,11 +1,12 @@
 {% extends 'app/base.html' %}
 {% block titlte %}search{% endblock titlte %}
+{% load static %}
 {% block content %}
 <div class ='d-flex justify-content-center flex-column'>
     {% for user in username_profile_list %}
         <div class ='bg-white mt-2 mx-auto d-flex align-items-center'>
             <div class="ml-5">
-                <img src = "../../../{{user.avatar}}" alt="avatar" width='150px' height='150px'>
+                <img src = "{{user.avatar.url}}" alt="avatar" width='150px' height='150px'>
             </div>
             <div class="mx-5">
                 

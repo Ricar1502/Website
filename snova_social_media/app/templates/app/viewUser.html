@@ -11,11 +11,21 @@
     {% comment %} <form action="/{user.id}" method="post">
         <button type="submit" name = 'follow-{{user.id}}'>follow</button>
     </form> {% endcomment %}
-    <form action="/follow/" method="post">
+    <form action="./{{profile.id}}" method="post">
         {% csrf_token %}
-        <button type="submit" name ='follow'>
-            follow
-        </button>
+        {% if user.is_authenticated %}
+        <h1>{{user}}</h1>
+            {% if current_user_profile in following_list %}
+                <button type="submit" name ='follow'>
+                    unfollow</button>
+                </button>
+            {% else %}
+                <button type="submit" name ='follow'>
+                    follow
+                </button>
+            {% endif %}
+        {% endif %}
+        
     </form>
     <h4>following list:</h4>
     {% for f in follower_list %}
