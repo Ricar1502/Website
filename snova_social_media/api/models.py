@@ -7,7 +7,7 @@ from django.conf import settings
 class Profile(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='api/files/avatar')
+    avatar = models.ImageField(blank=True, null=True)
     email = models.EmailField(max_length=254)
     bio = models.CharField(max_length=200)
     birthday = models.DateField(auto_now_add=False)
@@ -19,8 +19,8 @@ class Post(models.Model):
     content = models.CharField(max_length=200, default="0")
     link = models.CharField(max_length=2083, default="", blank=True, null=True)
     user_id = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    pic = models.ImageField(upload_to="api/files/post", blank=True, null=True)
+        Profile, on_delete=models.CASCADE)
+    pic = models.ImageField(blank=True, null=True)
     status = models.CharField(max_length=15, default="activate")
     created_at = models.DateTimeField(auto_now_add=True)
 

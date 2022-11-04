@@ -1,7 +1,6 @@
 import profile
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .static.python import *
 from .func import *
 from api.models import Post, Comment, Vote
 from .forms import *
@@ -102,8 +101,10 @@ def create_user_form(request):
 
 def viewPost(request, id):
     post = Post.objects.get(id=id)
+    print(post.pic)
     comment_list = Comment.objects.all()
     user = request.user
+
     return render(request, 'app/viewPost.html', {'post': post, 'comment_list': comment_list, 'user': user})
 
 
@@ -115,7 +116,6 @@ def view_post_list(request):
 
 
 def user(request, id):
-
     profile = Profile.objects.get(id=id)
     comment_list = Comment.objects.all()
     post_list = Post.objects.all()
@@ -140,7 +140,9 @@ def search(request):
     following_list = {}
     if is_post(request):
         username = request.POST['username']
-        user_object = User.objects.filter(name__icontains=username)
+        user_object = Profile.objects.filter(
+            user__username__icontains=username)
+        print(user_object)
         for user in user_object:
             username_profile_list.append(user)
             follower = Follow.objects.filter(
@@ -149,8 +151,9 @@ def search(request):
             following = Follow.objects.filter(
                 following_user=user)
             following_list[user] = following
-
-    return render(request, 'app/search.html', {'username_profile_list': username_profile_list, 'following_list': following_list, 'follower_list': follower_list})
+    context = {'username_profile_list': username_profile_list,
+               'following_list': following_list, 'follower_list': follower_list}
+    return render(request, 'app/search.html', context)
 
 
 def loginPage(request):
@@ -187,3 +190,24 @@ def registerPage(request):
         form = UserCreationForm()
 
     return render(request, 'app/register.html', {'form': form})
+
+
+def follow(request):
+    following_user = request.user
+    followed_user = request.POST['user']
+    print('hello world')
+    # print('following user: %s' % following_user)
+    # print('followed user: %s' % followed_user)
+    if is_post(request):
+        if Follow.objects.filter(following_user=following_user, followed_user=followed_user).first():
+            delete_follow = Follow.objects.filter(
+                following_user=following_user)
+            delete_follow.delete()
+            return redirect(f'/user')
+
+        else:
+            new_follow = Follow.objects.create(
+                following_user=following_user, followed_user=followed_user)
+
+    else:
+        return redirect('/')

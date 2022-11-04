@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% block title %}{{post.title}}{% endblock title %}
+{% load static %}
 {% block content %}
     
     <h1>
@@ -8,7 +9,13 @@
     <h3>
         {{post.content}}
     </h3>
-    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.name}}</a></h5>
+    {% comment %} <img src = "../../../{{post.pic}}" alt="pic" width='240px' height='240px'> {% endcomment %}
+    <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
+    {% comment %} <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'> {% endcomment %}
+    {% comment %} <img src = "{% static '{{post.pic}}' %}" alt="pic" width='240px' height='240px'> {% endcomment %}
+    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.user}}</a></h5>
+    <p>{% static 'images/{{post.pic}}'%}</p>
+    <p>{{post.pic.url}}</p>
     <hr>
     {% for comment in comment_list %}
         {% if comment.post_id == post %}

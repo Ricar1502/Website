@@ -1,18 +1,22 @@
 {% extends 'app/base.html' %}
 {% block title %}{{user.nickname}}{% endblock title %}
 {% block content %}
-
-<h3>
+{% load static %}
+<h3 name="user">
     {{profile.user}}
 </h3>
-    <img src = "../../../{{profile.avatar}}" alt="avatar" width='240px' height='240px'>
+    {% comment %} <img src = "{% static 'images{{profile.pic}}' %}" alt="avatar" width='240px' height='240px'> {% endcomment %}
+    <img src = '{{profile.avatar.url}}' alt="avatar" width='240px' height='240px'>
+    {% comment %} <img src = "../../../" alt="avatar" width='240px' height='240px'> {% endcomment %}
     {% comment %} <form action="/{user.id}" method="post">
         <button type="submit" name = 'follow-{{user.id}}'>follow</button>
     </form> {% endcomment %}
-
-    <h3>
-        {{profile.birthday}}
-    </h3>
+    <form action="/follow/" method="post">
+        {% csrf_token %}
+        <button type="submit" name ='follow'>
+            follow
+        </button>
+    </form>
     <h4>following list:</h4>
     {% for f in follower_list %}
     <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
