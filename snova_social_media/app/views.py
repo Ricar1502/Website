@@ -1,20 +1,24 @@
 import profile
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .func import *
 from api.models import Post, Comment, Vote
 from .forms import *
 from itertools import chain
-from django.shortcuts import redirect
 from django.contrib.auth.forms import AuthenticationForm  # add this
-from django.contrib.auth import login, authenticate  # add this
+from django.contrib.auth import authenticate  # add this
 from django.contrib import messages
+
+from django.contrib.auth import login as auth_login
 # Create your views here.
 
 
 def home(request):
     posts = Post.objects.all()
     votes = {}
+    this_user = request.user
+    print(this_user)
+    this_profile = Profile.objects.get(user=this_user)
     for post in posts:
         selected_up_vote_btn = f'upvote-{post.get_id()}'
         selected_down_vote_btn = f'downvote-{post.get_id()}'
@@ -26,7 +30,7 @@ def home(request):
              post_id, user_id)
 
     print(request.user)
-    return render(request, 'app/home.html', {'post_list': posts, 'votes': votes})
+    return render(request, 'app/home.html', {'post_list': posts, 'votes': votes, 'profile': this_profile})
 
 
 # def vote(request):
@@ -50,6 +54,16 @@ def add(request):
         num2 = int(request.POST['inp2'])
         result = num1 + num2
     return render(request, 'app/add.html', {'result': result})
+
+
+def login(request):
+    result = ''
+    return render(request, 'app/login.html', {'result': result})
+
+
+def register(request):
+    result = ''
+    return render(request, 'app/register.html', {'result': result})
 
 
 def create_post_form(request):
@@ -129,6 +143,10 @@ def user(request, id):
     context = {'follower_list': follower_list, 'following_list': following_list,
                'post_list': post_list, 'comment_list': comment_list, 'profile': profile, 'current_user_profile': current_user_profile}
     return render(request, 'app/viewUser.html', context)
+    follower_list = get_follower_list(user)
+    following_list = get_following_list(user)
+
+    return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list, 'post_list': post_list, 'comment_list': comment_list})
 
 
 def view_user_list(request):
@@ -169,7 +187,7 @@ def loginPage(request):
             print('username', username, 'password', password)
             print(user)
             if user is not None:
-                login(request, user)
+                auth_login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
                 return redirect("/")
             else:

@@ -14,7 +14,6 @@ class Profile(models.Model):
 
 
 class Post(models.Model):
-    # subNova_id = models.ForeignKey(SubNova, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, default="0")
     content = models.CharField(max_length=200, default="0")
     link = models.CharField(max_length=2083, default="", blank=True, null=True)
@@ -69,3 +68,4 @@ class Follow(models.Model):
 #         Post, on_delete=models.CASCADE, default='something')
 #     pic = models.ImageField(upload_to="api/files/post", blank=True, null=True)
 #     created_at = models.DateTimeField(auto_now_add=True)
+    # User, on_delete=models.CASCADE, related_name='%(class)s_followed')
