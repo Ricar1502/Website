@@ -1,8 +1,23 @@
 {% extends 'app/base.html' %}
 {% block title %}Home page{% endblock title %}
+{% load static %}
 {% block content %}
 <link rel="stylesheet" href="../../static/css/profile.css">
 
+    {%for post in post_list  %}
+        <h1>Title:{{post.title}}</h1>
+        <h2>Content:{{post.content}}</h2>
+        
+        <form action="/" method="post">
+        {% csrf_token %}
+        <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
+        {% for key,value in votes.items %}
+            {% if key == post%}
+                {{value|length}}
+            {% endif %}
+        {% endfor %}
+        <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
+        </form>
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
     <!-- The Grid -->
@@ -13,7 +28,7 @@
         <div class="w3-card w3-round w3-white">
           <div class="w3-container">
            <h4 class="w3-center">My Profile</h4>
-           <p class="w3-center"><img src="../../../api/files/avatar/147144.png" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+           <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
            <h1 class="w3-center">Khoa</p></h1>
            <hr>
            <p><i class="fa fa-user fa-fw w3-margin-right w3-text-theme"></i>khoac</p>
@@ -61,35 +76,42 @@
         
         {%for post in post_list  %}
         <div class="w3-card w3-white w3-round w3-margin"><br>
-          <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
-            <button type="button" name = 'upvote-{{post.id}}' class="w3-button w3-padding-small">
-              <i style="color: red;" class="fa fa-arrow-up"></i>
-            </button>         
-            <div style="color: rgb(26, 26, 27);">
-              <span>67.9k</span>
+          <form action="/" method="post">
+            {% csrf_token %}           
+            <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
+              <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+                <i style="color: red;" class="fa fa-arrow-up"></i>
+              </button>         
+              <div style="color: rgb(26, 26, 27);">
+            <span>
+                {% for key,value in votes.items %}
+                  {% if key == post%}
+                      {{value|length}}
+                  {% endif %}
+              {% endfor %}
+            </span>
+              </div>
+              <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
+                <i style="color: blue;" class="fa fa-arrow-down"></i>
+              </button>
             </div>
-            <button type="button" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small">
-              <i style="color: blue;" class="fa fa-arrow-down"></i>
-            </button>
-          </div>
+          </form>
           <div class="w3-col m10">
-            <img src="../../../api/files/avatar/147144.png" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
+            <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
             <span class="w3-right w3-opacity w3-padding">1 min</span>
-            <h4><a href="#" style="text-decoration: none;">John Doe</a></h4><br>
+            <h4><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h4><br>
           </div>
           
           <div class="w3-container">
             <hr class="w3-clear">
-            <h2>Title:{{post.title}}</h2>
-            <h4>Content:{{post.content}}</h4>
+            <h2>{{post.title}}</h2>
+            <h4>{{post.content}}</h4>
             <form action="/" method="post"></form>
             {% csrf_token %}
             <div class="w3-row-padding" style="margin:0 -16px">
               <div class="w3-half">
-                <img src="../../../api/files/post/0ab268c8a5918132e1bccb7291a7c351.jpg" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
-              </div>
-              <div class="w3-half">
-                <img src="../../../api/files/post/0ab268c8a5918132e1bccb7291a7c351_AQNBmtk.jpg" style="width:100%" alt="Nature" class="w3-margin-bottom">
+                <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                <h1></h1>
               </div>
             </div>
             <div class="flex-grow-1">
@@ -106,6 +128,7 @@
             
         </div>
         {%endfor%}
+    {%endfor%}
         
         
       <!-- End Middle Column -->

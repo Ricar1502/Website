@@ -1,8 +1,30 @@
 {% extends 'app/base.html' %}
+{% block title %}{{post.title}}{% endblock title %}
+{% load static %}
+=======
 {% block title %}Post{% endblock title %}
 {% block content %}
 <link rel="stylesheet" href="../../static/css/profile.css">
     
+    <h1>
+        {{post.title}}
+    </h1>
+    <h3>
+        {{post.content}}
+    </h3>
+    {% comment %} <img src = "../../../{{post.pic}}" alt="pic" width='240px' height='240px'> {% endcomment %}
+    <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
+    {% comment %} <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'> {% endcomment %}
+    {% comment %} <img src = "{% static '{{post.pic}}' %}" alt="pic" width='240px' height='240px'> {% endcomment %}
+    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.user}}</a></h5>
+    <p>{% static 'images/{{post.pic}}'%}</p>
+    <p>{{post.pic.url}}</p>
+    <hr>
+    {% for comment in comment_list %}
+        {% if comment.post_id == post %}
+            <p>{{user}}: {{comment.content}}</p>
+        {% endif %}
+    {% endfor %}
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
     <!-- The Grid -->

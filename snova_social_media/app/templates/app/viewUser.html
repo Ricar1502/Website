@@ -1,6 +1,60 @@
 {% extends 'app/base.html' %}
 {% block title %}Profile Page{% endblock title %}
+{% load static %}
 {% block content %}
+<h1>{{profile.avatar.url}}</h1>
+<h3 name="user">
+    {{profile.user}}
+</h3>
+    {% comment %} <img src = "{% static 'images{{profile.pic}}' %}" alt="avatar" width='240px' height='240px'> {% endcomment %}
+    <img src = '{{profile.avatar.url}}' alt="avatar" width='240px' height='240px'>
+    
+    {% comment %} <img src = "../../../" alt="avatar" width='240px' height='240px'> {% endcomment %}
+    {% comment %} <form action="/{user.id}" method="post">
+        <button type="submit" name = 'follow-{{user.id}}'>follow</button>
+    </form> {% endcomment %}
+    <form action="./{{profile.id}}" method="post">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+        <h1>{{user}}</h1>
+            {% if current_user_profile in following_list %}
+                <button type="submit" name ='follow'>
+                    unfollow</button>
+                </button>
+            {% else %}
+                <button type="submit" name ='follow'>
+                    follow
+                </button>
+            {% endif %}
+        {% endif %}
+        
+    </form>
+    <h4>following list:</h4>
+    {% for f in follower_list %}
+    <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
+    
+    {% endfor %}
+    
+    <h4>follower list:</h4>
+    {% for f in following_list %}
+        <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
+    {% endfor %}
+    <hr>
+    {% for post in post_list %}
+        {% if post.user_id == profile.user %}
+        <h1>
+            {{post.title}}
+        </h1>
+        <h3>
+            {{post.content}}
+        </h3>
+        <hr>
+        {% for comment in comment_list %}
+            {% if comment.post_id == post %}
+                <p>{{comment.user_id}}: {{comment.content}}</p>
+            {% endif %}
+        {% endfor %}
+
 <link rel="stylesheet" href="../../static/css/profile.css">
 
 <!-- Page Container -->
@@ -117,9 +171,6 @@
                 <hr> 
               </div>
             </div>
-            
-            
-            
         {% endif %}
         {%endfor%}
         
