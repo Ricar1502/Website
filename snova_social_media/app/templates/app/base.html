@@ -63,13 +63,18 @@
                 </div>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            {% comment %} <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
               <a href="/#" class="nav-link" title="My Account" style="text-decoration: none;">
                 <img src="../../../api/files/avatar/147144.png" class="w3-circle" style="height:35px;width:35px" alt="Avatar">
               </a>
               <a href="/login/" class="navbar-brand" style="text-decoration: none;">Log out</a>
+            </form> {% endcomment %}
+            <form class="form-inline my-2 my-lg-0" action="/search/" method="post">
+              {% csrf_token %}
+              <input name="username" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit" href = "/" >Search</button>
             </form>
           </div>
         </nav>

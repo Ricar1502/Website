@@ -29,17 +29,17 @@
           <div class="w3-container">
            <h4 class="w3-center">My Profile</h4>
            <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
-           <h1 class="w3-center">Khoa</p></h1>
+           <h1 class="w3-center">{{profile.user}}</p></h1>
            <hr>
            <p><i class="fa fa-user fa-fw w3-margin-right w3-text-theme"></i>khoac</p>
            <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
             <div class="profile__stats w3-center">
               <div class="stat">
-                <p class="stat__number">80K</p>
+                <p class="stat__number">{{following_list|length}}</p>
                 <a href="#" class="stat__name">Followers</a>
               </div>
               <div class="stat">
-                <p class="stat__number">83K</p>
+                <p class="stat__number">{{follower_list|length}}</p>
                 <a href="#" class="stat__name">Followings</a>
               </div>
             </div>

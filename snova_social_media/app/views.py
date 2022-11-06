@@ -14,11 +14,23 @@ from django.contrib.auth import login as auth_login
 
 
 def home(request):
+    profile = Profile.objects.get(user=request.user)
+
     posts = Post.objects.all()
-    votes = {}
+    follower_list = get_follower_list(profile)
+    following_list = get_following_list(profile)
     this_user = request.user
     print(this_user)
     this_profile = Profile.objects.get(user=this_user)
+    votes = voting(request, posts)
+    context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
+               'follower_list': follower_list, 'following_list': following_list, }
+    print(request.user)
+    return render(request, 'app/home.html', context)
+
+
+def voting(request, posts):
+    votes = {}
     for post in posts:
         selected_up_vote_btn = f'upvote-{post.get_id()}'
         selected_down_vote_btn = f'downvote-{post.get_id()}'
@@ -28,23 +40,7 @@ def home(request):
         user_id = request.user
         vote(request, selected_up_vote_btn, selected_down_vote_btn,
              post_id, user_id)
-
-    print(request.user)
-    return render(request, 'app/home.html', {'post_list': posts, 'votes': votes, 'profile': this_profile})
-
-
-# def vote(request):
-#     if is_post(request):
-#         if 'upvote' in request.POST:
-#             upvote = request.POST['upvote']
-#             print('this is upvote')
-#         else:
-#             upvote = False
-#         if 'downvote' in request.POST:
-#             downvote = request.POST['downvote']
-#         else:
-#             downvote = False
-#     return render(request, 'app/home.html')
+    return votes
 
 
 def add(request):
@@ -132,6 +128,7 @@ def view_post_list(request):
 def user(request, id):
 
     profile = Profile.objects.get(id=id)
+    votes = {}
 
     current_user_profile = Profile.objects.get(user=request.user)
     comment_list = Comment.objects.all()
@@ -139,14 +136,10 @@ def user(request, id):
     follow(request, id)
     follower_list = get_follower_list(profile)
     following_list = get_following_list(profile)
-    print(follower_list)
-    context = {'follower_list': follower_list, 'following_list': following_list,
+    votes = voting(request, post_list)
+    context = {'votes': votes, 'follower_list': follower_list, 'following_list': following_list,
                'post_list': post_list, 'comment_list': comment_list, 'profile': profile, 'current_user_profile': current_user_profile}
     return render(request, 'app/viewUser.html', context)
-    follower_list = get_follower_list(user)
-    following_list = get_following_list(user)
-
-    return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list, 'post_list': post_list, 'comment_list': comment_list})
 
 
 def view_user_list(request):
@@ -155,7 +148,6 @@ def view_user_list(request):
 
 
 def search(request):
-
     username_profile_list = []
     follower_list = {}
     following_list = {}
