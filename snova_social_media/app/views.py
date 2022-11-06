@@ -4,25 +4,23 @@ from .static.python import *
 from .func import *
 from api.models import Post, Comment, Vote
 from .forms import *
-from itertools import chain
-from django.shortcuts import redirect
+
+
 # Create your views here.
 
 
 def home(request):
     posts = Post.objects.all()
-    votes = {}
+    votes = Vote.objects.all()
     for post in posts:
         selected_up_vote = f'upvote-{post.get_id()}'
         selected_down_vote = f'downvote-{post.get_id()}'
-        current_vote = Vote.objects.filter(post_id=post)
-        votes[post] = current_vote
         post_id = post
         user_id = post.user_id
         vote(request, selected_up_vote, selected_down_vote,
              post_id, user_id)
-    print(votes)
-    return render(request, 'app/home.html', {'post_list': posts, 'votes': votes})
+
+    return render(request, 'app/home.html', {'post_list': posts})
 
 
 # def vote(request):
@@ -47,6 +45,13 @@ def add(request):
         result = num1 + num2
     return render(request, 'app/add.html', {'result': result})
 
+def login(request):
+    result = ''
+    return render(request, 'app/login.html', {'result': result})
+
+def register(request):
+    result = ''
+    return render(request, 'app/register.html', {'result': result})
 
 def create_post_form(request):
     initial_data = {
@@ -116,29 +121,10 @@ def user(request, id):
     post_list = Post.objects.all()
     follower_list = get_follower_list(user)
     following_list = get_following_list(user)
+
     return render(request, 'app/viewUser.html', {'user': user, 'follower_list': follower_list, 'following_list': following_list, 'post_list': post_list, 'comment_list': comment_list})
 
 
 def view_user_list(request):
     user_list = User.objects.all()
     return render(request, 'app/viewUserList.html', {'user_list': user_list})
-
-
-def search(request):
-
-    username_profile_list = []
-    follower_list = {}
-    following_list = {}
-    if is_post(request):
-        username = request.POST['username']
-        user_object = User.objects.filter(name__icontains=username)
-        for user in user_object:
-            username_profile_list.append(user)
-            follower = Follow.objects.filter(
-                followed_user=user)
-            follower_list[user] = follower
-            following = Follow.objects.filter(
-                following_user=user)
-            following_list[user] = following
-
-    return render(request, 'app/search.html', {'username_profile_list': username_profile_list, 'following_list': following_list, 'follower_list': follower_list})

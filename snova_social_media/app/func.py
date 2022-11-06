@@ -41,7 +41,7 @@ def create_if_vote_dont_exist(data, post_data, user_data, v_flag_data=None):
 
 def un_vote(data, post_data, user_data):
     data.objects.filter(
-        post_id=post_data, user_id=user_data).delete()
+        post_id=post_data, user_id=user_data).update(v_flag=None)
 
 
 def up_vote(data, post_data, user_data):
