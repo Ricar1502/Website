@@ -1,0 +1,52 @@
+{% extends 'app/base.html'%}
+
+{% block tittle %}login{% endblock tittle %}
+
+{% block content %}
+
+<form  method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Login</button>
+</form>
+<h1>hello world</h1>
+{% endblock content %}
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../../static/css/login.css">
+    <link rel="shortcut icon" href="#" type="image/x-icon">
+    <title>Login Page</title>
+</head>
+
+<body>
+    <form action="#" class="login-box" autocomplete="on">
+        <div class="title">
+            <h1>LOGIN</h1>
+        </div>
+        <div class="input-box">
+            <input type="text" name="" required class="input" id="username">
+            <label for="username">Username</label>
+        </div>
+        <div class="input-box">
+            <input type="password" name="" required class="input pass-input" id="password">
+            <img src="assets/img/view.png" class="view-pass" alt="">
+            <label for="password">Password</label>
+        </div>
+        <div class="remember-me">
+            <input type="checkbox" checked name="" id="checkbox">
+            <label for="checkbox">Remember Me</label>
+        </div>
+        <button type="submit">Login To Snova</button>
+        <div class="auth-action">
+            <a href="/register/">Sign Up</a>
+            <a href="#">Forget Password?</a>
+        </div>
+    </form>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

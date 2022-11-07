@@ -11,5 +11,10 @@ urlpatterns = [
     path("post_list/", view_post_list),
     path("user_list/",  view_user_list),
     path("search/",  search),
-    # path("vote/", vote)
+    path("login/",  loginPage),
+    path("register/",  registerPage),
+    path("follow/",  follow),
+    path("vote/", vote)
+    # path("login/",  login),
+    #     path("register/",  register),
 ]

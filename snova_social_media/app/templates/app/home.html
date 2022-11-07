@@ -1,10 +1,13 @@
 {% extends 'app/base.html' %}
-{% block title %}Snova{% endblock title %}
+{% block title %}Home page{% endblock title %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="../../static/css/profile.css">
 
     {%for post in post_list  %}
         <h1>Title:{{post.title}}</h1>
         <h2>Content:{{post.content}}</h2>
+        
         <form action="/" method="post">
         {% csrf_token %}
         <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
@@ -15,8 +18,127 @@
         {% endfor %}
         <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
         </form>
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+    <!-- The Grid -->
+    <div class="w3-row">
+      <!-- Left Column -->
+      <div class="w3-col m3">
+        <!-- Profile -->
+        <div class="w3-card w3-round w3-white">
+          <div class="w3-container">
+           <h4 class="w3-center">My Profile</h4>
+           <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+           <h1 class="w3-center">{{profile.user}}</p></h1>
+           <hr>
+           <p><i class="fa fa-user fa-fw w3-margin-right w3-text-theme"></i>khoac</p>
+           <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
+            <div class="profile__stats w3-center">
+              <div class="stat">
+                <p class="stat__number">{{following_list|length}}</p>
+                <a href="#" class="stat__name">Followers</a>
+              </div>
+              <div class="stat">
+                <p class="stat__number">{{follower_list|length}}</p>
+                <a href="#" class="stat__name">Followings</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      <!-- End Left Column -->
+      </div>
+      
+      <!-- Middle Column -->
+      <div class="w3-col m7">
+          <div class="w3-row-padding">
+            <div class="w3-col m12">
+              <div class="w3-card w3-round w3-white">
+                <div class="w3-container w3-padding">
+                  <a href="/create_post/"><p contenteditable="true" class="w3-border w3-padding"></p></a>
+                  <button type="button" class="w3-button w3-theme w3-right"><i class="fa fa-image"></i></button>
+                </div>
+              </div>
+
+          <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+            <a href="#"><p>
+              <span class="w3-tag w3-small w3-theme-d5">News</span>
+              <span class="w3-tag w3-small w3-theme-d2">Games</span>
+              <span class="w3-tag w3-small w3-theme-d1">Friends</span>
+              <span class="w3-tag w3-small w3-theme">Games</span>
+              <span class="w3-tag w3-small w3-theme-l1">Friends</span>
+              <span class="w3-tag w3-small w3-theme-l2">Food</span>
+              <span class="w3-tag w3-small w3-theme-l3">Design</span>
+              <span class="w3-tag w3-small w3-theme-l4">Art</span>
+              <span class="w3-tag w3-small w3-theme-l5">Photos</span>
+            </p></a>
+          </div>    
         
-        <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
-        <hr>
+        {%for post in post_list  %}
+        <div class="w3-card w3-white w3-round w3-margin"><br>
+          <form action="/" method="post">
+            {% csrf_token %}           
+            <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
+              <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+                <i style="color: red;" class="fa fa-arrow-up"></i>
+              </button>         
+              <div style="color: rgb(26, 26, 27);">
+            <span>
+                {% for key,value in votes.items %}
+                  {% if key == post%}
+                      {{value|length}}
+                  {% endif %}
+              {% endfor %}
+            </span>
+              </div>
+              <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
+                <i style="color: blue;" class="fa fa-arrow-down"></i>
+              </button>
+            </div>
+          </form>
+          <div class="w3-col m10">
+            <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
+            <span class="w3-right w3-opacity w3-padding">1 min</span>
+            <h4><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h4><br>
+          </div>
+          
+          <div class="w3-container">
+            <hr class="w3-clear">
+            <h2>{{post.title}}</h2>
+            <h4>{{post.content}}</h4>
+            <form action="/" method="post"></form>
+            {% csrf_token %}
+            <div class="w3-row-padding" style="margin:0 -16px">
+              <div class="w3-half">
+                <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                <h1></h1>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <div class="form-floating mb-3">
+                  <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
+              </div>
+              <div class="hstack justify-content-end gap-2">
+                  <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
+              </div>
+            </div>
+            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
+            <hr> 
+          </div>
+            
+        </div>
+        {%endfor%}
     {%endfor%}
+        
+        
+      <!-- End Middle Column -->
+      </div>
+      
+    <!-- End Grid -->
+    </div>
+    
+  <!-- End Page Container -->
+  </div>
+</div>
+
 {% endblock content %}

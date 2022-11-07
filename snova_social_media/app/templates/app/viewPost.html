@@ -1,6 +1,10 @@
 {% extends 'app/base.html' %}
 {% block title %}{{post.title}}{% endblock title %}
+{% load static %}
+=======
+{% block title %}Post{% endblock title %}
 {% block content %}
+<link rel="stylesheet" href="../../static/css/profile.css">
     
     <h1>
         {{post.title}}
@@ -8,12 +12,100 @@
     <h3>
         {{post.content}}
     </h3>
-    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.name}}</a></h5>
+    {% comment %} <img src = "../../../{{post.pic}}" alt="pic" width='240px' height='240px'> {% endcomment %}
+    <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
+    {% comment %} <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'> {% endcomment %}
+    {% comment %} <img src = "{% static '{{post.pic}}' %}" alt="pic" width='240px' height='240px'> {% endcomment %}
+    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.user}}</a></h5>
+    <p>{% static 'images/{{post.pic}}'%}</p>
+    <p>{{post.pic.url}}</p>
     <hr>
     {% for comment in comment_list %}
         {% if comment.post_id == post %}
-            <p>{{comment.user_id.name}}: {{comment.content}}</p>
+            <p>{{user}}: {{comment.content}}</p>
         {% endif %}
     {% endfor %}
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+    <!-- The Grid -->
+    <div class="w3-row">
+      
+      <!-- Middle Column -->
+      <div class="w3-container">
+        
+        <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+
+            <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
+              <button type="button" name = 'upvote-{{post.id}}' class="w3-button w3-padding-small">
+                <i style="color: red;" class="fa fa-arrow-up"></i>
+              </button>         
+              <div style="color: rgb(26, 26, 27);">
+                <span>67.9k</span>
+              </div>
+              <button type="button" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small">
+                <i style="color: blue;" class="fa fa-arrow-down"></i>
+              </button>
+            </div>
+            <div class="w3-col m10">
+              <span class="w3-right w3-opacity w3-padding">1 min</span>
+              <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.name}}</a></h6>
+              <h2>{{post.title}}</h2><br>
+            </div>
+
+            <div class="w3-container">
+              <hr class="w3-clear">
+              <h4>{{post.content}}</h4>
+              <form action="/" method="post"></form>
+              {% csrf_token %}
+              <div class="w3-row-padding" style="margin:0 -16px">
+                <div class="w3-half">
+                  <img src="../../../api/files/post/0ab268c8a5918132e1bccb7291a7c351.jpg" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                </div>
+                <div class="w3-half">
+                  <img src="../../../api/files/post/0ab268c8a5918132e1bccb7291a7c351_AQNBmtk.jpg" style="width:100%" alt="Nature" class="w3-margin-bottom">
+                </div>
+              </div>
+              
+              <div class="flex-grow-1">
+                  <div class="form-floating mb-3">
+                      <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
+                  </div>
+                  <div class="hstack justify-content-end gap-2">
+                      <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
+                  </div>
+              </div><br>
+
+              <div class="bg-white rounded-3 shadow-sm p-4">
+    
+                <!-- Comment //-->
+                {% for comment in comment_list %}
+                {% if comment.post_id == post %}
+                <div class="py-3">
+                    <div class="d-flex comment">
+                        <img class="w3-left w3-circle w3-margin-right"
+                            src="./../../{{comment.user_id.avatar}}" style="width:60px" />
+                        <div class="flex-grow-1 ms-3">
+                            <div class="mb-1">
+                                <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1">{{comment.user_id.name}}</a> 
+                                <span class="text-muted text-nowrap">2 days ago</span>
+                            </div>
+                            <p>{{comment.content}}</p>                    
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {%endfor%}
+                <hr> 
+              </div>
+            </div>
+      <!-- End Middle Column -->
+      </div>
+      
+    <!-- End Grid -->
+    </div>
+    
+  <!-- End Page Container -->
+  </div>
+</div>
 
 {% endblock content %}
