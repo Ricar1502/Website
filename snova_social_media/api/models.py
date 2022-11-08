@@ -1,6 +1,9 @@
 
 from django.db import models
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.db.models import (
+    Model, CharField, ForeignKey, IntegerField, BooleanField)
 # Create your models here.
 
 
