@@ -8,22 +8,41 @@ from itertools import chain
 from django.contrib.auth.forms import AuthenticationForm  # add this
 from django.contrib.auth import authenticate  # add this
 from django.contrib import messages
+from django.contrib.auth.models import User
 
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout
 # Create your views here.
 
 
 def home(request):
-    profile = Profile.objects.get(user=request.user)
-    posts = Post.objects.all()
-    follower_list = get_follower_list(profile)
-    following_list = get_following_list(profile)
-    this_user = request.user
-    this_profile = Profile.objects.get(user=this_user)
-    votes = voting(request, posts)
-    context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-               'follower_list': follower_list, 'following_list': following_list, }
-    return render(request, 'app/home.html', context)
+    # profile = Profile.objects.get(user=request.user)
+    # posts = Post.objects.all()
+    # follower_list = get_follower_list(profile)
+    # following_list = get_following_list(profile)
+    # this_user = request.user
+    # this_profile = Profile.objects.get(user=this_user)
+    # votes = voting(request, posts)
+    # context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
+    #            'follower_list': follower_list, 'following_list': following_list, }
+    # return render(request, 'app/home.html', context)
+    if (request.user.is_authenticated):
+        profile = Profile.objects.get(user=request.user)
+
+        posts = Post.objects.all()
+        follower_list = get_follower_list(profile)
+        following_list = get_following_list(profile)
+        this_user = request.user
+        print(this_user)
+        this_profile = Profile.objects.get(user=this_user)
+        votes = voting(request, posts)
+        context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
+                   'follower_list': follower_list, 'following_list': following_list, }
+        print(request.user)
+        return render(request, 'app/home.html', context)
+
+    else:
+        return redirect('/login')
 
 
 def voteView(request):
@@ -169,6 +188,12 @@ def search(request):
     return render(request, 'app/search.html', context)
 
 
+def logoutPage(request):
+    logout(request)
+
+    return redirect('/')
+
+
 def loginPage(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -190,13 +215,20 @@ def loginPage(request):
     return render(request=request, template_name="app/login.html", context={"form": form})
 
 
+def createProfile(username):
+    user = User.objects.get(username=username)
+    print(user)
+    p = Profile.objects.create(user=user)
+    p.save()
+
+
 def registerPage(request):
     if is_post(request):
         form = UserCreationForm(request.POST)
-        print('hi')
+        username = request.POST['username']
         if form.is_valid():
             form.save()
-
+            createProfile(username)
             messages.success(request, 'success')
     else:
         form = UserCreationForm()
