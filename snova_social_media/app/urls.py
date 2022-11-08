@@ -15,7 +15,8 @@ urlpatterns = [
     path("login/",  loginPage),
     path("register/",  registerPage),
     path("follow/",  follow),
-    path("vote/", vote)
+    path("vote/", voteView),
+    path('reply', reply)
     # path("login/",  login),
     #     path("register/",  register),
 ]

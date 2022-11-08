@@ -16,6 +16,16 @@ from django.contrib.auth import logout
 
 
 def home(request):
+    # profile = Profile.objects.get(user=request.user)
+    # posts = Post.objects.all()
+    # follower_list = get_follower_list(profile)
+    # following_list = get_following_list(profile)
+    # this_user = request.user
+    # this_profile = Profile.objects.get(user=this_user)
+    # votes = voting(request, posts)
+    # context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
+    #            'follower_list': follower_list, 'following_list': following_list, }
+    # return render(request, 'app/home.html', context)
     if (request.user.is_authenticated):
         profile = Profile.objects.get(user=request.user)
 
@@ -27,12 +37,19 @@ def home(request):
         this_profile = Profile.objects.get(user=this_user)
         votes = voting(request, posts)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-                'follower_list': follower_list, 'following_list': following_list, }
+                   'follower_list': follower_list, 'following_list': following_list, }
         print(request.user)
         return render(request, 'app/home.html', context)
 
     else:
         return redirect('/login')
+
+
+def voteView(request):
+    posts = Post.objects.all()
+    voting(request, posts)
+    return redirect(request.META.get('HTTP_REFERER'))
+
 
 def voting(request, posts):
     votes = {}
@@ -131,10 +148,7 @@ def view_post_list(request):
 
 
 def user(request, id):
-
     profile = Profile.objects.get(id=id)
-    votes = {}
-
     current_user_profile = Profile.objects.get(user=request.user)
     comment_list = Comment.objects.all()
     post_list = Post.objects.all()
@@ -173,10 +187,11 @@ def search(request):
                'following_list': following_list, 'follower_list': follower_list}
     return render(request, 'app/search.html', context)
 
+
 def logoutPage(request):
     logout(request)
-    
-    return redirect('/' )
+
+    return redirect('/')
 
 
 def loginPage(request):
@@ -226,10 +241,6 @@ def follow(request, user_id):
     following_user = current_user_profile
     selected_user = Profile.objects.get(id=user_id)
     followed_user = selected_user
-    print('current_user', request.user)
-    print('selected_user', selected_user.user)
-    # print('following user: %s' % following_user)
-    # print('followed user: %s' % followed_user)
     if is_post(request):
         if Follow.objects.filter(following_user=following_user, followed_user=followed_user).first():
             print('this delete')
@@ -245,3 +256,8 @@ def follow(request, user_id):
             return redirect(f'/user/{user_id}')
     else:
         return redirect('/')
+
+
+def reply(request):
+    form = CommentForm(request.POST or None)
+    return redirect(f'/')

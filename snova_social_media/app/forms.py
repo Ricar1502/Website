@@ -23,6 +23,11 @@ class CreateNewUserForm(ModelForm):
         }
 
 
+class CommentForm(forms.ModelForm):
+    # Hidden value to get a child's parent
+    parent = forms.CharField(widget=forms.HiddenInput(
+        attrs={'class': 'parent'}), required=False)
+
 # class LoginForm(UserCreationForm):
 #     class Meta:
 #         model = Profile

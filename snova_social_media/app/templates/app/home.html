@@ -7,8 +7,7 @@
     {%for post in post_list  %}
         <h1>Title:{{post.title}}</h1>
         <h2>Content:{{post.content}}</h2>
-        
-        <form action="/" method="post">
+        <form action="/vote/" method="post">
         {% csrf_token %}
         <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
         {% for key,value in votes.items %}
@@ -76,7 +75,7 @@
         
         {%for post in post_list  %}
         <div class="w3-card w3-white w3-round w3-margin"><br>
-          <form action="/" method="post">
+          <form action="/vote/" method="post">
             {% csrf_token %}           
             <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
               <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
