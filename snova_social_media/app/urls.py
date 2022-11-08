@@ -11,6 +11,7 @@ urlpatterns = [
     path("post_list/", view_post_list),
     path("user_list/",  view_user_list),
     path("search/",  search),
+    path('logout/', logoutPage),
     path("login/",  loginPage),
     path("register/",  registerPage),
     path("follow/",  follow),

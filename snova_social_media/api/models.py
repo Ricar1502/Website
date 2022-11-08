@@ -1,16 +1,19 @@
 
 from django.db import models
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage 
 # Create your models here.
 
+fs = FileSystemStorage()
+avatar = fs.url('../default_img.png')
 
 class Profile(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    avatar = models.ImageField(blank=True, null=True)
-    email = models.EmailField(max_length=254)
-    bio = models.CharField(max_length=200)
-    birthday = models.DateField(auto_now_add=False)
+    avatar = models.ImageField(blank=True, null=True, default = avatar)
+    email = models.EmailField(max_length=254, blank=True)
+    bio = models.CharField(max_length=200, blank=True)
+    birthday = models.DateField(auto_now_add=True)
 
 
 class Post(models.Model):
