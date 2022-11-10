@@ -105,13 +105,16 @@
           
           <div class="w3-container">
             <hr class="w3-clear">
-            <h2>{{post.title}}</h2>
+            <h2><b>{{post.title}}</b></h2>
             <h4>{{post.content}}</h4>
+            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
             <form action="/" method="post"></form>
             {% csrf_token %}
             <div class="w3-row-padding" style="margin:0 -16px">
               <div class="w3-half">
-                <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                {% if post.pic  %}
+                  <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                {% endif %}
                 <h1></h1>
               </div>
             </div>
@@ -123,7 +126,6 @@
                   <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
               </div>
             </div>
-            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
             <hr> 
           </div>
             

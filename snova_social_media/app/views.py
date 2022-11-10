@@ -24,35 +24,22 @@ def home(request):
         follower_list = get_follower_list(profile)
         following_list = get_following_list(profile)
         this_user = request.user
-        print(this_user)
         this_profile = Profile.objects.get(user=this_user)
-        votes = voting(request, posts)
+        votes = get_multiple_post_vote(request, posts)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
                    'follower_list': follower_list, 'following_list': following_list, }
-        print(request.user)
         return render(request, 'app/home.html', context)
     else:
         return redirect('/login')
 
 
-def voteView(request):
+def vote_view(request):
     posts = Post.objects.all()
-    voting(request, posts)
+    if len(posts) > 1:
+        voting_on_multiple_post_page(request, posts)
+    else:
+        voting_on_singular_post_page(request, posts)
     return redirect(request.META.get('HTTP_REFERER'))
-
-
-def voting(request, posts):
-    votes = {}
-    for post in posts:
-        selected_up_vote_btn = f'upvote-{post.get_id()}'
-        selected_down_vote_btn = f'downvote-{post.get_id()}'
-        current_vote = Vote.objects.filter(post_id=post)
-        votes[post] = current_vote
-        post_id = post
-        user_id = request.user
-        vote(request, selected_up_vote_btn, selected_down_vote_btn,
-             post_id, user_id)
-    return votes
 
 
 def add(request):
@@ -64,32 +51,22 @@ def add(request):
     return render(request, 'app/add.html', {'result': result})
 
 
-def login(request):
-    result = ''
-    return render(request, 'app/login.html', {'result': result})
-
-
-def register(request):
-    result = ''
-    return render(request, 'app/register.html', {'result': result})
-
-
 def create_post_form(request):
     initial_data = {
         "parent_id": '1',
         "type": "post",
     }
+    current_user = request.user
+    current_profile = Profile.objects.get(user=current_user)
     if is_post(request):
         post_form = CreateNewPostForm(request.POST, request.FILES)
         if post_form.is_valid():
             title = post_form.cleaned_data["title"]
             content = post_form.cleaned_data["content"]
             link = post_form.cleaned_data["link"]
-            user_id = post_form.cleaned_data["user_id"]
             pic = post_form.cleaned_data["pic"]
-            status = post_form.cleaned_data["status"]
-            t = Post(title=title, content=content, link=link, user_id=user_id,
-                     pic=pic, status=status)
+            t = Post(title=title, content=content, link=link, user_id=current_profile,
+                     pic=pic)
             t.save()
             return HttpResponseRedirect(f"/{t.id}")
     else:
@@ -98,85 +75,25 @@ def create_post_form(request):
     return render(request, 'app/createPost.html', {'form': post_form})
 
 
-def create_user_form(request):
-    if is_post(request):
-        form = CreateNewUserForm(request.POST, request.FILES)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            nickname = form.cleaned_data["nickname"]
-            password = form.cleaned_data["password"]
-            avatar = form.cleaned_data["avatar"]
-            email = form.cleaned_data["email"]
-            bio = form.cleaned_data["bio"]
-            birthday = form.cleaned_data["birthday"]
-            t = User.objects.create_user(name=name, nickname=nickname,
-                                         password=password, avatar=avatar, email=email, bio=bio, birthday=birthday)
-            t.save()
-            return HttpResponseRedirect(f"/user/{t.id}")
-    else:
-        form = CreateNewUserForm()
-
-    return render(request, 'app/createUser.html', {'form': form})
-
-
 def viewPost(request, id):
     post = Post.objects.get(id=id)
-    # list of active parent comments
     comments = Comment.objects.filter(post_id=post).order_by('tree')
-
-    if request.method == 'POST':
+    votes = get_single_post_vote(request, post)
+    if is_post(request):
         current_user = request.user
         current_profile = Profile.objects.get(user=current_user)
-
-        # comment has been added
         comment_form = CommentForm(data=request.POST, initial={
-                                   'user_id': current_user})
+                                   'user_id': current_profile})
         if comment_form.is_valid():
-            parent_obj = None
-            # get parent comment id from hidden input
-            try:
-                # id integer e.g. 15
-                parent_id = int(request.POST['parent_id'])
-            except:
-                parent_id = None
-            # if parent_id has been submitted get parent_obj id
-            if parent_id:
-                parent_obj = Comment.objects.get(id=parent_id)
-                # parent_obj.depth += 5
-                # if parent object exist
-                if parent_obj:
-                    # breakpoint()
-                    # create replay comment object
-                    replay_comment = comment_form.save(commit=False)
-                    # assign parent_obj to replay comment
-                    replay_comment.parent = parent_obj
-            # normal comment
-            # create comment object but do not save to database
-            new_comment = comment_form.save(commit=False)
-            # assign ship to the comment
-            new_comment.post_id = post
-            new_comment.user_id = current_profile
-            new_comment.depth += 1
-            if new_comment.parent:
-                new_comment.depth += new_comment.parent.depth
-            # save
-
-            new_comment.save()
-
+            comment(request, comment_form, post, current_profile)
             return HttpResponseRedirect(post.get_absolute_url())
     else:
         comment_form = CommentForm()
-    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
+
+    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes})
 
 
-def view_post_list(request):
-    posts = Post.objects.all()
-    for i in posts:
-        print(i.id)
-    return render(request, 'app/viewPostList.html', {'post_list': posts})
-
-
-def user(request, id):
+def view_user(request, id):
     profile = Profile.objects.get(id=id)
     current_user_profile = Profile.objects.get(user=request.user)
     comment_list = Comment.objects.all()
@@ -184,15 +101,10 @@ def user(request, id):
     follow(request, id)
     follower_list = get_follower_list(profile)
     following_list = get_following_list(profile)
-    votes = voting(request, post_list)
+    votes = get_multiple_post_vote(request, post_list)
     context = {'votes': votes, 'follower_list': follower_list, 'following_list': following_list,
                'post_list': post_list, 'comment_list': comment_list, 'profile': profile, 'current_user_profile': current_user_profile}
     return render(request, 'app/viewUser.html', context)
-
-
-def view_user_list(request):
-    user_list = Profile.objects.all()
-    return render(request, 'app/viewUserList.html', {'user_list': user_list})
 
 
 def search(request):
@@ -217,13 +129,12 @@ def search(request):
     return render(request, 'app/search.html', context)
 
 
-def logoutPage(request):
+def logout_page(request):
     logout(request)
-
     return redirect('/')
 
 
-def loginPage(request):
+def login_page(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -244,20 +155,20 @@ def loginPage(request):
     return render(request=request, template_name="app/login.html", context={"form": form})
 
 
-def createProfile(username):
+def create_profile(username):
     user = User.objects.get(username=username)
     print(user)
     p = Profile.objects.create(user=user)
     p.save()
 
 
-def registerPage(request):
+def register_page(request):
     if is_post(request):
         form = UserCreationForm(request.POST)
         username = request.POST['username']
         if form.is_valid():
             form.save()
-            createProfile(username)
+            create_profile(username)
             messages.success(request, 'success')
     else:
         form = UserCreationForm()
@@ -285,8 +196,3 @@ def follow(request, user_id):
             return redirect(f'/user/{user_id}')
     else:
         return redirect('/')
-
-
-def reply(request):
-    form = CommentForm(request.POST or None)
-    return redirect(f'/')

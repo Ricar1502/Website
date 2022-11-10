@@ -1,4 +1,5 @@
 from api.models import *
+from django.http import HttpResponse, HttpResponseRedirect
 
 
 def is_post(request):
@@ -23,18 +24,8 @@ def get_following_list(user):
     return following_user_list
 
 
-def up_vote_post(user, post):
-
-    pass
-
-
-def test():
-    print("Testing")
-
-
 def create_if_vote_dont_exist(data, post_data, user_data, v_flag_data=None):
     if not data.objects.filter(post_id=post_data, user_id=user_data).exists():
-
         v = Vote(user_id=user_data, post_id=post_data, v_flag=v_flag_data)
         v.save()
 
@@ -73,26 +64,18 @@ def vote(request, selected_up_vote_btn, selected_down_vote_btn, post_id, user_id
             un_vote(Vote, post_id, user_id)
 
 
-def comment(request, comment_form, post, current_user):
+def comment(request, comment_form, post, current_profile):
     parent_obj = None
-    # get parent comment id from hidden input
     try:
-        # id integer e.g. 15
         parent_id = int(request.POST['parent_id'])
     except:
         parent_id = None
-    # if parent_id has been submitted get parent_obj id
-    if check_if_comment_have_parent(parent_id):
+    if is_comment_have_parent(parent_id):
         parent_obj = Comment.objects.get(id=parent_id)
-        # parent_obj.depth += 5
-        # if parent object exist
-        if check_if_parent_obj_exist(parent_obj):
-            # breakpoint()
-            # create replay comment object
+        if is_parent_obj_exist(parent_obj):
             replay_comment = comment_form.save(commit=False)
-            # assign parent_obj to replay comment
             replay_comment.parent = parent_obj
-    save_comment(comment_form, post, current_user)
+    save_comment(comment_form, post, current_profile)
 
     # # normal comment
     # # create comment object but do not save to database
@@ -109,22 +92,65 @@ def comment(request, comment_form, post, current_user):
     # comment_list = Comment.objects.all()
 
 
-def check_if_comment_have_parent(parent_id):
+def is_comment_have_parent(parent_id):
     return True if parent_id else None
 
 
-def check_if_parent_obj_exist(parent_obj):
+def is_parent_obj_exist(parent_obj):
     return True if parent_obj else None
 
 
-def save_comment(comment_form, post, current_user):
+def save_comment(comment_form, post, current_profile):
     new_comment = comment_form.save(commit=False)
     # assign ship to the comment
     new_comment.post_id = post
-    new_comment.user_id = current_user
+    new_comment.user_id = current_profile
+
     new_comment.depth += 1
     if new_comment.parent:
         new_comment.depth += new_comment.parent.depth
     # new_comment.user_id = current_user
     # save
     new_comment.save()
+
+
+def get_single_post_vote(request, post):
+    vote_list = {}
+    current_vote = Vote.objects.filter(post_id=post)
+    vote_list[post] = current_vote
+
+    return vote_list
+
+
+def get_multiple_post_vote(request, posts):
+    vote_list = {}
+    for post in posts:
+        current_vote = Vote.objects.filter(post_id=post)
+        vote_list[post] = current_vote
+    return vote_list
+
+
+def voting_on_multiple_post_page(request, posts):
+    votes = {}
+    for post in posts:
+        selected_up_vote_btn = f'upvote-{post.get_id()}'
+        selected_down_vote_btn = f'downvote-{post.get_id()}'
+        current_vote = Vote.objects.filter(post_id=post)
+        votes[post] = current_vote
+        post_id = post
+        user_id = request.user
+        current_profile = Profile.objects.get(user_id=user_id)
+        vote(request, selected_up_vote_btn, selected_down_vote_btn,
+             post_id, current_profile)
+
+
+def voting_on_singular_post_page(request, post):
+    votes = {}
+    selected_up_vote_btn = f'upvote-{post.get_id()}'
+    selected_down_vote_btn = f'downvote-{post.get_id()}'
+    current_vote = Vote.objects.filter(post_id=post)
+    post_id = post
+    user_id = request.user
+    current_profile = Profile.objects.get(user_id=user_id)
+    vote(request, selected_up_vote_btn, selected_down_vote_btn,
+         post_id, current_profile)
