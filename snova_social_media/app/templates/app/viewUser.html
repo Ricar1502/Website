@@ -41,22 +41,7 @@
         <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
     {% endfor %}
     <hr>
-    {% for post in post_list %}
-        {% if post.user_id == profile %}
-        <h1>
-            {{post.title}}
-        </h1>
-        <h3>
-            {{post.content}}
-        </h3>
-        <hr>
-        {% for comment in comment_list %}
-            {% if comment.post_id == post %}
-                <p>{{comment.user_id}}: {{comment.content}}</p>
-            {% endif %}
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
+    
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
@@ -102,7 +87,6 @@
       
       <!-- Middle Column -->
       <div class="w3-col m7">
-        
         {%for post in post_list  %}
           {% if post.user_id == profile %}
             <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
@@ -134,58 +118,33 @@
                 <h4><a href="#" style="text-decoration: none;">{{profile.user}}</a></h4><br>
               </div>
 
-              <div class="w3-container">
-                <hr class="w3-clear">
-                <h2>{{post.title}}</h2>
-                <h4>{{post.content}}</h4>
-                <form action="/" method="post"></form>
-                {% csrf_token %}
-                <div class="w3-row-padding" style="margin:0 -16px">
-                  <div class="w3-half">
-                    <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
-                  </div>
-                  
-                </div>
                 
-                <div class="flex-grow-1">
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
-                    </div>
-                    <div class="hstack justify-content-end gap-2">
-                        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3 shadow-sm p-4">
-      
-              <!-- Comment //-->
-            {% for comment in comment_list %}
-              {% if comment.post_id == post %}
-                <div class="py-3">
-                    <div class="d-flex comment">
-                        <img class="w3-left w3-circle w3-margin-right"
-                            src="{{comment.user_id.avatar}}" style="width:60px" />
-                        <div class="flex-grow-1 ms-3">
-                            <div class="mb-1">
-                                <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1">{{comment.user_id.name}}</a> 
-                                <span class="text-muted text-nowrap">2 days ago</span>
-                            </div>
-                            <p>{{comment.content}}</p>     
-                            <button>reply</button>
-                            <form action="/reply" method="post">
-                              {% csrf_token %}
-                              <input type="text" name="reply" id="reply">
-                            <button type="submit">comment</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-              {% endif %}
-            {% endfor %}
-                <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
-                <hr> 
+          <div class="w3-container">
+            <hr class="w3-clear">
+            <h2>{{post.title}}</h2>
+            <h4>{{post.content}}</h4>
+            <form action="/" method="post"></form>
+            {% csrf_token %}
+            <div class="w3-row-padding" style="margin:0 -16px">
+              <div class="w3-half">
+                {% if post.pic  %}
+                  <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                {% endif %}
+                <h1></h1>
               </div>
             </div>
+            <div class="flex-grow-1">
+              <div class="form-floating mb-3">
+                  <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
+              </div>
+              <div class="hstack justify-content-end gap-2">
+                  <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
+              </div>
+            </div>
+            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
+            <hr> 
+          </div>
+            
           {% endif %}
         {%endfor%}
         

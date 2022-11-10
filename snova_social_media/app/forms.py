@@ -11,7 +11,7 @@ class DateInput(forms.DateInput):
 class CreateNewPostForm(ModelForm):
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ('title', 'content', 'link', 'pic')
 
 
 class CreateNewUserForm(ModelForm):

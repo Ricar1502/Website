@@ -11,14 +11,13 @@
         {{post.content}}
     </h3>
 
-    
+    {% if post.pic  %}
+      <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
+    {% endif %}
     {% comment %} <img src = "../../../{{post.pic}}" alt="pic" width='240px' height='240px'> {% endcomment %}
-    <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
     {% comment %} <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'> {% endcomment %}
     {% comment %} <img src = "{% static '{{post.pic}}' %}" alt="pic" width='240px' height='240px'> {% endcomment %}
     <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.user}}</a></h5>
-    <p>{% static 'images/{{post.pic}}'%}</p>
-    <p>{{post.pic.url}}</p>
     <hr>
     {% for comment in comment_list %}
         {% if comment.post_id == post %}
@@ -36,20 +35,32 @@
         <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
 
             <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
-              <button type="button" name = 'upvote-{{post.id}}' class="w3-button w3-padding-small">
-                <i style="color: red;" class="fa fa-arrow-up"></i>
-              </button>         
-              <div style="color: rgb(26, 26, 27);">
-                <span>67.9k</span>
-              </div>
-              <button type="button" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small">
-                <i style="color: blue;" class="fa fa-arrow-down"></i>
-              </button>
+              <form action="/vote/" method="post">
+                {% csrf_token %}           
+                <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
+                  <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+                    <i style="color: red;" class="fa fa-arrow-up"></i>
+                  </button>         
+                  <div style="color: rgb(26, 26, 27);">
+                <span>
+                    {% for key,value in votes.items %}
+                      {% if key == post%}
+                          {{value|length}}
+                      {% endif %}
+                  {% endfor %}
+                </span>
+                  </div>
+                  <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
+                    <i style="color: blue;" class="fa fa-arrow-down"></i>
+                  </button>
+                </div>
+              </form>
             </div>
             <div class="w3-col m10">
               <span class="w3-right w3-opacity w3-padding">1 min</span>
+              <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right" style="width:60px"> 
               <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.user}}</a></h6>
-              <h2>{{post.title}}</h2><br>
+              <h2><b>{{post.title}}</b></h2><br>
             </div>
 
             <div class="w3-container">
@@ -59,7 +70,9 @@
               {% csrf_token %}
               <div class="w3-row-padding" style="margin:0 -16px">
                 <div class="w3-half">
-                  <img src="{{post.pic.url}}" style="width:50%" alt="Northern Lights" class="w3-margin-bottom">
+                  {% if post.pic  %}
+                    <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                  {% endif %}
                 </div>
                 
               </div>
@@ -80,7 +93,7 @@
               </div><br>
 
               <div class="bg-white rounded-3 shadow-sm p-4">
-    
+              <hr>
                 <!-- Comment //-->
                 <h2>Add a new comment</h2>
                 <form  method="post">
