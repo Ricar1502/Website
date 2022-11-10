@@ -1,9 +1,8 @@
 {% extends 'app/base.html' %}
 {% block title %}{{post.title}}{% endblock title %}
 {% load static %}
-{% block title %}Post{% endblock title %}
 {% block content %}
-<link rel="stylesheet" href="../../static/css/profile.css">
+<link rel="stylesheet" href="{% static 'css/viewPost.css' %}">
     
     <h1>
         {{post.title}}
@@ -11,6 +10,8 @@
     <h3>
         {{post.content}}
     </h3>
+
+    
     {% comment %} <img src = "../../../{{post.pic}}" alt="pic" width='240px' height='240px'> {% endcomment %}
     <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
     {% comment %} <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'> {% endcomment %}
@@ -47,7 +48,7 @@
             </div>
             <div class="w3-col m10">
               <span class="w3-right w3-opacity w3-padding">1 min</span>
-              <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.name}}</a></h6>
+              <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.user}}</a></h6>
               <h2>{{post.title}}</h2><br>
             </div>
 
@@ -58,42 +59,121 @@
               {% csrf_token %}
               <div class="w3-row-padding" style="margin:0 -16px">
                 <div class="w3-half">
-                  <img src="../../../api/files/post/0ab268c8a5918132e1bccb7291a7c351.jpg" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                  <img src="{{post.pic.url}}" style="width:50%" alt="Northern Lights" class="w3-margin-bottom">
                 </div>
-                <div class="w3-half">
-                  <img src="../../../api/files/post/0ab268c8a5918132e1bccb7291a7c351_AQNBmtk.jpg" style="width:100%" alt="Nature" class="w3-margin-bottom">
-                </div>
+                
               </div>
               
               <div class="flex-grow-1">
-                  <div class="form-floating mb-3">
+                   {% comment %} <div class="form-floating mb-3">
                       <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
                   </div>
                   <div class="hstack justify-content-end gap-2">
                       <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
-                  </div>
+                  </div> 
+                  <form action="." method="post">
+                    {{ comment_form.as_p }}
+                    {% csrf_token %}
+                    <button type="submit">Add comment</button>
+                    
+                </form> {% endcomment %}
               </div><br>
 
               <div class="bg-white rounded-3 shadow-sm p-4">
     
                 <!-- Comment //-->
-                {% for comment in comment_list %}
+                <h2>Add a new comment</h2>
+                <form  method="post">
+                    {{ comment_form.content }}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" >Add comment</button>
+                </form>
+
+                <!-- Comment with nested comments -->
+                <ul id="commenters">
+                  {% for c in comments %}
+                        <li id="{{c.id}}" class="c" style="margin-left:{{c.depth}}em;">
+                          <img class="w3-left w3-circle w3-margin-right"
+                          src="{{c.user_id.avatar.url}}" style="width:60px" />
+                          <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1"><b>{{c.user_id.user}}</b></a>
+                          <span class="text-muted text-nowrap">2 days ago</span>
+                          <p>{{c.content}}</p>
+                          <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{c.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
+                          </a>
+                          <div class="collapse multi-collapse" id="multiCollapseExample{{c.id}}">
+                            <div class="card card-body">
+                              <h5>Replay</h5>
+                              <form  method="post">
+                                {{ comment_form.content }}
+                                {% csrf_token %}
+                                <!-- Hidden input for parent comment.id -->
+                                <input type="hidden" name="parent_id" value="{{ c.id }}">
+                                <input class="btn btn-primary" type="submit" value="Replay">
+                            </form>
+                            </div>
+                          </div>
+                         
+                        </li>
+                  {% empty %}
+                      <li>There are currently no comments. You can be first!</li>
+                  {% endfor %}
+                </ul>
+                
+                {% comment %} {% for comment in comments %}
+                    {% if not comment.parent  %}
+                      <div class="comment" style="background-color: powderblue">
+                      <p class="info">{{ comment.user_id }} | {{ comment.created_at }}</p>
+                      {{ comment.content|linebreaks }}
+                    {% endif %}
+                        {% for replay in comment.replies.all %}
+                            <div class="test" style="margin-left:{{replay.depth|add:replay.depth}}em;">
+                              <p class="info ">{{ replay.user_id }} | {{ replay.created_at }}</p>
+                              <label class="info ">-{{ replay.content }}</label>
+                              <form  method="post">
+                                {{ comment_form.content }}
+                                {% csrf_token %}
+                                <!-- Hidden input for parent comment.id -->
+                                <input type="hidden" name="parent_id" value="{{ replay.id }}">
+                                <input class="btn btn-secondary" type="submit" value="Replay">
+                              </form>
+                            </div>
+                        {% endfor %}
+                        {% if not comment.parent %}
+                        <h5>Replay</h5>
+                        <form  method="post">
+                          {{ comment_form.content }}
+                          {% csrf_token %}
+                          <!-- Hidden input for parent comment.id -->
+                          <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                          <input class="btn btn-primary" type="submit" value="Replay">
+                      </form>{% endif %}
+                        
+                    </div>
+                {% empty %}
+                <h4>There are no comments yet.</h4>
+                {% endfor %}  {% endcomment %}
+
+
+                {% comment %} {% for comment in comments %}
                 {% if comment.post_id == post %}
                 <div class="py-3">
                     <div class="d-flex comment">
                         <img class="w3-left w3-circle w3-margin-right"
-                            src="./../../{{comment.user_id.avatar}}" style="width:60px" />
+                            src="{{comment.user_id.avatar.url}}" style="width:60px" />
                         <div class="flex-grow-1 ms-3">
                             <div class="mb-1">
                                 <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1">{{comment.user_id.name}}</a> 
                                 <span class="text-muted text-nowrap">2 days ago</span>
                             </div>
-                            <p>{{comment.content}}</p>                    
+                            <p>{{comment.content}}</p>    
+                                            
                         </div>
                     </div>
                 </div>
                 {% endif %}
-                {%endfor%}
+                {%endfor%} {% endcomment %}
+
+
                 <hr> 
               </div>
             </div>
@@ -108,3 +188,18 @@
 </div>
 
 {% endblock content %}
+
+<a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{replay.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
+</a>
+<div class="collapse multi-collapse" id="multiCollapseExample{{replay.id}}">
+  <div class="card card-body">
+    <h5>Replay</h5>
+    <form  method="post">
+      {{ comment_form.content }}
+      {% csrf_token %}
+      <!-- Hidden input for parent comment.id -->
+      <input type="hidden" name="parent_id" value="{{ comment.id }}">
+      <input class="btn btn-primary" type="submit" value="Replay">
+  </form>
+  </div>
+</div>
