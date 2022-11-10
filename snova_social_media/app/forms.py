@@ -1,5 +1,5 @@
 from django.forms import ModelForm, widgets
-from api.models import Post, Profile
+from api.models import *
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -24,10 +24,9 @@ class CreateNewUserForm(ModelForm):
 
 
 class CommentForm(forms.ModelForm):
-    # Hidden value to get a child's parent
-    parent = forms.CharField(widget=forms.HiddenInput(
-        attrs={'class': 'parent'}), required=False)
-
+    class Meta:
+        model = Comment
+        fields = ('content',)
 # class LoginForm(UserCreationForm):
 #     class Meta:
 #         model = Profile

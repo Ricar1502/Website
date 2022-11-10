@@ -12,23 +12,14 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout
+import os
+import operator
 # Create your views here.
 
 
 def home(request):
-    # profile = Profile.objects.get(user=request.user)
-    # posts = Post.objects.all()
-    # follower_list = get_follower_list(profile)
-    # following_list = get_following_list(profile)
-    # this_user = request.user
-    # this_profile = Profile.objects.get(user=this_user)
-    # votes = voting(request, posts)
-    # context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-    #            'follower_list': follower_list, 'following_list': following_list, }
-    # return render(request, 'app/home.html', context)
     if (request.user.is_authenticated):
         profile = Profile.objects.get(user=request.user)
-
         posts = Post.objects.all()
         follower_list = get_follower_list(profile)
         following_list = get_following_list(profile)
@@ -40,7 +31,6 @@ def home(request):
                    'follower_list': follower_list, 'following_list': following_list, }
         print(request.user)
         return render(request, 'app/home.html', context)
-
     else:
         return redirect('/login')
 
@@ -105,8 +95,7 @@ def create_post_form(request):
     else:
         post_form = CreateNewPostForm(initial=initial_data)
 
-    return render(request, 'app/createPost.html', {'form': post_form}
-                  )
+    return render(request, 'app/createPost.html', {'form': post_form})
 
 
 def create_user_form(request):
@@ -120,7 +109,6 @@ def create_user_form(request):
             email = form.cleaned_data["email"]
             bio = form.cleaned_data["bio"]
             birthday = form.cleaned_data["birthday"]
-
             t = User.objects.create_user(name=name, nickname=nickname,
                                          password=password, avatar=avatar, email=email, bio=bio, birthday=birthday)
             t.save()
@@ -133,11 +121,52 @@ def create_user_form(request):
 
 def viewPost(request, id):
     post = Post.objects.get(id=id)
-    print(post.pic)
-    comment_list = Comment.objects.all()
-    user = request.user
+    # list of active parent comments
+    comments = Comment.objects.filter(post_id=post).order_by('tree')
 
-    return render(request, 'app/viewPost.html', {'post': post, 'comment_list': comment_list, 'user': user})
+    if request.method == 'POST':
+        current_user = request.user
+        current_profile = Profile.objects.get(user=current_user)
+
+        # comment has been added
+        comment_form = CommentForm(data=request.POST, initial={
+                                   'user_id': current_user})
+        if comment_form.is_valid():
+            parent_obj = None
+            # get parent comment id from hidden input
+            try:
+                # id integer e.g. 15
+                parent_id = int(request.POST['parent_id'])
+            except:
+                parent_id = None
+            # if parent_id has been submitted get parent_obj id
+            if parent_id:
+                parent_obj = Comment.objects.get(id=parent_id)
+                # parent_obj.depth += 5
+                # if parent object exist
+                if parent_obj:
+                    # breakpoint()
+                    # create replay comment object
+                    replay_comment = comment_form.save(commit=False)
+                    # assign parent_obj to replay comment
+                    replay_comment.parent = parent_obj
+            # normal comment
+            # create comment object but do not save to database
+            new_comment = comment_form.save(commit=False)
+            # assign ship to the comment
+            new_comment.post_id = post
+            new_comment.user_id = current_profile
+            new_comment.depth += 1
+            if new_comment.parent:
+                new_comment.depth += new_comment.parent.depth
+            # save
+
+            new_comment.save()
+
+            return HttpResponseRedirect(post.get_absolute_url())
+    else:
+        comment_form = CommentForm()
+    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
 
 
 def view_post_list(request):

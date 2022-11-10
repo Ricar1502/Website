@@ -71,3 +71,60 @@ def vote(request, selected_up_vote_btn, selected_down_vote_btn, post_id, user_id
             down_vote(Vote, post_id, user_id)
         else:
             un_vote(Vote, post_id, user_id)
+
+
+def comment(request, comment_form, post, current_user):
+    parent_obj = None
+    # get parent comment id from hidden input
+    try:
+        # id integer e.g. 15
+        parent_id = int(request.POST['parent_id'])
+    except:
+        parent_id = None
+    # if parent_id has been submitted get parent_obj id
+    if check_if_comment_have_parent(parent_id):
+        parent_obj = Comment.objects.get(id=parent_id)
+        # parent_obj.depth += 5
+        # if parent object exist
+        if check_if_parent_obj_exist(parent_obj):
+            # breakpoint()
+            # create replay comment object
+            replay_comment = comment_form.save(commit=False)
+            # assign parent_obj to replay comment
+            replay_comment.parent = parent_obj
+    save_comment(comment_form, post, current_user)
+
+    # # normal comment
+    # # create comment object but do not save to database
+    # new_comment = comment_form.save(commit=False)
+    # # assign ship to the comment
+    # new_comment.post_id = post
+    # new_comment.user_id = current_user
+    # new_comment.depth += 1
+    # if new_comment.parent:
+    #     new_comment.depth += new_comment.parent.depth
+    # # new_comment.user_id = current_user
+    # # save
+    # new_comment.save()
+    # comment_list = Comment.objects.all()
+
+
+def check_if_comment_have_parent(parent_id):
+    return True if parent_id else None
+
+
+def check_if_parent_obj_exist(parent_obj):
+    return True if parent_obj else None
+
+
+def save_comment(comment_form, post, current_user):
+    new_comment = comment_form.save(commit=False)
+    # assign ship to the comment
+    new_comment.post_id = post
+    new_comment.user_id = current_user
+    new_comment.depth += 1
+    if new_comment.parent:
+        new_comment.depth += new_comment.parent.depth
+    # new_comment.user_id = current_user
+    # save
+    new_comment.save()
