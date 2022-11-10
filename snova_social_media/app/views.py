@@ -33,7 +33,7 @@ def home(request):
         return redirect('/login')
 
 
-def voteView(request):
+def vote_view(request):
     posts = Post.objects.all()
     if len(posts) > 1:
         voting_on_multiple_post_page(request, posts)
@@ -49,16 +49,6 @@ def add(request):
         num2 = int(request.POST['inp2'])
         result = num1 + num2
     return render(request, 'app/add.html', {'result': result})
-
-
-def login(request):
-    result = ''
-    return render(request, 'app/login.html', {'result': result})
-
-
-def register(request):
-    result = ''
-    return render(request, 'app/register.html', {'result': result})
 
 
 def create_post_form(request):
@@ -85,36 +75,13 @@ def create_post_form(request):
     return render(request, 'app/createPost.html', {'form': post_form})
 
 
-def create_user_form(request):
-    if is_post(request):
-        form = CreateNewUserForm(request.POST, request.FILES)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            nickname = form.cleaned_data["nickname"]
-            password = form.cleaned_data["password"]
-            avatar = form.cleaned_data["avatar"]
-            email = form.cleaned_data["email"]
-            bio = form.cleaned_data["bio"]
-            birthday = form.cleaned_data["birthday"]
-            t = User.objects.create_user(name=name, nickname=nickname,
-                                         password=password, avatar=avatar, email=email, bio=bio, birthday=birthday)
-            t.save()
-            return HttpResponseRedirect(f"/user/{t.id}")
-    else:
-        form = CreateNewUserForm()
-
-    return render(request, 'app/createUser.html', {'form': form})
-
-
 def viewPost(request, id):
     post = Post.objects.get(id=id)
-    # list of active parent comments
     comments = Comment.objects.filter(post_id=post).order_by('tree')
     votes = get_single_post_vote(request, post)
-    if request.method == 'POST':
+    if is_post(request):
         current_user = request.user
         current_profile = Profile.objects.get(user=current_user)
-        # comment has been added
         comment_form = CommentForm(data=request.POST, initial={
                                    'user_id': current_profile})
         if comment_form.is_valid():
@@ -126,14 +93,7 @@ def viewPost(request, id):
     return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes})
 
 
-def view_post_list(request):
-    posts = Post.objects.all()
-    for i in posts:
-        print(i.id)
-    return render(request, 'app/viewPostList.html', {'post_list': posts})
-
-
-def user(request, id):
+def view_user(request, id):
     profile = Profile.objects.get(id=id)
     current_user_profile = Profile.objects.get(user=request.user)
     comment_list = Comment.objects.all()
@@ -145,11 +105,6 @@ def user(request, id):
     context = {'votes': votes, 'follower_list': follower_list, 'following_list': following_list,
                'post_list': post_list, 'comment_list': comment_list, 'profile': profile, 'current_user_profile': current_user_profile}
     return render(request, 'app/viewUser.html', context)
-
-
-def view_user_list(request):
-    user_list = Profile.objects.all()
-    return render(request, 'app/viewUserList.html', {'user_list': user_list})
 
 
 def search(request):
@@ -174,13 +129,12 @@ def search(request):
     return render(request, 'app/search.html', context)
 
 
-def logoutPage(request):
+def logout_page(request):
     logout(request)
-
     return redirect('/')
 
 
-def loginPage(request):
+def login_page(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -201,20 +155,20 @@ def loginPage(request):
     return render(request=request, template_name="app/login.html", context={"form": form})
 
 
-def createProfile(username):
+def create_profile(username):
     user = User.objects.get(username=username)
     print(user)
     p = Profile.objects.create(user=user)
     p.save()
 
 
-def registerPage(request):
+def register_page(request):
     if is_post(request):
         form = UserCreationForm(request.POST)
         username = request.POST['username']
         if form.is_valid():
             form.save()
-            createProfile(username)
+            create_profile(username)
             messages.success(request, 'success')
     else:
         form = UserCreationForm()
@@ -242,8 +196,3 @@ def follow(request, user_id):
             return redirect(f'/user/{user_id}')
     else:
         return redirect('/')
-
-
-def reply(request):
-    form = CommentForm(request.POST or None)
-    return redirect(f'/')
