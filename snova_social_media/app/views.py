@@ -107,7 +107,7 @@ def view_user(request, id):
     return render(request, 'app/viewUser.html', context)
 
 
-def search(request):
+def search_view(request):
     username_profile_list = []
     follower_list = {}
     following_list = {}
