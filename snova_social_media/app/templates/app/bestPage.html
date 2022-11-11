@@ -1,0 +1,20 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Snova{% endblock title %}
+
+{% block content %}
+{%for rank in ranks  %}
+    <h1>Title:{{rank.post_id.title}}</h1>
+    <h2>Content:{{rank.post_id.content}}</h2>
+    <form action="/vote/" method="post">
+    {% csrf_token %}
+    <button type="submit" name = 'upvote-{{rank.post_id.id}}' id="upvote" >up vote</button>
+    {% for key,value in votes.items %}
+        {% if key == rank.post_id%}
+            {{value|length}}
+        {% endif %}
+    {% endfor %}
+    <button type="submit" name = 'downvote-{{rank.post_id.id}}' id="downvote">down vote</button>
+    </form>
+{%endfor%}
+{% endblock content %}
