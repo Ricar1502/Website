@@ -133,6 +133,7 @@ def get_multiple_post_vote(request, posts):
 def voting_on_multiple_post_page(request, posts):
     votes = {}
     for post in posts:
+        create_rank_of_post(request, post)
         selected_up_vote_btn = f'upvote-{post.get_id()}'
         selected_down_vote_btn = f'downvote-{post.get_id()}'
         current_vote = Vote.objects.filter(post_id=post)
@@ -142,15 +143,48 @@ def voting_on_multiple_post_page(request, posts):
         current_profile = Profile.objects.get(user_id=user_id)
         vote(request, selected_up_vote_btn, selected_down_vote_btn,
              post_id, current_profile)
+        calculate_best_score(request, post)
+        calculate_controversial_score(request, post)
 
 
 def voting_on_singular_post_page(request, post):
     votes = {}
-    selected_up_vote_btn = f'upvote-{post.get_id()}'
-    selected_down_vote_btn = f'downvote-{post.get_id()}'
+    selected_up_vote_btn = f'upvote-{post.id}'
+    selected_down_vote_btn = f'downvote-{post.id}'
     current_vote = Vote.objects.filter(post_id=post)
     post_id = post
     user_id = request.user
     current_profile = Profile.objects.get(user_id=user_id)
     vote(request, selected_up_vote_btn, selected_down_vote_btn,
          post_id, current_profile)
+    calculate_best_score(request, post)
+    calculate_controversial_score(request, post)
+
+
+def calculate_best_score(request, post):
+    post_rank = Rank.objects.get(post_id=post)
+    upvote_count = 0
+    votes = Vote.objects.filter(post_id=post)
+    for vote in votes:
+        if vote.v_flag:
+            upvote_count += 1
+    post_rank.best = upvote_count
+    post_rank.save()
+
+
+def calculate_controversial_score(request, post):
+    post_rank = Rank.objects.get(post_id=post)
+    down_vote_count = 0
+    votes = Vote.objects.filter(post_id=post)
+    for vote in votes:
+        if not vote.v_flag:
+            down_vote_count += 1
+    post_rank.controversial = down_vote_count
+    post_rank.save()
+
+
+def create_rank_of_post(request, post):
+    if Rank.objects.filter(post_id=post).exists():
+        return
+    rank = Rank(post_id=post)
+    rank.save()

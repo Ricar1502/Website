@@ -17,6 +17,7 @@
         {% endfor %}
         <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
         </form>
+        <h1>{{post.created_at}}</h1>
         {%endfor%}
         
 <!-- Page Container -->
@@ -62,16 +63,17 @@
               </div>
 
           <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-            <a href="#"><p>
-              <span class="w3-tag w3-small w3-theme-d5">News</span>
-              <span class="w3-tag w3-small w3-theme-d2">Games</span>
-              <span class="w3-tag w3-small w3-theme-d1">Friends</span>
+            <a href="/new"><span class="w3-tag w3-small w3-theme-d5">New</span></a>
+            <a href="#"><span class="w3-tag w3-small w3-theme-d2">Top</span></a>
+            <a href="/best"><span class="w3-tag w3-small w3-theme-d1">Best</span></a>
+            <a href="/controversial"><span class="w3-tag w3-small w3-theme">controversial</span></a>
+              {% comment %} <span class="w3-tag w3-small w3-theme-d1">Friends</span>
               <span class="w3-tag w3-small w3-theme">Games</span>
               <span class="w3-tag w3-small w3-theme-l1">Friends</span>
               <span class="w3-tag w3-small w3-theme-l2">Food</span>
               <span class="w3-tag w3-small w3-theme-l3">Design</span>
               <span class="w3-tag w3-small w3-theme-l4">Art</span>
-              <span class="w3-tag w3-small w3-theme-l5">Photos</span>
+              <span class="w3-tag w3-small w3-theme-l5">Photos</span> {% endcomment %}
             </p></a>
           </div>    
         

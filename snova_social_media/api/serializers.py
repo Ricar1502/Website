@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Profile, Ranks, Vote
+from .models import Post, Profile, Rank, Vote
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RanksSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ranks
+        model = Rank
         fields = '__all__'
 
 

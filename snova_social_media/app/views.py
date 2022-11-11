@@ -35,10 +35,12 @@ def home(request):
 
 def vote_view(request):
     posts = Post.objects.all()
+
     if len(posts) > 1:
         voting_on_multiple_post_page(request, posts)
     else:
-        voting_on_singular_post_page(request, posts)
+        create_rank_of_post(request, posts[0])
+        voting_on_singular_post_page(request, posts[0])
     return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -107,23 +109,22 @@ def view_user(request, id):
     return render(request, 'app/viewUser.html', context)
 
 
-def search(request):
+def search_view(request):
     username_profile_list = []
     follower_list = {}
     following_list = {}
-    if is_post(request):
-        username = request.POST['username']
-        user_object = Profile.objects.filter(
-            user__username__icontains=username)
-        print(user_object)
-        for user in user_object:
-            username_profile_list.append(user)
-            follower = Follow.objects.filter(
-                followed_user=user)
-            follower_list[user] = follower
-            following = Follow.objects.filter(
-                following_user=user)
-            following_list[user] = following
+    username = request.GET['username']
+    user_object = Profile.objects.filter(
+        user__username__icontains=username)
+    print(user_object)
+    for user in user_object:
+        username_profile_list.append(user)
+        follower = Follow.objects.filter(
+            followed_user=user)
+        follower_list[user] = follower
+        following = Follow.objects.filter(
+            following_user=user)
+        following_list[user] = following
     context = {'username_profile_list': username_profile_list,
                'following_list': following_list, 'follower_list': follower_list}
     return render(request, 'app/search.html', context)
@@ -174,6 +175,30 @@ def register_page(request):
         form = UserCreationForm()
 
     return render(request, 'app/register.html', {'form': form})
+
+
+def new_page(request):
+    return render(request, 'app/newPage.html')
+
+
+def best_page(request):
+    votes_dict = {}
+    ranks = Rank.objects.all().order_by('-best')
+    posts = Post.objects.all()
+    votes = get_multiple_post_vote(request, posts)
+
+    context = {'ranks': ranks, 'votes': votes}
+    return render(request, 'app/bestPage.html', context)
+
+
+def controversial_page(request):
+    votes_dict = {}
+    ranks = Rank.objects.all().order_by('-controversial')
+    posts = Post.objects.all()
+    votes = get_multiple_post_vote(request, posts)
+
+    context = {'ranks': ranks, 'votes': votes}
+    return render(request, 'app/bestPage.html', context)
 
 
 def follow(request, user_id):

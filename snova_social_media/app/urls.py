@@ -7,10 +7,13 @@ urlpatterns = [
     path('create_post/', create_post_form),
     path("<int:id>", viewPost),
     path("user/<int:id>", view_user),
-    path("search/",  search),
+    path("search/",  search_view),
     path('logout/', logout_page),
     path("login/",  login_page),
     path("register/",  register_page),
-    path("follow/",  follow),
     path("vote/", vote_view),
+    path("new/", new_page),
+    path("best/", best_page),
+    path("controversial/", controversial_page),
+
 ]

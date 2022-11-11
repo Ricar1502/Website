@@ -19,6 +19,10 @@ class Profile(models.Model):
     bio = models.CharField(max_length=200, blank=True)
     birthday = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+
+        return f'{self.user}'
+
 
 class Post(models.Model):
     title = models.CharField(max_length=200, default="0")
@@ -29,12 +33,18 @@ class Post(models.Model):
     pic = models.ImageField(blank=True, null=True)
     status = models.CharField(max_length=15, default="activate")
     created_at = models.DateTimeField(auto_now_add=True)
+    best_score = models.IntegerField(default=0)
 
     def get_id(self):
         return self.id
 
     def get_absolute_url(self):
         return "/%i" % self.id
+
+    def __str__(self):
+        # print(type(self.parent))
+
+        return f'{self.title}'
 
 
 class Vote(models.Model):
@@ -44,18 +54,27 @@ class Vote(models.Model):
     v_flag = models.BooleanField(null=True, blank=True)
     last_update_time = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        if self.v_flag:
+            return f'{self.user_id} upvote for {self.post_id}'
+        return f'{self.user_id} downvote for {self.post_id}'
 
-class Ranks(models.Model):
+
+class Rank(models.Model):
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
-    hot = models.FloatField()
-    new = models.FloatField()
-    raising = models.FloatField()
-    controversial = models.FloatField()
-    top = models.FloatField()
+    hot = models.FloatField(default=0)
+    new = models.FloatField(default=0)
+    raising = models.FloatField(default=0)
+    controversial = models.FloatField(default=0)
+    top = models.FloatField(default=0)
+    best = models.FloatField(default=0)
+
+    def __str__(self):
+
+        return f'rank of: {self.post_id}'
 
 
 class Comment(models.Model):
-
     post_id = models.ForeignKey(
         Post, on_delete=models.CASCADE, default='something')
     content = models.CharField(max_length=200, default="")
@@ -108,6 +127,10 @@ class Follow(models.Model):
     followed_user = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name='%(class)s_followed')
 
+    def __str__(self):
+        # print(type(self.parent))
+
+        return f'{self.following_user} follow {self.followed_user}'
 
 # class SubNova(models.Model):
 #     user_id = models.ForeignKey(
