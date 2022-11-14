@@ -1,0 +1,27 @@
+{% if post %}
+    {% if post.get_days >= 7 %}
+    <p>{{post.get_weeks}} weeks ago</p>
+    {% elif post.get_days >= 1 %}
+    <p>{{post.get_days}} days ago</p>
+    {% elif post.get_hours >= 1 %}
+    <p>{{post.get_hours}} hours ago</p>
+
+    {% elif post.get_seconds >= 60 %}
+    <p>{{post.get_minutes}} minutes ago</p>
+    {%else %}
+    <p>{{post.get_seconds}} seconds ago</p>
+    {% endif %}
+{% elif rank %}
+    {% if rank.post_id.get_days >= 7 %}
+    <p>{{rank.post_id.get_weeks}} weeks ago</p>
+    {% elif rank.post_id.get_days >= 1 %}
+    <p>{{rank.post_id.get_days}} days ago</p>
+    {% elif rank.post_id.get_hours >= 1 %}
+    <p>{{rank.post_id.get_hours}} hours ago</p>
+
+    {% elif rank.post_id.get_seconds >= 60 %}
+    <p>{{rank.post_id.get_minutes}} minutes ago</p>
+    {%else %}
+    <p>{{rank.post_id.get_seconds}} seconds ago</p>
+    {% endif %}
+{% endif %}

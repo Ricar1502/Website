@@ -14,6 +14,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout
 import os
 import operator
+import datetime
+from django.utils import timezone
 # Create your views here.
 
 
@@ -27,7 +29,7 @@ def home(request):
         this_profile = Profile.objects.get(user=this_user)
         votes = get_multiple_post_vote(request, posts)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-                   'follower_list': follower_list, 'following_list': following_list, }
+                   'follower_list': follower_list, 'following_list': following_list}
         return render(request, 'app/home.html', context)
     else:
         return redirect('/login')
@@ -178,11 +180,16 @@ def register_page(request):
 
 
 def new_page(request):
-    return render(request, 'app/newPage.html')
+    ranks = Rank.objects.all().order_by('-best')
+    posts = Post.objects.all().order_by('-created_at')
+    votes = get_multiple_post_vote(request, posts)
+
+    context = {'ranks': ranks, 'votes': votes, 'posts': posts}
+
+    return render(request, 'app/newPage.html', context)
 
 
 def best_page(request):
-    votes_dict = {}
     ranks = Rank.objects.all().order_by('-best')
     posts = Post.objects.all()
     votes = get_multiple_post_vote(request, posts)

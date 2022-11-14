@@ -16,5 +16,6 @@
     {% endfor %}
     <button type="submit" name = 'downvote-{{rank.post_id.id}}' id="downvote">down vote</button>
     </form>
+    {% include 'app/components/time.html' %}
 {%endfor%}
 {% endblock content %}

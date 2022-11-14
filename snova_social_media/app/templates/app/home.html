@@ -2,11 +2,28 @@
 {% block title %}Home page{% endblock title %}
 {% load static %}
 {% block content %}
+{% load mathfilters %}
 <link rel="stylesheet" href="../../static/css/profile.css">
 
     {%for post in post_list  %}
         <h1>Title:{{post.title}}</h1>
         <h2>Content:{{post.content}}</h2>
+        {% comment %} <h2>{{post.created_at}}</h2>
+        <h2>{{now}}</h2>
+      
+        <h2>day:{{post.get_days}}, hour:{{post.get_hours}}, min:{{post.get_minutes}}, sec:{{post.get_seconds}}</h2> {% endcomment %}
+        {% if post.get_days >= 7 %}
+          <p>{{post.get_weeks}} weeks ago</p>
+        {% elif post.get_days >= 1 %}
+          <p>{{post.get_days}} days ago</p>
+        {% elif post.get_hours >= 1 %}
+          <p>{{post.get_hours}} hours ago</p>
+        
+        {% elif post.get_seconds >= 60 %}
+          <p>{{post.get_minutes}} minutes ago</p>
+        {%else %}
+          <p>{{post.get_seconds}} seconds ago</p>
+        {% endif %}
         <form action="/vote/" method="post">
         {% csrf_token %}
         <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
@@ -101,7 +118,8 @@
           </form>
           <div class="w3-col m10">
             <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
-            <span class="w3-right w3-opacity w3-padding">1 min</span>
+            <span class="w3-right w3-opacity w3-padding">{% include 'app/components/time.html' %}
+          </span>
             <h4><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h4><br>
           </div>
           

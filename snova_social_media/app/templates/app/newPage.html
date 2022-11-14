@@ -3,5 +3,20 @@
 {% block title %}Snova{% endblock title %}
 
 {% block content %}
-    <h1>hello world</h1>
+{%for post in posts  %}
+    <h1>Title:{{post.title}}</h1>
+    <h2>Content:{{post.content}}</h2>
+    <form action="/vote/" method="post">
+    {% csrf_token %}
+    <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
+    {% for key,value in votes.items %}
+        {% if key == post%}
+            {{value|length}}
+        {% endif %}
+    {% endfor %}
+    <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
+    </form>
+    {% include 'app/components/time.html' %}
+    
+{%endfor%}
 {% endblock content %}
