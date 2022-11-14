@@ -5,6 +5,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db.models import (
     Model, CharField, ForeignKey, IntegerField, BooleanField)
 from django.core.files.storage import FileSystemStorage
+import datetime
+from django.utils import timezone
 # Create your models here.
 
 fs = FileSystemStorage()
@@ -45,6 +47,21 @@ class Post(models.Model):
         # print(type(self.parent))
 
         return f'{self.title}'
+
+    def get_weeks(self):
+        return int((timezone.now() - self.created_at).days)//7
+
+    def get_days(self):
+        return int((timezone.now() - self.created_at).days)
+
+    def get_hours(self):
+        return int(self.get_seconds() // 3600)
+
+    def get_minutes(self):
+        return int((self.get_seconds() % 3600) // 60.)
+
+    def get_seconds(self):
+        return int((timezone.now() - self.created_at).seconds)
 
 
 class Vote(models.Model):

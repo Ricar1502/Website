@@ -14,6 +14,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout
 import os
 import operator
+import datetime
+from django.utils import timezone
 # Create your views here.
 
 
@@ -26,8 +28,12 @@ def home(request):
         this_user = request.user
         this_profile = Profile.objects.get(user=this_user)
         votes = get_multiple_post_vote(request, posts)
+        now_aware = timezone.now()
+        now = datetime.datetime.now()
+        get_time = now_aware - posts[0].created_at
+        print(get_time)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-                   'follower_list': follower_list, 'following_list': following_list, }
+                   'follower_list': follower_list, 'following_list': following_list, 'now': now, 'get_time': str(get_time)}
         return render(request, 'app/home.html', context)
     else:
         return redirect('/login')

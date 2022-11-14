@@ -188,3 +188,12 @@ def create_rank_of_post(request, post):
         return
     rank = Rank(post_id=post)
     rank.save()
+
+
+def today_time(time):
+    return datetime.datetime.today().replace(hour=time.hour, minute=time.minute, second=time.second,
+                                             microsecond=time.microsecond, tzinfo=time.tzinfo)
+
+
+def times_to_delta(start_time, end_time):
+    return today_time(end_time) - today_time(start_time)
