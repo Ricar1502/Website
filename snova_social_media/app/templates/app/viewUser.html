@@ -3,32 +3,14 @@
 {% block title %}Profile Page{% endblock title %}
 {% load static %}
 {% block content %}
-<h1>{{profile.avatar.url}}</h1>
 <h3 name="user">
     {{profile.user}}
 </h3>
-    {% comment %} <img src = "{% static 'images{{profile.pic}}' %}" alt="avatar" width='240px' height='240px'> {% endcomment %}
     <img src = '{{profile.avatar.url}}' alt="avatar" width='240px' height='240px'>
     
-    {% comment %} <img src = "../../../" alt="avatar" width='240px' height='240px'> {% endcomment %}
-    {% comment %} <form action="/{user.id}" method="post">
-        <button type="submit" name = 'follow-{{user.id}}'>follow</button>
-    </form> {% endcomment %}
     <form action="./{{profile.id}}" method="post">
         {% csrf_token %}
-        {% if user.is_authenticated %}
-        <h1>{{user}}</h1>
-           {% if profile.user != user  %}
-            {% if current_user_profile in following_list %}
-            <button type="submit" name ='follow'>
-                unfollow</button>
-            {% else %}
-                <button type="submit" name ='follow'>
-                    follow
-                </button>
-            {% endif %}
-                {% endif %}
-        {% endif %}
+        {% include 'app/components/follow.html' %}
         
     </form>
     <h4>following list:</h4>
