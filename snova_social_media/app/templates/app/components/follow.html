@@ -1,0 +1,13 @@
+{% if user.is_authenticated %}
+    <h1>{{user}}</h1>
+    {% if profile.user != user  %}
+        {% if current_user_profile in following_list %}
+        <button type="submit" name ='follow'>
+            unfollow</button>
+        {% else %}
+            <button type="submit" name ='follow'>
+                follow
+            </button>
+        {% endif %}
+            {% endif %}
+    {% endif %}

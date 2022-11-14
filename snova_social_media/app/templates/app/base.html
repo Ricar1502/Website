@@ -105,19 +105,3 @@
 </html>
 
 
-
-{% block posted_time %}
-
-{% if post.get_days >= 7 %}
-<p>{{post.get_weeks}} weeks ago</p>
-{% elif post.get_days >= 1 %}
-<p>{{post.get_days}} days ago</p>
-{% elif post.get_hours >= 1 %}
-<p>{{post.get_hours}} hours ago</p>
-
-{% elif post.get_seconds >= 60 %}
-<p>{{post.get_minutes}} minutes ago</p>
-{%else %}
-<p>{{post.get_seconds}} seconds ago</p>
-{% endif %}
-{% endblock posted_time %}
