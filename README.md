@@ -3,7 +3,7 @@
 - a straightforward social media profile on Reddit where you can interact with others. Post a question you have and your desired information.
 - Technologies: 
     + Python(Django) 
-    + Reactjs 
+    + HTML(Bootstrap)
     + SQLite3
     + Javascript
 - Intended audience: 
@@ -14,20 +14,16 @@
     + Phan Nguyễn Đăng Khoa
     + Phạm Minh Lâm
 - Challenges:
-    + New to us
-    + We're not used to the Technologies
+    + New technologies
+    + Hard project concept
 - This is created for learning purposes
 
 ## Database model</br>
    ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/Database%20diagram.jpg)
-## Functional list
-
-## Non-functional list
-
 ## Link to roadmap
 https://smnova.atlassian.net/jira/software/projects/SNOV/boards/1/roadmap
 ## How to run this project
 - Download django using: pip install Django
 - Cd into your project
-- Run this command:  python manage.py runserver
+- Run this command:  python manage.py runserver 3000
 
