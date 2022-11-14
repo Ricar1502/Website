@@ -28,12 +28,8 @@ def home(request):
         this_user = request.user
         this_profile = Profile.objects.get(user=this_user)
         votes = get_multiple_post_vote(request, posts)
-        now_aware = timezone.now()
-        now = datetime.datetime.now()
-        get_time = now_aware - posts[0].created_at
-        print(get_time)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-                   'follower_list': follower_list, 'following_list': following_list, 'now': now, 'get_time': str(get_time)}
+                   'follower_list': follower_list, 'following_list': following_list}
         return render(request, 'app/home.html', context)
     else:
         return redirect('/login')
@@ -184,11 +180,16 @@ def register_page(request):
 
 
 def new_page(request):
-    return render(request, 'app/newPage.html')
+    ranks = Rank.objects.all().order_by('-best')
+    posts = Post.objects.all().order_by('-created_at')
+    votes = get_multiple_post_vote(request, posts)
+
+    context = {'ranks': ranks, 'votes': votes, 'posts': posts}
+
+    return render(request, 'app/newPage.html', context)
 
 
 def best_page(request):
-    votes_dict = {}
     ranks = Rank.objects.all().order_by('-best')
     posts = Post.objects.all()
     votes = get_multiple_post_vote(request, posts)

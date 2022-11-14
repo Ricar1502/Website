@@ -57,16 +57,8 @@
               </form>
             </div>
             <div class="w3-col m10">
-              <span class="w3-right w3-opacity w3-padding"> {% if post.get_days >= 7 %}
-                <p>{{post.get_weeks}} weeks ago</p>
-              {% elif post.get_days >= 1 %}
-                <p>{{post.get_days}} days ago</p>
-              {% elif post.get_hours >= 1 %}
-                <p>{{post.get_hours}} hours ago</p>
-              
-              {% elif post.get_seconds >= 60 %}
-                <p>{{post.get_minutes}} minutes ago</p>
-              {% endif %}
+              <span class="w3-right w3-opacity w3-padding"> 
+                {% include 'app/components/time.html' %}
             </span>
               <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right" style="width:60px"> 
               <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.user}}</a></h6>
