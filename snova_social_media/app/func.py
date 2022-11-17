@@ -77,20 +77,6 @@ def comment(request, comment_form, post, current_profile):
             replay_comment.parent = parent_obj
     save_comment(comment_form, post, current_profile)
 
-    # # normal comment
-    # # create comment object but do not save to database
-    # new_comment = comment_form.save(commit=False)
-    # # assign ship to the comment
-    # new_comment.post_id = post
-    # new_comment.user_id = current_user
-    # new_comment.depth += 1
-    # if new_comment.parent:
-    #     new_comment.depth += new_comment.parent.depth
-    # # new_comment.user_id = current_user
-    # # save
-    # new_comment.save()
-    # comment_list = Comment.objects.all()
-
 
 def is_comment_have_parent(parent_id):
     return True if parent_id else None
