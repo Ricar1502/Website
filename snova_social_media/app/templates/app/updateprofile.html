@@ -1,0 +1,27 @@
+{% extends 'app/base.html'%}
+
+{% block content %} 
+
+ 
+<div class="container py-5">
+    <h1>{{profile.user }}</h1>
+    <h2>{{profile.avatar}}</h2>
+    <img src = '{{profile.avatar.url}}' alt="avatar" width='240px' height='240px'>
+    <h2>{{profile.email}}</h2>
+    <h2>{{profile.bio}}</h2>
+	<h1>Update Profile</h1>
+	<form enctype="multipart/form-data" action="/user/{{profile.id}}/profile" method="post">
+		{% csrf_token %}
+        {{ form.avatar }}
+        <br>
+        {{ form.email }}
+        <p> Previous Email: {{profile.email}} </p>
+        {{ form.bio }}
+        <p> Previous Bio: {{profile.bio}} </p>
+        <br>
+		<button class="btn btn-primary" type="submit">Update</button>
+	</form>
+    <br>
+    <a href="/user/{{profile.id}}/delete"><button> Delete Profile </button></a>
+</div>
+{% endblock %}
