@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
-    <link rel="stylesheet" href="../../static/css/base.css">
-</head>
+    <link rel="stylesheet" type="text/css" href=" {% static '/css/viewPost.css' %} ">
+
+  </head>
 <body>
         <!-- Navbar -->  
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -62,6 +64,10 @@
             <form class="form-inline my-2 my-lg-0" action="/search/">
               <input name="username" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit" href = "/" >Search</button>
+            </form>
+            <form action="/chat/">
+              
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit" href = "/">Message</button>
             </form>
             <form action="/logout/" method="post">
               {% csrf_token %}

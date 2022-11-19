@@ -228,3 +228,41 @@ def follow(request, user_id):
             return redirect(f'/user/{user_id}')
     else:
         return redirect('/')
+
+
+def chat_page(request, id):
+    this_user = request.user
+    this_profile = Profile.objects.get(user=this_user)
+    rooms = Room.objects.all()
+    selected_room = Room.objects.get(id=id)
+    messages = Messages.objects.filter(room=selected_room)
+    send_message(request, id)
+    context = {'rooms': rooms,
+               'selected_room': selected_room, 'messages': messages, 'this_profile': this_profile}
+    return render(request, 'app/chatPage.html', context)
+
+
+def send_message(request, id):
+    if is_post(request):
+        user = request.user
+        this_profile = Profile.objects.get(user_id=user)
+        message_value = request.POST['message']
+        this_room = Room.objects.get(id=id)
+        new_message = Messages(value=message_value,
+                               profile=this_profile, room=this_room)
+        new_message.save()
+    return redirect(f'/chat/{id}')
+
+
+def direct_to_first_chat(request):
+    this_user = request.user
+    this_profile = Profile.objects.get(user=this_user)
+    this_user_rooms = Room.objects.filter(this_profile=this_profile).first()
+    print(f'this user room is {this_user_rooms}')
+    selected_user_rooms = Room.objects.filter(
+        selected_profile=this_profile).first()
+    print(f'selected user room is {selected_user_rooms}')
+    if selected_user_rooms:
+        return redirect(f'/chat/{selected_user_rooms.id}')
+    else:
+        return redirect(f'/chat/{this_user_rooms.id}')

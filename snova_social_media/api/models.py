@@ -149,11 +149,17 @@ class Follow(models.Model):
 
         return f'{self.following_user} follow {self.followed_user}'
 
-# class SubNova(models.Model):
-#     user_id = models.ForeignKey(
-#         User, on_delete=models.CASCADE)
-#     post_id = models.ForeignKey(
-#         Post, on_delete=models.CASCADE, default='something')
-#     pic = models.ImageField(upload_to="api/files/post", blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-    # User, on_delete=models.CASCADE, related_name='%(class)s_followed')
+
+class Room(models.Model):
+    this_profile = models.ForeignKey(
+        Profile, related_name='this_profile', on_delete=models.CASCADE)
+    selected_profile = models.ForeignKey(
+        Profile, related_name='selected_profile', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Messages(models.Model):
+    value = models.CharField(max_length=10000)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)

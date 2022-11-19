@@ -1,5 +1,7 @@
 from api.models import *
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 
 def is_post(request):
@@ -183,3 +185,15 @@ def today_time(time):
 
 def times_to_delta(start_time, end_time):
     return today_time(end_time) - today_time(start_time)
+
+
+def send_message(request, user_id):
+    message_value = request.GET['message']
+    print(message_value)
+    print(message_value)
+    print(message_value)
+    print(message_value)
+    print(message_value)
+    print(message_value)
+    print(message_value)
+    return redirect(f'/chat/{user_id}')

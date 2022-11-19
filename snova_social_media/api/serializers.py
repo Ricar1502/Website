@@ -1,10 +1,22 @@
 from rest_framework import serializers
-from .models import Post, Profile, Rank, Vote
+from .models import *
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+        fields = '__all__'
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = '__all__'
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Messages
         fields = '__all__'
 
 

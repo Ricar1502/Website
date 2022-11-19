@@ -15,5 +15,9 @@ urlpatterns = [
     path("new/", new_page),
     path("best/", best_page),
     path("controversial/", controversial_page),
+    # path("chat/", chat_page),
+    path("chat/<int:id>", chat_page),
+    path("chat/", direct_to_first_chat),
+    # path("send/", send_message),
 
 ]
