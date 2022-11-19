@@ -1,7 +1,7 @@
 from django.forms import ModelForm, widgets
 from api.models import *
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 
@@ -40,13 +40,19 @@ class UpdateProfile(forms.ModelForm):
 
 
 class RegisterForm(UserCreationForm):
-    username = forms.CharField()
-    email=forms.EmailField()
-    password1=forms.CharField(widget=forms.PasswordInput)
-    password2=forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'something'}))
+    email=forms.EmailField(widget=forms.TextInput(attrs={'class': 'something'}))
+    password1=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'something'}))
+    password2=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'something'}))
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email',)
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'something'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'something'}))
+
 
 # class LoginForm(UserCreationForm):
 #     class Meta:

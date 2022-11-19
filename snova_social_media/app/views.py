@@ -207,7 +207,7 @@ def logout_page(request):
 
 def login_page(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -222,7 +222,7 @@ def login_page(request):
                 messages.error(request, "Invalid username or password.")
         else:
             messages.error(request, "Invalid username or password.")
-    form = AuthenticationForm()
+    form = LoginForm()
     return render(request=request, template_name="app/login.html", context={"form": form})
 
 
