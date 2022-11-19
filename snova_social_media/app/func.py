@@ -33,16 +33,19 @@ def create_if_vote_dont_exist(data, post_data, user_data, v_flag_data=None):
 def un_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).delete()
+    Notification.objects.filter(notification_type = 1, to_user= user_data.user, post= post_data).delete()
+    Notification.objects.filter(notification_type = 4, to_user= user_data.user, post= post_data).delete()
 
 
 def up_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).update(v_flag=True)
-
+    Notification.objects.create(notification_type = 1, to_user= user_data.user, post= post_data)
 
 def down_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).update(v_flag=False)
+    Notification.objects.create(notification_type = 4, to_user= user_data.user, post= post_data)
 
 
 def vote(request, selected_up_vote_btn, selected_down_vote_btn, post_id, user_id):
@@ -111,8 +114,18 @@ def save_comment(comment_form, post, current_profile):
         new_comment.depth += new_comment.parent.depth
     # new_comment.user_id = current_user
     # save
+    
     new_comment.save()
+    user = get_user(post)
+    notification = Notification.objects.create(notification_type=2, to_user= user, comment = new_comment)
 
+def get_user(post):
+    userprofile = post.user_id
+    user = userprofile.user
+
+    return user
+
+   
 
 def get_single_post_vote(request, post):
     vote_list = {}

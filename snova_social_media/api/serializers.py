@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Profile, Rank, Vote
+from .models import Post, Profile, Rank, Vote, Notification
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -23,4 +23,9 @@ class RanksSerializer(serializers.ModelSerializer):
 class VotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vote
+        fields = '__all__'
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
         fields = '__all__'

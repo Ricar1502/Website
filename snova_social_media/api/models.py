@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db.models import (
     Model, CharField, ForeignKey, IntegerField, BooleanField)
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.models import User
 # Create your models here.
 
 fs = FileSystemStorage()
@@ -131,6 +132,15 @@ class Follow(models.Model):
         # print(type(self.parent))
 
         return f'{self.following_user} follow {self.followed_user}'
+
+class Notification(models.Model):
+	# 1 = Upvote, 2 = Comment, 3 = Follow, 4 = Downvote, 5 = NewPost
+	notification_type = models.IntegerField()
+	to_user = models.ForeignKey(User, related_name='notification_to', on_delete=models.CASCADE, null=True)
+	from_user = models.ForeignKey(User, related_name='notification_from', on_delete=models.CASCADE, null=True)
+	post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+	comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+	date = models.DateTimeField(auto_now_add=True)
 
 # class SubNova(models.Model):
 #     user_id = models.ForeignKey(
