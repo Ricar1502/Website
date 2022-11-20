@@ -84,9 +84,9 @@ def create_post_form(request):
 def Post_notifications(user, post):
     follow = get_following_list(user)
     for f in follow:
-        postnotification = Notification.objects.create(
+        post_notification = Notification.objects.create(
             notification_type=5, from_user=user.user, to_user=f.user, post=post)
-        postnotification.save()
+        post_notification.save()
 
 
 def viewPost(request, id):
@@ -162,8 +162,8 @@ def delete_profile(username):
 
 
 def delete_notification(user):
-    fnotifications = Notification.objects.filter(from_user=user).delete()
-    tnotifications = Notification.objects.filter(to_user=user).delete()
+    f_notifications = Notification.objects.filter(from_user=user).delete()
+    t_notifications = Notification.objects.filter(to_user=user).delete()
 
 
 def view_deleteProfile(request, id):
@@ -228,11 +228,9 @@ def login_page(request):
             else:
                 messages = "Sai username hoặc password! Đăng nhập thất bại!"
                 return render(request, 'app/login.html', {'form': form, 'messages': messages})
-
         else:
             messages = "Sai username hoặc password! Đăng nhập thất bại!"
             return render(request, 'app/login.html', {'form': form, 'messages': messages})
-
     form = LoginForm()
     messages = " "
     return render(request, 'app/login.html', {'form': form, 'messages': messages})
@@ -253,7 +251,6 @@ def register_page(request):
         if form.is_valid():
             form.save()
             create_profile(username, email)
-            messages.success(request, 'success')
             return redirect('/login/')
         else:
             messages = "Thông tin không hợp lệ! Đăng ký thất bại!"
