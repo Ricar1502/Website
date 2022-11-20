@@ -1,0 +1,26 @@
+{% extends 'app/base.html'%}
+
+{% block content %} 
+
+ 
+<div class="container py-5">
+    <h1>{{post.title }}</h1>
+    <h2>{{post.pic}}</h2>
+    <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'>
+    <h2>{{post.content}}</h2>
+	<h1>Update Post</h1>
+	<form enctype="multipart/form-data" action="/{{post.id}}/update" method="post">
+		{% csrf_token %}
+        {{ form.pic }}
+        <br>
+        {{ form.title }}
+        <p> Previous title: {{post.title}} </p>
+        {{ form.content }}
+        <p> Previous content: {{post.content}} </p>
+        <br>
+		<button class="btn btn-primary" type="submit">Update</button>
+	</form>
+    <br>
+    <a href="/{post.id}}/delete"><button> Delete Profile </button></a>
+</div>
+{% endblock %}
