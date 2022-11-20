@@ -7,6 +7,18 @@ from django.http import HttpResponse, HttpResponseRedirect
 def is_post(request):
     return request.method == 'POST'
 
+def get_random_user(request):
+    randomUser = []
+    allprofile = Profile.objects.all()  
+    currentprofile = Profile.objects.get(user=request.user)
+    allfollowed = get_follower_list(currentprofile)
+    for profile in allprofile:
+        if profile not in randomUser:
+            if profile != currentprofile: 
+                if profile not in allfollowed:
+                    randomUser.append(profile)
+            
+    return randomUser
 
 def get_follower_list(user):
     follows = Follow.objects.all()
@@ -94,7 +106,7 @@ def save_comment(comment_form, post, current_profile):
     new_comment.post_id = post
     new_comment.user_id = current_profile
 
-    new_comment.depth += 1
+    new_comment.depth += 2
     if new_comment.parent:
         new_comment.depth += new_comment.parent.depth
     # new_comment.user_id = current_user
