@@ -1,21 +1,22 @@
-import profile
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
 from .func import *
-from api.models import Post, Comment, Vote
 from .forms import *
-from itertools import chain
-from django.contrib.auth.forms import AuthenticationForm  # add this
-from django.contrib.auth import authenticate  # add this
-from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
-
+from django.contrib.auth.forms import AuthenticationForm  # add this
+import operator
 from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout
 import os
+from itertools import chain
+from api.models import Comment, Post, Vote
+from django.contrib import messages
+from django.contrib.auth import authenticate  # add this
+from django.contrib.auth import logout
 import operator
 import datetime
 from django.utils import timezone
+
+
 # Create your views here.
 
 
@@ -72,11 +73,20 @@ def create_post_form(request):
             t = Post(title=title, content=content, link=link, user_id=current_profile,
                      pic=pic)
             t.save()
+            Post_notifications(current_profile, t)
             return HttpResponseRedirect(f"/{t.id}")
     else:
         post_form = CreateNewPostForm(initial=initial_data)
 
     return render(request, 'app/createPost.html', {'form': post_form})
+
+
+def Post_notifications(user, post):
+    follow = get_following_list(user)
+    for f in follow:
+        postnotification = Notification.objects.create(
+            notification_type=5, from_user=user.user, to_user=f.user, post=post)
+        postnotification.save()
 
 
 def viewPost(request, id):
@@ -90,6 +100,7 @@ def viewPost(request, id):
                                    'user_id': current_profile})
         if comment_form.is_valid():
             comment(request, comment_form, post, current_profile)
+
             return HttpResponseRedirect(post.get_absolute_url())
     else:
         comment_form = CommentForm()
@@ -98,8 +109,12 @@ def viewPost(request, id):
 
 
 def view_user(request, id):
-    profile = Profile.objects.get(id=id)
     current_user_profile = Profile.objects.get(user=request.user)
+    try:
+        profile = Profile.objects.get(id=id)
+    except:
+        redirect('/user/' + str(current_user_profile.user.id) + '/delete')
+
     comment_list = Comment.objects.all()
     post_list = Post.objects.all()
     follow(request, id)
@@ -109,6 +124,67 @@ def view_user(request, id):
     context = {'votes': votes, 'follower_list': follower_list, 'following_list': following_list,
                'post_list': post_list, 'comment_list': comment_list, 'profile': profile, 'current_user_profile': current_user_profile}
     return render(request, 'app/viewUser.html', context)
+
+
+def view_updateProfile(request, id):
+    current_profile = Profile.objects.get(user=request.user)
+    try:
+        profile = Profile.objects.get(id=id)
+    except:
+        return HttpResponseRedirect(f"/user/{str(current_profile.user.id + 1)}/profile")
+
+    if (current_profile.id == id):
+        form = UpdateProfile(request.POST, request.FILES)
+        context = {'profile': profile, 'form': form}
+        if is_post(request):
+            if form.is_valid():
+                avatar = form.cleaned_data["avatar"]
+                email = form.cleaned_data["email"]
+                bio = form.cleaned_data["bio"]
+                up = Profile.objects.filter(user=request.user).update(
+                    avatar=avatar, email=email, bio=bio)
+
+            return HttpResponseRedirect(f"/user/{id}")
+    else:
+        form = UpdateProfile()
+        url = '/user/' + str(current_profile.id) + '/profile'
+        return redirect(url)
+
+    context = {'profile': profile, 'form': form}
+    return render(request, 'app/updateprofile.html', context)
+
+
+def delete_profile(username):
+    user = User.objects.get(username=username)
+    print(user)
+    p = Profile.objects.filter(user=user).delete()
+    q = User.objects.filter(username=username).delete()
+
+
+def delete_notification(user):
+    fnotifications = Notification.objects.filter(from_user=user).delete()
+    tnotifications = Notification.objects.filter(to_user=user).delete()
+
+
+def view_deleteProfile(request, id):
+    current_profile = Profile.objects.get(user=request.user)
+    try:
+        profile = Profile.objects.get(id=id)
+    except:
+        redirect('/user/' + str(current_profile.user.id) + '/delete')
+
+    if (current_profile.id == id):
+        context = {'profile': profile}
+        if request.method == "POST":
+            username = request.user.username
+            delete_profile(username)
+            delete_notification(request.user)
+            return redirect('/')
+    elif (current_profile.id != id):
+        url = '/user/' + str(current_profile.id) + '/delete'
+        return redirect(url)
+
+    return render(request, 'app/deleteprofile.html', {'profile': profile})
 
 
 def search_view(request):
@@ -139,7 +215,7 @@ def logout_page(request):
 
 def login_page(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -148,35 +224,45 @@ def login_page(request):
             print(user)
             if user is not None:
                 auth_login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
                 return redirect("/")
             else:
-                messages.error(request, "Invalid username or password.")
+                messages = "Sai username hoặc password! Đăng nhập thất bại!"
+                return render(request, 'app/login.html', {'form': form, 'messages': messages})
+
         else:
-            messages.error(request, "Invalid username or password.")
-    form = AuthenticationForm()
-    return render(request=request, template_name="app/login.html", context={"form": form})
+            messages = "Sai username hoặc password! Đăng nhập thất bại!"
+            return render(request, 'app/login.html', {'form': form, 'messages': messages})
+
+    form = LoginForm()
+    messages = " "
+    return render(request, 'app/login.html', {'form': form, 'messages': messages})
 
 
-def create_profile(username):
+def create_profile(username, email):
     user = User.objects.get(username=username)
     print(user)
-    p = Profile.objects.create(user=user)
+    p = Profile.objects.create(user=user, email=email)
     p.save()
 
 
 def register_page(request):
     if is_post(request):
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         username = request.POST['username']
+        email = request.POST['email']
         if form.is_valid():
             form.save()
-            create_profile(username)
+            create_profile(username, email)
             messages.success(request, 'success')
+            return redirect('/login/')
+        else:
+            messages = "Thông tin không hợp lệ! Đăng ký thất bại!"
+            return render(request, 'app/register.html', {'form': form, 'messages': messages})
     else:
-        form = UserCreationForm()
+        form = RegisterForm()
 
-    return render(request, 'app/register.html', {'form': form})
+    messages = " "
+    return render(request, 'app/register.html', {'form': form, 'messages': messages})
 
 
 def new_page(request):
@@ -213,18 +299,26 @@ def follow(request, user_id):
     following_user = current_user_profile
     selected_user = Profile.objects.get(id=user_id)
     followed_user = selected_user
+
     if is_post(request):
         if Follow.objects.filter(following_user=following_user, followed_user=followed_user).first():
             print('this delete')
             delete_follow = Follow.objects.filter(
                 following_user=following_user)
             delete_follow.delete()
+
+            delete_notification = Notification.objects.filter(
+                notification_type=3, from_user=following_user.user, to_user=followed_user.user)
+            delete_notification.delete()
             return redirect(f'/user/{user_id}')
         else:
             print('this add')
             new_follow = Follow.objects.create(
                 following_user=following_user, followed_user=followed_user)
             new_follow.save()
+            new_notification = Notification.objects.create(
+                notification_type=3, from_user=following_user.user, to_user=followed_user.user)
+            new_notification.save()
             return redirect(f'/user/{user_id}')
     else:
         return redirect('/')
@@ -266,3 +360,10 @@ def direct_to_first_chat(request):
         return redirect(f'/chat/{selected_user_rooms.id}')
     else:
         return redirect(f'/chat/{this_user_rooms.id}')
+
+
+def notification_view(request):
+    notifications = Notification.objects.filter(
+        to_user=request.user).order_by('-date')
+    print()
+    return render(request, 'app/notifications.html', {'notifications': notifications})

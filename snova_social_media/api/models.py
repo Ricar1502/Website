@@ -7,6 +7,7 @@ from django.db.models import (
 from django.core.files.storage import FileSystemStorage
 import datetime
 from django.utils import timezone
+from django.contrib.auth.models import User
 # Create your models here.
 
 fs = FileSystemStorage()
@@ -179,3 +180,17 @@ class Messages(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+
+
+class Notification(models.Model):
+    # 1 = Upvote, 2 = Comment, 3 = Follow, 4 = Downvote, 5 = NewPost
+    notification_type = models.IntegerField()
+    to_user = models.ForeignKey(
+        User, related_name='notification_to', on_delete=models.CASCADE, null=True)
+    from_user = models.ForeignKey(
+        User, related_name='notification_from', on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(
+        'Post', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+    comment = models.ForeignKey(
+        'Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True)
