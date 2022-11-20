@@ -94,7 +94,8 @@ class Rank(models.Model):
 class Comment(models.Model):
     post_id = models.ForeignKey(
         Post, on_delete=models.CASCADE, default='something')
-    content = models.CharField(max_length=200, default="")
+    content = models.CharField(
+        max_length=100000, default="", null=True, blank=True)
     user_id = models.ForeignKey(
         Profile, on_delete=models.CASCADE)
     votes = models.IntegerField(default=0)
@@ -104,6 +105,21 @@ class Comment(models.Model):
     depth = models.PositiveSmallIntegerField(default=0)
     tree = models.CharField(max_length=200, default="0")
     # children = ArrayField(models.IntegerField(), default=list)
+
+    def get_weeks(self):
+        return int((timezone.now() - self.created_at).days)//7
+
+    def get_days(self):
+        return int((timezone.now() - self.created_at).days)
+
+    def get_hours(self):
+        return int(self.get_seconds() // 3600)
+
+    def get_minutes(self):
+        return int((self.get_seconds() % 3600) // 60.)
+
+    def get_seconds(self):
+        return int((timezone.now() - self.created_at).seconds)
 
     class Meta:
         # sort comments in chronological order by default

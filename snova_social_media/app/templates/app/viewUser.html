@@ -118,6 +118,14 @@
                 <h1></h1>
               </div>
             </div>
+            <h5 class="text-dark">
+              <a href = "{{post.link}}" target="_blank" > 
+                {% if post.link %}
+                  {{post.link}}
+                {% else %}
+                {% endif %}
+              </a>
+            </h5>
             <div class="flex-grow-1">
               <div class="form-floating mb-3">
                   <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
@@ -126,7 +134,7 @@
                   <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
               </div>
             </div>
-            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
+            
             <hr> 
           </div>
             
