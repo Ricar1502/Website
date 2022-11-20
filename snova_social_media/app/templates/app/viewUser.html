@@ -17,8 +17,13 @@
             <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
             <h1 class="w3-center">{{profile.user}}</h1>
             <hr>
-            <p><i class="fa fa-user fa-fw w3-margin-right w3-text-theme"></i>{{profile.nickname}}</p>
-            <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> {{profile.birthday}}</p>
+            <p><a href="#" class="btn btn-outline-primary" style="width: 100%;">Follow</a></p>
+            <div class="w3-half w3-center">
+              <p><a href="#" class="btn btn-outline-primary">Follow</a></p>
+            </div>
+            <div class="w3-half w3-center">
+              <p><a href="#" class="btn btn-outline-primary">Chat</a></p>
+            </div>
             <div class="profile__stats w3-center">
               <div class="stat">
                 <p class="stat__number">{{following_list|length}}</p>
@@ -66,7 +71,7 @@
               <a href="#" style="text-decoration: none;">
                 <img src="{{profile.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
               </a>
-              <span class="w3-right w3-opacity w3-padding">{% include 'app/components/time.html' %}</span>
+              <span class="w3-right w3-opacity w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
               <h4><a href="#" style="text-decoration: none;">{{profile.user}}</a></h4><br>
             </div>
 
@@ -91,7 +96,9 @@
                 <hr>
                 <div class="flex-grow-1">
                   <div class="hstack justify-content-end gap-2">
-                    <button type="button" class="w3-button w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
+                    <a href="/{{post.id}}" style="text-decoration: none">
+                      <button type="button" class="w3-button w3-margin-bottom w3-right"><i class="fa fa-comment"></i>
+                         Comment</button></a>
                   </div>
                 </div>
               </div>

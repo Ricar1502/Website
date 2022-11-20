@@ -2,219 +2,174 @@
 {% block title %}{{post.title}}{% endblock title %}
 {% load static %}
 {% block content %}
+{% load mathfilters %}
 <link rel="stylesheet" href="{% static 'css/viewPost.css' %}">
-    
-    <h1>
-        {{post.title}}
-    </h1>
-    <h3>
-        {{post.content}}
-    </h3>
+<link rel="stylesheet" href="{% static 'css/follow.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
-    {% if post.pic  %}
-      <img src = '{{post.pic.url}}' alt="pic" width='100' height='100'>
-    {% endif %}
-    {% comment %} <img src = "../../../{{post.pic}}" alt="pic" width='240px' height='240px'> {% endcomment %}
-    {% comment %} <img src = '{{post.pic.url}}' alt="pic" width='240px' height='240px'> {% endcomment %}
-    {% comment %} <img src = "{% static '{{post.pic}}' %}" alt="pic" width='240px' height='240px'> {% endcomment %}
-    <h5>posted by: <a href="user/{{post.user_id.id}}">{{post.user_id.user}}</a></h5>
-    <hr>
-    {% for comment in comment_list %}
-        {% if comment.post_id == post %}
-            <p>{{user}}: {{comment.content}}</p>
-        {% endif %}
-    {% endfor %}
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
-    <!-- The Grid -->
-    <div class="w3-row">
+  <!-- The Grid -->
+  <div class="w3-row">
+    
+    <!-- Middle Column -->
+    <div class="w3-container">
       
-      <!-- Middle Column -->
-      <div class="w3-container">
-        
-        <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-
-            <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
-              <form action="/vote/" method="post">
-                {% csrf_token %}           
-                <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
-                  <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
-                    <i style="color: red;" class="fa fa-arrow-up"></i>
-                  </button>         
-                  <div style="color: rgb(26, 26, 27);">
-                <span>
-                    {% for key,value in votes.items %}
-                      {% if key == post%}
-                          {{value|length}}
-                      {% endif %}
-                  {% endfor %}
-                </span>
-                  </div>
-                  <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
-                    <i style="color: blue;" class="fa fa-arrow-down"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div class="w3-col m10">
-              <span class="w3-right w3-opacity w3-padding"> 
-                {% include 'app/components/time.html' %}
-            </span>
-              <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right" style="width:60px"> 
-              <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.user}}</a></h6>
-              <h2><b>{{post.title}}</b></h2><br>
-            </div>
-
-            <div class="w3-container">
-              <hr class="w3-clear">
-              <h4>{{post.content}}</h4>
-              <form action="/" method="post"></form>
+      <div class="w3-card w3-white w3-round w3-margin" style="border-left: 7px solid #396afc"><br>
+          <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
+            <form action="/vote/" method="post">
               {% csrf_token %}
-              <div class="w3-row-padding" style="margin:0 -16px">
-                <div class="w3-half">
-                  {% if post.pic  %}
-                    <img src="{{post.pic.url}}" style="width:60%" alt="Northern Lights" class="w3-margin-bottom">
-                  {% endif %}
-                </div>
-                
-              </div>
-              
-              <div class="flex-grow-1">
-                   {% comment %} <div class="form-floating mb-3">
-                      <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
-                  </div>
-                  <div class="hstack justify-content-end gap-2">
-                      <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
-                  </div> 
-                  <form action="." method="post">
-                    {{ comment_form.as_p }}
-                    {% csrf_token %}
-                    <button type="submit">Add comment</button>
-                    
-                </form> {% endcomment %}
-              </div><br>
-
-              <div class="bg-white rounded-3 shadow-sm p-4">
-              <hr>
-                <!-- Comment //-->
-                <h2>Add a new comment</h2>
-                <form  method="post">
-                    {{ comment_form.content }}
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary" >Add comment</button>
-                </form>
-
-                <!-- Comment with nested comments -->
-                <ul id="commenters">
-                  {% for c in comments %}
-                        <li id="{{c.id}}" class="c" style="margin-left:{{c.depth}}em;">
-                          <img class="w3-left w3-circle w3-margin-right"
-                          src="{{c.user_id.avatar.url}}" style="width:60px" />
-                          <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1"><b>{{c.user_id.user}}</b></a>
-                          <span class="text-muted text-nowrap">2 days ago</span>
-                          <p>{{c.content}}</p>
-                          <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{c.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
-                          </a>
-                          <div class="collapse multi-collapse" id="multiCollapseExample{{c.id}}">
-                            <div class="card card-body">
-                              <h5>Replay</h5>
-                              <form  method="post">
-                                {{ comment_form.content }}
-                                {% csrf_token %}
-                                <!-- Hidden input for parent comment.id -->
-                                <input type="hidden" name="parent_id" value="{{ c.id }}">
-                                <input class="btn btn-primary" type="submit" value="Replay">
-                            </form>
-                            </div>
-                          </div>
-                         
-                        </li>
-                  {% empty %}
-                      <li>There are currently no comments. You can be first!</li>
-                  {% endfor %}
-                </ul>
-                
-                {% comment %} {% for comment in comments %}
-                    {% if not comment.parent  %}
-                      <div class="comment" style="background-color: powderblue">
-                      <p class="info">{{ comment.user_id }} | {{ comment.created_at }}</p>
-                      {{ comment.content|linebreaks }}
+                <button name='upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+                  <i style="color: rgb(241, 88, 88);" class="fa fa-arrow-up"></i>
+                </button>
+                <div style="color: rgb(26, 26, 27);">
+                  <span>
+                    {% for key,value in votes.items %}
+                    {% if key == post%}
+                    {{value|length}}
                     {% endif %}
-                        {% for replay in comment.replies.all %}
-                            <div class="test" style="margin-left:{{replay.depth|add:replay.depth}}em;">
-                              <p class="info ">{{ replay.user_id }} | {{ replay.created_at }}</p>
-                              <label class="info ">-{{ replay.content }}</label>
-                              <form  method="post">
-                                {{ comment_form.content }}
-                                {% csrf_token %}
-                                <!-- Hidden input for parent comment.id -->
-                                <input type="hidden" name="parent_id" value="{{ replay.id }}">
-                                <input class="btn btn-secondary" type="submit" value="Replay">
-                              </form>
-                            </div>
-                        {% endfor %}
-                        {% if not comment.parent %}
+                    {% endfor %}
+                  </span>
+                </div>
+                <button type="submit" name='downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
+                  <i style="color: rgb(115, 115, 223);" class="fa fa-arrow-down"></i>
+                </button>
+            </form>
+          </div>
+          <div class="w3-col m10">
+            <span class="w3-right w3-opacity w3-padding"> 
+              {% include 'app/components/time.html' %}
+            </span>
+            <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right" style="width:60px"> 
+            <h6>Posted by: <a href="user/{{post.user_id.id}}" style="text-decoration: none;">{{post.user_id.user}}</a></h6>
+          </div>
+
+          <div class="w3-container">
+            <hr class="w3-clear">
+            <h3>{{post.title}}</h3>
+            <p>{{post.content}}</p>
+            <a href="{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);">
+              {% if post.link %}
+              {{post.link}}
+              {% else %}
+              {% endif %}
+            </a>
+            <form action="/" method="post"></form>
+            {% csrf_token %}
+            <div class="w3-row-padding" style="margin:0 -16px">
+              {% if post.pic  %}
+                <img src="{{post.pic.url}}" style="width:100%" alt="Post Images" class="w3-margin-bottom">
+              {% endif %}
+            </div>
+            <hr>
+            <div class="flex-grow-1">
+              <!-- Comment //-->
+              <form  method="post">
+                <div class="form-floating mb-3">
+                  {{ comment_form.content }}
+                </div>
+                {% csrf_token %}
+                <div class="hstack justify-content-end gap-2">
+                  <button type="submit" class="w3-button w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>
+                </div> 
+              </form>
+            </div><br>
+
+              <!-- Comment with nested comments -->
+              <ul id="commenters">
+                {% for c in comments %}
+                  <li id="{{c.id}}" class="c" style="margin-left:{{c.depth}}em;">
+                    <img class="w3-left w3-circle w3-margin-right"
+                    src="{{c.user_id.avatar.url}}" style="width:60px" />
+                    <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1"><b>{{c.user_id.user}}</b></a>
+                    <span class="text-muted text-nowrap">2 days ago</span>
+                    <p>{{c.content}}</p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{c.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
+                    </a>
+                    <div class="collapse multi-collapse" id="multiCollapseExample{{c.id}}">
+                      <div class="card card-body">
                         <h5>Replay</h5>
                         <form  method="post">
                           {{ comment_form.content }}
                           {% csrf_token %}
                           <!-- Hidden input for parent comment.id -->
-                          <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                          <input type="hidden" name="parent_id" value="{{ c.id }}">
                           <input class="btn btn-primary" type="submit" value="Replay">
-                      </form>{% endif %}
-                        
+                      </form>
+                      </div>
                     </div>
+                    
+                  </li>
+                  {% empty %}
+                  <li>There are currently no comments. You can be first!</li>
+                {% endfor %}
+              </ul>
+              
+              {% comment %} {% for comment in comments %}
+                {% if not comment.parent  %}
+                  <div class="comment" style="background-color: powderblue">
+                    <p class="info">{{ comment.user_id }} | {{ comment.created_at }}</p>
+                    {{ comment.content|linebreaks }}
+                {% endif %}
+                {% for replay in comment.replies.all %}
+                    <div class="test" style="margin-left:{{replay.depth|add:replay.depth}}em;">
+                      <p class="info ">{{ replay.user_id }} | {{ replay.created_at }}</p>
+                      <label class="info ">-{{ replay.content }}</label>
+                      <form  method="post">
+                        {{ comment_form.content }}
+                        {% csrf_token %}
+                        <!-- Hidden input for parent comment.id -->
+                        <input type="hidden" name="parent_id" value="{{ replay.id }}">
+                        <input class="btn btn-secondary" type="submit" value="Replay">
+                      </form>
+                    </div>
+                {% endfor %}
+                {% if not comment.parent %}
+                <h5>Replay</h5>
+                <form  method="post">
+                  {{ comment_form.content }}
+                  {% csrf_token %}
+                  <!-- Hidden input for parent comment.id -->
+                  <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                  <input class="btn btn-primary" type="submit" value="Replay">
+                </form>
+                {% endif %}
+                  </div>
                 {% empty %}
                 <h4>There are no comments yet.</h4>
-                {% endfor %}  {% endcomment %}
+              {% endfor %}  {% endcomment %}
 
 
-                {% comment %} {% for comment in comments %}
-                {% if comment.post_id == post %}
-                <div class="py-3">
-                    <div class="d-flex comment">
-                        <img class="w3-left w3-circle w3-margin-right"
-                            src="{{comment.user_id.avatar.url}}" style="width:60px" />
-                        <div class="flex-grow-1 ms-3">
-                            <div class="mb-1">
-                                <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1">{{comment.user_id.name}}</a> 
-                                <span class="text-muted text-nowrap">2 days ago</span>
-                            </div>
-                            <p>{{comment.content}}</p>    
-                                            
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                {%endfor%} {% endcomment %}
-
-
-                <hr> 
+              {% comment %} {% for comment in comments %}
+              {% if comment.post_id == post %}
+              <div class="py-3">
+                  <div class="d-flex comment">
+                      <img class="w3-left w3-circle w3-margin-right"
+                          src="{{comment.user_id.avatar.url}}" style="width:60px" />
+                      <div class="flex-grow-1 ms-3">
+                          <div class="mb-1">
+                              <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1">{{comment.user_id.name}}</a> 
+                              <span class="text-muted text-nowrap">2 days ago</span>
+                          </div>
+                          <p>{{comment.content}}</p>    
+                                          
+                      </div>
+                  </div>
               </div>
-            </div>
-      <!-- End Middle Column -->
+              {% endif %}
+              {%endfor%} {% endcomment %}
+
+
+              <hr> 
+          </div>  
       </div>
-      
-    <!-- End Grid -->
+    <!-- End Middle Column -->
     </div>
     
-  <!-- End Page Container -->
+  <!-- End Grid -->
   </div>
+  
+<!-- End Page Container -->
 </div>
 
 {% endblock content %}
-
-<a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{replay.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
-</a>
-<div class="collapse multi-collapse" id="multiCollapseExample{{replay.id}}">
-  <div class="card card-body">
-    <h5>Replay</h5>
-    <form  method="post">
-      {{ comment_form.content }}
-      {% csrf_token %}
-      <!-- Hidden input for parent comment.id -->
-      <input type="hidden" name="parent_id" value="{{ comment.id }}">
-      <input class="btn btn-primary" type="submit" value="Replay">
-  </form>
-  </div>
-</div>

@@ -19,17 +19,14 @@
               alt="Avatar"></p>
           <h1 class="w3-center">{{profile.user}}</p>
           </h1>
-          <hr>
-          <p><i class="fa fa-user fa-fw w3-margin-right w3-text-theme"></i>khoac</p>
-          <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
           <div class="profile__stats w3-center">
             <div class="stat">
               <p class="stat__number">{{following_list|length}}</p>
-              <a href="/following" class="stat__name">Followers</a>
+              <a href="/follower" class="stat__name">Followers</a>
             </div>
             <div class="stat">
               <p class="stat__number">{{follower_list|length}}</p>
-              <a href="/follower" class="stat__name">Followings</a>
+              <a href="/following" class="stat__name">Followings</a>
             </div>
           </div>
         </div>
@@ -39,7 +36,7 @@
     </div>
 
     <!-- Middle Column -->
-    <div class="w3-col m7">
+    <div class="w3-col m6">
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white" style="border-left: 7px solid #396afc">
@@ -56,8 +53,7 @@
         </div>
       </div>
 
-      <div class="w3-container w3-card w3-white w3-round w3-margin w3-hide-small"
-        style="border-left: 7px solid #396afc"><br>
+      <div class="w3-container w3-card w3-white w3-round w3-margin w3-hide-small" style="border-left: 7px solid #396afc"><br>
         <p>
           <a href="/best"><span class="w3-tag w3-round-xlarge w3-medium w3-margin-right w3-theme-d1">Best</span></a>
           <a href="/new"><span class="w3-tag w3-round-xlarge w3-medium w3-margin-right w3-theme-d5">New</span></a>
@@ -93,8 +89,8 @@
             <img src="{{post.user_id.avatar.url}}" alt="Avatar"
               class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px">
           </a>
-          <span class="w3-right w3-opacity w3-padding">{% include 'app/components/time.html' %}</span>
-          <h4><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h4><br>
+          <span class="w3-right w3-opacity w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
+          <p><h5><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h5></p>
         </div>
 
         <a href="/{{post.id}}" style="text-decoration: none">
@@ -118,8 +114,9 @@
             <hr>
             <div class="flex-grow-1">
               <div class="hstack justify-content-end gap-2">
+                <a href="/{{post.id}}" style="text-decoration: none">
                 <button type="button" class="w3-button w3-margin-bottom w3-right"><i class="fa fa-comment"></i>
-                   Comment</button>
+                   Comment</button></a>
               </div>
             </div>
           </div>
@@ -128,6 +125,28 @@
       </div>
       {%endfor%}
       <!-- End Middle Column -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-col m3 w3-hide-small">
+      <div class="w3-card w3-round w3-white w3-center" style="border-left: 7px solid #396afc">
+        <div class="w3-container">
+          <br>
+          <p>Suggestions for you:</p>
+          <div class="list-group">
+            <div class="list-group-item d-flex align-items-center">
+              <img src="{{profile.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
+              <div class="flex-fill pl-3 pr-3">
+                  <div><a href="/user/{{user.id}}" class="text-dark font-weight-600"><strong>u/{{user}}</strong></a></div>
+              </div>
+              <a href="#" class="btn btn-outline-primary">Follow</a>
+            </div>
+          </div>
+          <hr>
+          <p><a href="#" style="text-decoration: none;"><button class="w3-button w3-block w3-theme-l4">View all</button></a></p>
+        </div>
+      </div>
+    <!-- End Right Column -->
     </div>
 
     <!-- End Grid -->
