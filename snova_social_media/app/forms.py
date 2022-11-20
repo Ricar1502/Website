@@ -40,18 +40,18 @@ class UpdateProfile(forms.ModelForm):
 
 
 class RegisterForm(UserCreationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'something'}))
-    email=forms.EmailField(widget=forms.TextInput(attrs={'class': 'something'}))
-    password1=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'something'}))
-    password2=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'something'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input'}))
+    email=forms.EmailField(widget=forms.TextInput(attrs={'class': 'input'}))
+    password1=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input pass-input'}))
+    password2=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input pass-input'}))
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email',)
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'something'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'something'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input pass-input'}))
 
 
 # class LoginForm(UserCreationForm):

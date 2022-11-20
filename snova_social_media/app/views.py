@@ -216,14 +216,19 @@ def login_page(request):
             print(user)
             if user is not None:
                 auth_login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
                 return redirect("/")
             else:
-                messages.error(request, "Invalid username or password.")
+                messages = "Sai username hoặc password! Đăng nhập thất bại!"
+                return render(request, 'app/login.html', {'form': form, 'messages': messages})
+
         else:
-            messages.error(request, "Invalid username or password.")
+            messages = "Sai username hoặc password! Đăng nhập thất bại!"
+            return render(request, 'app/login.html', {'form': form, 'messages': messages})
+
     form = LoginForm()
-    return render(request=request, template_name="app/login.html", context={"form": form})
+    messages = " "
+    return render(request, 'app/login.html', {'form': form, 'messages': messages})
+
 
 
 def create_profile(username, email):
@@ -242,10 +247,15 @@ def register_page(request):
             form.save()
             create_profile(username, email)
             messages.success(request, 'success')
+            return redirect('/login/')
+        else:
+            messages = "Thông tin không hợp lệ! Đăng ký thất bại!"
+            return render(request, 'app/register.html', {'form': form, 'messages': messages})
     else:
         form = RegisterForm()
 
-    return render(request, 'app/register.html', {'form': form})
+    messages = " " 
+    return render(request, 'app/register.html', {'form': form, 'messages': messages})
 
 
 def new_page(request):
