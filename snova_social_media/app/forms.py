@@ -12,6 +12,11 @@ class CreateNewPostForm(ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'content', 'link', 'pic')
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Text(optional)', 'rows': '6'}),
+            'link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Url'}),
+        }
 
 
 class CreateNewUserForm(ModelForm):
@@ -27,6 +32,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
+
+
+
 # class LoginForm(UserCreationForm):
 #     class Meta:
 #         model = Profile

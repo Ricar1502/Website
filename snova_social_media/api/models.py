@@ -27,8 +27,8 @@ class Profile(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=200, default="0")
-    content = models.CharField(max_length=200, default="0")
+    title = models.CharField(max_length=200, default="")
+    content = models.CharField(max_length=200, default="")
     link = models.CharField(max_length=2083, default="", blank=True, null=True)
     user_id = models.ForeignKey(
         Profile, on_delete=models.CASCADE)

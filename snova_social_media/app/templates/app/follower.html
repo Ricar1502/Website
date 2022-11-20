@@ -1,0 +1,72 @@
+{% extends 'app/base.html' %}
+{% block title %}Follower Page{% endblock title %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="../../static/css/follow.css">
+
+
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+    <!-- The Grid -->
+    <div class="w3-row">
+        <div class="profile">
+            <div class="profile-header">
+                <div class="profile-header-cover"></div>
+                <div class="profile-header-content">
+                    <div class="profile-header-img">
+                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                    </div>
+                    <ul class="profile-header-tab nav nav-tabs nav-tabs-v2">
+                        <li class="nav-item">
+                            <a href="#profile-followers" class="nav-link active" data-toggle="tab">
+                                <div class="nav-field">Followers</div>
+                                <div class="nav-value">1.3m</div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    <div class="w3-card w3-round w3-white w3-padding desktop-sticky-top">
+                        <h4>John Smith</h4>
+                        <p>
+                            Principal UXUI Design &amp; Brand Architecture for Studio. Creator of SeanTheme. Bringing the world closer together. Studied Computer Science and Psychology at Harvard University.
+                        </p>
+                        <div class="mb-1"><i class="fa fa-map-marker-alt fa-fw text-muted"></i> New York, NY</div>
+                        <hr class="mt-4 mb-4" />
+                    </div>
+                </div>
+    
+                <div class="profile-content">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="tab-content p-0">
+                                <div class="tab-pane fade active show" id="profile-followers">
+                                    <div class="list-group">
+                                        <div class="list-group-item d-flex align-items-center">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" width="50px" class="rounded-sm ml-n2" />
+                                            <div class="flex-fill pl-3 pr-3">
+                                                <div><a href="#" class="text-dark font-weight-600">Ethel Wilkes</a></div>
+                                                <div class="text-muted fs-13px">North Raundspic</div>
+                                            </div>
+                                            <a href="#" class="btn btn-outline-primary">Follow</a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center p-3">
+                                        <a href="#" class="text-dark text-decoration-none">Show more <b class="caret"></b></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+
+
+
+{% endblock content %}

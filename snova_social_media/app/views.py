@@ -266,3 +266,19 @@ def direct_to_first_chat(request):
         return redirect(f'/chat/{selected_user_rooms.id}')
     else:
         return redirect(f'/chat/{this_user_rooms.id}')
+
+def followers(request):
+    if (request.user.is_authenticated):
+        profile = Profile.objects.get(user=request.user)
+        follower_list = get_following_list(profile)
+        return render(request, 'app/follower.html')
+    else:
+        return redirect('/login')
+
+def followings(request):
+    if (request.user.is_authenticated):
+        profile = Profile.objects.get(user=request.user)
+        following_list = get_follower_list(profile)
+        return render(request, 'app/following.html')
+    else:
+        return redirect('/login')

@@ -1,30 +1,8 @@
 {% extends 'app/base.html' %}
-{% comment %} <link rel="stylesheet" href="../../static/css/profile.css"> {% endcomment %}
 {% block title %}Profile Page{% endblock title %}
 {% load static %}
 {% block content %}
-<h3 name="user">
-    {{profile.user}}
-</h3>
-    <img src = '{{profile.avatar.url}}' alt="avatar" width='240px' height='240px'>
-    
-    <form action="./{{profile.id}}" method="post">
-        {% csrf_token %}
-        {% include 'app/components/follow.html' %}
-        
-    </form>
-    <h4>following list:</h4>
-    {% for f in follower_list %}
-    <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
-    
-    {% endfor %}
-    
-    <h4>follower list:</h4>
-    {% for f in following_list %}
-        <p><a href="/user/{{f.id}}" target="_blank">{{f.user}}</a></p>
-    {% endfor %}
-    <hr>
-    
+<link rel="stylesheet" href="../../static/css/profile.css">
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
@@ -33,7 +11,7 @@
       <!-- Left Column -->
       <div class="w3-col m3">
         <!-- Profile -->
-        <div class="w3-card w3-round w3-white">
+        <div class="w3-card w3-round w3-white" style="border-left: 7px solid #396afc">
           <div class="w3-container">
             <h4 class="w3-center">My Profile</h4>
             <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
@@ -44,23 +22,13 @@
             <div class="profile__stats w3-center">
               <div class="stat">
                 <p class="stat__number">{{following_list|length}}</p>
-                <a href="#" class="stat__name">Followers</a>
+                <a href="/follower" class="stat__name">Followers</a>
               </div>
               <div class="stat">
                 <p class="stat__number">{{follower_list|length}}</p>
-                <a href="#" class="stat__name">Followings</a>
+                <a href="/following" class="stat__name">Followings</a>
               </div>
             </div>
-            <hr>
-            <h4>Followers:</h4>
-            {% for f in follower_list %}
-            <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
-                
-            {% endfor %}
-            <h4>Followings:</h4>
-            {% for f in following_list %}
-            <p><a href="/user/{{f.id}}" target="_blank">{{f.name}}</a></p>
-            {% endfor %}
           </div>
         </div>
         <br>
@@ -72,67 +40,65 @@
       <div class="w3-col m7">
         {%for post in post_list  %}
           {% if post.user_id == profile %}
-            <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-              <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
-                <form action="/vote/" method="post">
-                  {% csrf_token %}           
-                  <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
-                    <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
-                      <i style="color: red;" class="fa fa-arrow-up"></i>
-                    </button>         
-                    <div style="color: rgb(26, 26, 27);">
+          <div class="w3-card w3-white w3-round" style="border-left: 7px solid #396afc;margin: 0 10px 10px 10px;"><br>
+            <form action="/vote/" method="post">
+              {% csrf_token %}           
+              <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
+                <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+                  <i style="color: rgb(241, 88, 88);" class="fa fa-arrow-up"></i>
+                </button>         
+                <div style="color: rgb(26, 26, 27);">
                   <span>
-                      {% for key,value in votes.items %}
-                        {% if key == post%}
-                            {{value|length}}
-                        {% endif %}
+                    {% for key,value in votes.items %}
+                      {% if key == post%}
+                          {{value|length}}
+                      {% endif %}
                     {% endfor %}
                   </span>
-                    </div>
-                    <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
-                      <i style="color: blue;" class="fa fa-arrow-down"></i>
-                    </button>
-                  </div>
-                </form>
+                </div>
+                <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
+                  <i style="color: rgb(115, 115, 223);" class="fa fa-arrow-down"></i>
+                </button>
               </div>
-              <div class="w3-col m10">
-                <img src="{{profile.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
-                <span class="w3-right w3-opacity w3-padding"> 
-                  {% include 'app/components/time.html' %}
-              </span>
-                <h4><a href="#" style="text-decoration: none;">{{profile.user}}</a></h4><br>
-              </div>
+            </form>
 
-                
-          <div class="w3-container">
-            <hr class="w3-clear">
-            <h2><b>{{post.title}}</b></h2>
-            <h4>{{post.content}}</h4>
-            <form action="/" method="post"></form>
-            {% csrf_token %}
-            <div class="w3-row-padding" style="margin:0 -16px">
-              <div class="w3-half">
-                {% if post.pic  %}
-                  <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
-                {% endif %}
-                <h1></h1>
-              </div>
+            <div class="w3-col m10">
+              <a href="#" style="text-decoration: none;">
+                <img src="{{profile.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
+              </a>
+              <span class="w3-right w3-opacity w3-padding">{% include 'app/components/time.html' %}</span>
+              <h4><a href="#" style="text-decoration: none;">{{profile.user}}</a></h4><br>
             </div>
-            <div class="flex-grow-1">
-              <div class="form-floating mb-3">
-                  <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
+
+            <a href="/{{post.id}}" style="text-decoration: none">
+              <div class="w3-container">
+                <hr class="w3-clear">
+                <h3>{{post.title}}</h3>
+                <p>{{post.content}}</p>
+                <a href = "{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);"> 
+                  {% if post.link %}
+                    {{post.link}}
+                  {% else %}
+                  {% endif %}
+                </a>
+                <form action="/" method="post"></form>
+                {% csrf_token %}
+                <div class="w3-row-padding" style="margin:0 -16px">
+                    {% if post.pic  %}
+                      <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                    {% endif %}
+                </div>
+                <hr>
+                <div class="flex-grow-1">
+                  <div class="hstack justify-content-end gap-2">
+                    <button type="button" class="w3-button w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
+                  </div>
+                </div>
               </div>
-              <div class="hstack justify-content-end gap-2">
-                  <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
-              </div>
-            </div>
-            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
-            <hr> 
+            </a>
           </div>
-            
           {% endif %}
         {%endfor%}
-        
         
       <!-- End Middle Column -->
       </div>
@@ -141,7 +107,6 @@
     </div>
     
   <!-- End Page Container -->
-  </div>
 </div>
 
 {% endblock content %}
