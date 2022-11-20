@@ -19,7 +19,7 @@
 - This is created for learning purposes
 
 ## Database model</br>
-   ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/Database%20diagram.jpg)
+   ![Alt text](https://github.com/LamNz79/Snova-social-media/blob/main/Document/database_diagram.jpg)
 ## Link to roadmap
 https://smnova.atlassian.net/jira/software/projects/SNOV/boards/1/roadmap
 ## How to run this project

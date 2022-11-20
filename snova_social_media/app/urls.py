@@ -6,6 +6,8 @@ urlpatterns = [
     path('add/', add),
     path('create_post/', create_post_form),
     path("<int:id>", viewPost),
+    path("<int:id>/update", view_updatePost),
+    path("<int:id>/delete", view_deletePost),
     path("user/<int:id>", view_user),
     path("user/<int:id>/profile", view_updateProfile),
     path("user/<int:id>/delete", view_deleteProfile),

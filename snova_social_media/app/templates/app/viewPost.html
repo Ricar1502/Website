@@ -90,8 +90,7 @@
                     {{ comment_form.as_p }}
                     {% csrf_token %}
                     <button type="submit">Add comment</button>
-                    
-                </form> {% endcomment %}
+                  </form> {% endcomment %}
               </div><br>
 
               <div class="bg-white rounded-3 shadow-sm p-4">
@@ -124,7 +123,7 @@
                                 <!-- Hidden input for parent comment.id -->
                                 <input type="hidden" name="parent_id" value="{{ c.id }}">
                                 <input class="btn btn-primary" type="submit" value="Replay">
-                            </form>
+                              </form>
                             </div>
                           </div>
                          
@@ -181,7 +180,6 @@
                                 <span class="text-muted text-nowrap">2 days ago</span>
                             </div>
                             <p>{{comment.content}}</p>    
-                                            
                         </div>
                     </div>
                 </div>
@@ -203,7 +201,6 @@
 </div>
 
 {% endblock content %}
-
 <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{replay.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
 </a>
 <div class="collapse multi-collapse" id="multiCollapseExample{{replay.id}}">
