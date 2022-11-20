@@ -1,0 +1,40 @@
+{% extends 'app/base.html'%}
+
+{% block content %} 
+<span>{{ notifications.count }}</span>
+<h1> Notification </h1>
+	<div>
+		{% for notification in notifications %}
+			{% if notification.post is not None %}
+				{% if notification.notification_type == 1 %}
+				<div>
+					<a href="">@{{ notification.from_user }} upvoted your post</a>
+				</div>
+				{% elif notification.notification_type == 2 %}
+				<div>
+					<a href="">@{{ notification.from_user }} commented on your post</a>
+				</div>
+                {% elif notification.notification_type == 4 %}
+				<div>
+					<a href="">@{{ notification.from_user }} downvoted your post</a>
+				</div>
+
+				{% elif notification.notification_type == 5 %}
+				<div>
+					<a href="">@{{ notification.from_user }} has posted a new post</a>
+				</div>
+				{% endif %}
+			{% elif notification.comment is not None %}
+				{% if notification.notification_type == 2 %}
+				<div>
+					<a href="">@{{ notification.from_user }} commented on your post</a>
+				</div>
+				{% endif %}
+			{% else %}
+			    <div>
+					<a href="">@{{ notification.from_user }} has started following you</a>
+				</div>
+			{% endif %}
+			{% endfor %}
+	</div>
+{% endblock %}

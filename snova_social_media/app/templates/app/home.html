@@ -127,7 +127,11 @@
             <hr class="w3-clear">
             <h2><b>{{post.title}}</b></h2>
             <h4>{{post.content}}</h4>
-            <h5 class="text-dark">Link:<a href = "/{{post.id}}" > post number {{post.id}}</a></h5>
+            <h5 class="text-dark"><a href = "{{post.link}}" target="_blank" > 
+              {% if post.link %}
+                {{post.link}}
+              {% else %}
+              {% endif %}</a></h5>
             <form action="/" method="post"></form>
             {% csrf_token %}
             <div class="w3-row-padding" style="margin:0 -16px">

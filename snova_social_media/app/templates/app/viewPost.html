@@ -111,7 +111,7 @@
                           <img class="w3-left w3-circle w3-margin-right"
                           src="{{c.user_id.avatar.url}}" style="width:60px" />
                           <a href="#" style="text-decoration: none;" class="fw-bold link-dark me-1"><b>{{c.user_id.user}}</b></a>
-                          <span class="text-muted text-nowrap">2 days ago</span>
+                          <span class="text-muted text-nowrap">{% include 'app/components/commentTime.html' %}</span>
                           <p>{{c.content}}</p>
                           <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample{{c.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample{{replay.id}}">reply</a>
                           </a>

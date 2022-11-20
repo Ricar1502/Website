@@ -1,0 +1,15 @@
+{% if c %}
+    {% if c.get_days >= 7 %}
+    <p>{{c.get_weeks}} weeks ago</p>
+    {% elif c.get_days >= 1 %}
+    <p>{{c.get_days}} days ago</p>
+    {% elif c.get_hours >= 1 %}
+    <p>{{c.get_hours}} hours ago</p>
+
+    {% elif c.get_seconds >= 60 %}
+    <p>{{c.get_minutes}} minutes ago</p>
+    {%else %}
+    <p>{{c.get_seconds}} seconds ago</p>
+    {% endif %}
+
+{% endif %}

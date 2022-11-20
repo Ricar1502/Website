@@ -36,3 +36,9 @@ class VotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vote
         fields = '__all__'
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
