@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 fs = FileSystemStorage()
 avatar = fs.url('../default_img.png')
 
+
 class Profile(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -46,7 +47,7 @@ class Post(models.Model):
     def __str__(self):
         # print(type(self.parent))
 
-        return f'{self.id} : {self.title}'
+        return f'id: {self.id}: {self.title}'
 
     def get_weeks(self):
         return int((timezone.now() - self.created_at).days)//7
