@@ -107,6 +107,40 @@ def viewPost(request, id):
 
     return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes})
 
+def view_updatePost(request, id):
+    post = Post.objects.get(id = id)
+    current_profile = Profile.objects.get(user = request.user)
+    if (post.user_id == current_profile):
+        form = UpdatePost(request.POST, request.FILES)
+        context = {'post': post, 'form' : form}
+        if is_post(request):
+            if form.is_valid():
+                print(post, current_profile)
+                title = form.cleaned_data["title"]
+                content = form.cleaned_data["content"]
+                pic = form.cleaned_data["pic"]
+                up = Post.objects.filter(id = id).update(title=title, content=content, pic=pic)
+
+                return HttpResponseRedirect(f"/{id}")
+    else:
+        form = UpdatePost()
+        return redirect('/')
+
+    context = {'post': post, 'form':form}
+    return render(request, 'app/updatepost.html', context)
+
+def view_deletePost(request, id):
+    post = Post.objects.get(id = id)
+    current_profile = Profile.objects.get(user = request.user)
+    if (post.user_id == current_profile):
+        context = {'post': post}
+        if request.method == "POST":
+            delete = Post.objects.filter(id = id).delete()
+            return redirect('/')
+    else:
+        return redirect('/')    
+
+    return render(request, 'app/deletepost.html', context)
 
 def view_user(request, id):
     current_user_profile = Profile.objects.get(user=request.user)
@@ -154,16 +188,6 @@ def view_updateProfile(request, id):
     return render(request, 'app/updateprofile.html', context)
 
 
-def delete_profile(username):
-    user = User.objects.get(username=username)
-    print(user)
-    p = Profile.objects.filter(user=user).delete()
-    q = User.objects.filter(username=username).delete()
-
-
-def delete_notification(user):
-    fnotifications = Notification.objects.filter(from_user=user).delete()
-    tnotifications = Notification.objects.filter(to_user=user).delete()
 
 
 def view_deleteProfile(request, id):
@@ -241,7 +265,7 @@ def login_page(request):
 def create_profile(username, email):
     user = User.objects.get(username=username)
     print(user)
-    p = Profile.objects.create(user=user, email=email)
+    p = profile.objects.create(user=user, email=email)
     p.save()
 
 

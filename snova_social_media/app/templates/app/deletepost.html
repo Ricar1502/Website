@@ -1,0 +1,12 @@
+{% extends 'app/base.html'%}
+
+{% block content %} 
+<div class="container py-5">
+    <form action="/{{post.id}}/delete" method="post">
+        {% csrf_token %}
+        <p> Are you sure to delete your post ? </p>   
+        <button class="btn btn-primary" type="submit">Delete Post</button>
+    </form>
+</div>
+
+{% endblock %}

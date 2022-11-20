@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 fs = FileSystemStorage()
 avatar = fs.url('../default_img.png')
-
+pic = fs.url('../test1.png')
 
 class Profile(models.Model):
     user = models.ForeignKey(
@@ -33,7 +33,7 @@ class Post(models.Model):
     link = models.CharField(max_length=2083, default="", blank=True, null=True)
     user_id = models.ForeignKey(
         Profile, on_delete=models.CASCADE)
-    pic = models.ImageField(blank=True, null=True)
+    pic = models.ImageField(blank=True, null=True, default=pic)
     status = models.CharField(max_length=15, default="activate")
     created_at = models.DateTimeField(auto_now_add=True)
     best_score = models.IntegerField(default=0)
@@ -47,7 +47,7 @@ class Post(models.Model):
     def __str__(self):
         # print(type(self.parent))
 
-        return f'{self.title}'
+        return f'{self.id} : {self.title}'
 
     def get_weeks(self):
         return int((timezone.now() - self.created_at).days)//7
