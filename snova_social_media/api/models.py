@@ -47,7 +47,7 @@ class Post(models.Model):
     def __str__(self):
         # print(type(self.parent))
 
-        return f'{self.title}'
+        return f'id: {self.id}: {self.title}'
 
     def get_weeks(self):
         return int((timezone.now() - self.created_at).days)//7

@@ -35,6 +35,11 @@ class CommentForm(forms.ModelForm):
         fields = ('content',)
 
 
+class UpdatePost(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title', 'content', 'pic')
+
 class UpdateProfile(forms.ModelForm):
     class Meta:
         model = Profile

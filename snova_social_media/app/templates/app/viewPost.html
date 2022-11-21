@@ -80,6 +80,7 @@
                 <ul id="commenters" style="list-style-type: none;">
                   {% for c in comments %}
 
+
                   <li id="{{c.id}}" class="c" style="margin-left:{{c.depth}}em;">
                     <img class="w3-left w3-circle w3-margin-right" src="{{c.user_id.avatar.url}}" style="width:40px" />
                     <div class="d-flex flex-row align-items-center commented-user">

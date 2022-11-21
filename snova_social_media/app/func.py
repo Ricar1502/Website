@@ -230,3 +230,14 @@ def send_message(request, user_id):
     print(message_value)
     print(message_value)
     return redirect(f'/chat/{user_id}')
+
+def delete_profile(username):
+    user = User.objects.get(username=username)
+    print(user)
+    deleteprofile = Profile.objects.filter(user=user).delete()
+    deleteuser = User.objects.filter(username=username).delete()
+
+
+def delete_notification(user):
+    fnotifications = Notification.objects.filter(from_user=user).delete()
+    tnotifications = Notification.objects.filter(to_user=user).delete()
