@@ -277,7 +277,7 @@ def login_page(request):
 def create_profile(username, email):
     user = User.objects.get(username=username)
     print(user)
-    p = profile.objects.create(user=user, email=email)
+    p = Profile.objects.create(user=user, email=email)
     p.save()
 
 
