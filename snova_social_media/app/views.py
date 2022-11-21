@@ -29,8 +29,10 @@ def home(request):
         this_user = request.user
         this_profile = Profile.objects.get(user=this_user)
         votes = get_multiple_post_vote(request, posts)
+        randomUser = get_random_user(request)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-                   'follower_list': follower_list, 'following_list': following_list}
+                   'follower_list': follower_list, 'following_list': following_list,
+                   'randomuser': randomUser}
         return render(request, 'app/home.html', context)
     else:
         return redirect('/login')
@@ -93,9 +95,8 @@ def viewPost(request, id):
     post = Post.objects.get(id=id)
     comments = Comment.objects.filter(post_id=post).order_by('tree')
     votes = get_single_post_vote(request, post)
+    current_profile = Profile.objects.get(user=request.user)
     if is_post(request):
-        current_user = request.user
-        current_profile = Profile.objects.get(user=current_user)
         comment_form = CommentForm(data=request.POST, initial={
                                    'user_id': current_profile})
         if comment_form.is_valid():
@@ -105,7 +106,7 @@ def viewPost(request, id):
     else:
         comment_form = CommentForm()
 
-    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes})
+    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes, 'profile': current_profile})
 
 
 def view_user(request, id):
@@ -294,10 +295,10 @@ def controversial_page(request):
     return render(request, 'app/bestPage.html', context)
 
 
-def follow(request, user_id):
+def follow(request, id):
     current_user_profile = Profile.objects.get(user=request.user)
     following_user = current_user_profile
-    selected_user = Profile.objects.get(id=user_id)
+    selected_user = Profile.objects.get(id=id)
     followed_user = selected_user
 
     if is_post(request):
@@ -310,7 +311,7 @@ def follow(request, user_id):
             delete_notification = Notification.objects.filter(
                 notification_type=3, from_user=following_user.user, to_user=followed_user.user)
             delete_notification.delete()
-            return redirect(f'/user/{user_id}')
+            return redirect(request.META['HTTP_REFERER'])
         else:
             print('this add')
             new_follow = Follow.objects.create(
@@ -319,7 +320,7 @@ def follow(request, user_id):
             new_notification = Notification.objects.create(
                 notification_type=3, from_user=following_user.user, to_user=followed_user.user)
             new_notification.save()
-            return redirect(f'/user/{user_id}')
+            return redirect(request.META['HTTP_REFERER'])
     else:
         return redirect('/')
 
@@ -367,3 +368,21 @@ def notification_view(request):
         to_user=request.user).order_by('-date')
     print()
     return render(request, 'app/notifications.html', {'notifications': notifications})
+
+
+def followers(request):
+    if (request.user.is_authenticated):
+        profile = Profile.objects.get(user=request.user)
+        follower_list = get_following_list(profile)
+        return render(request, 'app/follower.html')
+    else:
+        return redirect('/login')
+
+
+def followings(request):
+    if (request.user.is_authenticated):
+        profile = Profile.objects.get(user=request.user)
+        following_list = get_follower_list(profile)
+        return render(request, 'app/following.html')
+    else:
+        return redirect('/login')

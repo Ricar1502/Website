@@ -5,167 +5,161 @@
 {% load mathfilters %}
 <link rel="stylesheet" href="../../static/css/profile.css">
 
-    {%for post in post_list  %}
-        <h1>Title:{{post.title}}</h1>
-        <h2>Content:{{post.content}}</h2>
-        {% comment %} <h2>{{post.created_at}}</h2>
-        <h2>{{now}}</h2>
-      
-        <h2>day:{{post.get_days}}, hour:{{post.get_hours}}, min:{{post.get_minutes}}, sec:{{post.get_seconds}}</h2> {% endcomment %}
-        {% if post.get_days >= 7 %}
-          <p>{{post.get_weeks}} weeks ago</p>
-        {% elif post.get_days >= 1 %}
-          <p>{{post.get_days}} days ago</p>
-        {% elif post.get_hours >= 1 %}
-          <p>{{post.get_hours}} hours ago</p>
-        
-        {% elif post.get_seconds >= 60 %}
-          <p>{{post.get_minutes}} minutes ago</p>
-        {%else %}
-          <p>{{post.get_seconds}} seconds ago</p>
-        {% endif %}
-        <form action="/vote/" method="post">
-        {% csrf_token %}
-        <button type="submit" name = 'upvote-{{post.id}}' id="upvote" >up vote</button>
-        {% for key,value in votes.items %}
-            {% if key == post%}
-                {{value|length}}
-            {% endif %}
-        {% endfor %}
-        <button type="submit" name = 'downvote-{{post.id}}' id="downvote">down vote</button>
-        </form>
-        <h1>{{post.created_at}}</h1>
-        {%endfor%}
-        
 <!-- Page Container -->
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
-    <!-- The Grid -->
-    <div class="w3-row">
-      <!-- Left Column -->
-      <div class="w3-col m3">
-        <!-- Profile -->
-        <div class="w3-card w3-round w3-white">
-          <div class="w3-container">
-           <h4 class="w3-center">My Profile</h4>
-           <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
-           <h1 class="w3-center">{{profile.user}}</p></h1>
-           <hr>
-           <p><i class="fa fa-user fa-fw w3-margin-right w3-text-theme"></i>khoac</p>
-           <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
-            <div class="profile__stats w3-center">
-              <div class="stat">
-                <p class="stat__number">{{following_list|length}}</p>
-                <a href="#" class="stat__name">Followers</a>
-              </div>
-              <div class="stat">
-                <p class="stat__number">{{follower_list|length}}</p>
-                <a href="#" class="stat__name">Followings</a>
-              </div>
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+  <!-- The Grid -->
+  <div class="w3-row">
+    <!-- Left Column -->
+    <div class="w3-col m3">
+      <!-- Profile -->
+      <div class="w3-card w3-round w3-white" style="border-left: 7px solid #396afc">
+        <div class="w3-container">
+          <h4 class="w3-center">My Profile</h4>
+          <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px"
+              alt="Avatar"></p>
+          <h1 class="w3-center">{{profile.user}}</p>
+          </h1>
+          <div class="profile__stats w3-center">
+            <div class="stat">
+              <p class="stat__number">{{following_list|length}}</p>
+              <a href="/follower" class="stat__name">Followers</a>
+            </div>
+            <div class="stat">
+              <p class="stat__number">{{follower_list|length}}</p>
+              <a href="/following" class="stat__name">Followings</a>
             </div>
           </div>
         </div>
-        <br>
-      <!-- End Left Column -->
       </div>
-      
-      <!-- Middle Column -->
-      <div class="w3-col m7">
-          <div class="w3-row-padding">
-            <div class="w3-col m12">
-              <div class="w3-card w3-round w3-white">
-                <div class="w3-container w3-padding">
-                  <a href="/create_post/"><p contenteditable="true" class="w3-border w3-padding"></p></a>
-                  <button type="button" class="w3-button w3-theme w3-right"><i class="fa fa-image"></i></button>
-                </div>
-              </div>
+      <br>
+      <!-- End Left Column -->
+    </div>
 
-          <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-            <a href="/best"><span class="w3-tag w3-small w3-theme-d1">Best</span></a>
-            <a href="/new"><span class="w3-tag w3-small w3-theme-d5">New</span></a>
-            <a href="#"><span class="w3-tag w3-small w3-theme-d2">Top</span></a>
-            <a href="/controversial"><span class="w3-tag w3-small w3-theme">Controversial</span></a>
-              {% comment %} <span class="w3-tag w3-small w3-theme-d1">Friends</span>
-              <span class="w3-tag w3-small w3-theme">Games</span>
-              <span class="w3-tag w3-small w3-theme-l1">Friends</span>
-              <span class="w3-tag w3-small w3-theme-l2">Food</span>
-              <span class="w3-tag w3-small w3-theme-l3">Design</span>
-              <span class="w3-tag w3-small w3-theme-l4">Art</span>
-              <span class="w3-tag w3-small w3-theme-l5">Photos</span> {% endcomment %}
-            </p></a>
-          </div>    
-        
-        {%for post in post_list  %}
-        <div class="w3-card w3-white w3-round w3-margin"><br>
-          <form action="/vote/" method="post">
-            {% csrf_token %}           
-            <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small" >
-              <button  name = 'upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
-                <i style="color: red;" class="fa fa-arrow-up"></i>
-              </button>         
-              <div style="color: rgb(26, 26, 27);">
-            <span>
-                {% for key,value in votes.items %}
-                  {% if key == post%}
-                      {{value|length}}
-                  {% endif %}
-              {% endfor %}
-            </span>
-              </div>
-              <button type="submit" name = 'downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
-                <i style="color: blue;" class="fa fa-arrow-down"></i>
-              </button>
+    <!-- Middle Column -->
+    <div class="w3-col m6">
+      <div class="w3-row-padding">
+        <div class="w3-col m12">
+          <div class="w3-card w3-round w3-white" style="border-left: 7px solid #396afc">
+            <div class="w3-container w3-padding">
+              <a href="/create_post/" style="cursor: auto;text-decoration: none;">
+                <p contenteditable="true" class="w3-border w3-padding">Search Snova</p>
+              </a>
+              <a href="/create_post/"><button type="button" class="w3-button w3-large w3-right"><i
+                    class="fa fa-link"></i></button></a>
+              <a href="/create_post/"><button type="button" class="w3-button w3-large w3-right"><i
+                    class="fa fa-image"></i></button></a>
             </div>
-          </form>
-          <div class="w3-col m10">
-            <img src="{{post.user_id.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
-            <span class="w3-right w3-opacity w3-padding">{% include 'app/components/time.html' %}
-          </span>
-            <h4><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h4><br>
           </div>
-          
+        </div>
+      </div>
+
+      <div class="w3-container w3-card w3-white w3-round w3-margin w3-hide-small" style="border-left: 7px solid #396afc"><br>
+        <p>
+          <a href="/best"><span class="w3-tag w3-round-xlarge w3-medium w3-margin-right w3-theme-d1">Best</span></a>
+          <a href="/new"><span class="w3-tag w3-round-xlarge w3-medium w3-margin-right w3-theme-d5">New</span></a>
+          <a href="/controversial"><span
+              class="w3-tag w3-round-xlarge w3-margin-right w3-medium w3-theme">Controversial</span></a>
+        </p>
+      </div>
+
+      {%for post in post_list %}
+      <div class="w3-card w3-white w3-round w3-margin" style="border-left: 7px solid #396afc"><br>
+        <form action="/vote/" method="post">
+          {% csrf_token %}
+          <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
+            <button name='upvote-{{post.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+              <i style="color: rgb(241, 88, 88);" class="fa fa-arrow-up"></i>
+            </button>
+            <div style="color: rgb(26, 26, 27);">
+              <span>
+                {% for key,value in votes.items %}
+                {% if key == post%}
+                {{value|length}}
+                {% endif %}
+                {% endfor %}
+              </span>
+            </div>
+            <button type="submit" name='downvote-{{post.id}}' class="w3-button w3-padding-small" id="downvote">
+              <i style="color: rgb(115, 115, 223);" class="fa fa-arrow-down"></i>
+            </button>
+          </div>
+        </form>
+        <div class="w3-col m10">
+          <a href="#" style="text-decoration: none;">
+            <img src="{{post.user_id.avatar.url}}" alt="Avatar"
+              class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px">
+          </a>
+          <span class="w3-right w3-opacity w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
+          <p><h5><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h5></p>
+        </div>
+
+        <a href="/{{post.id}}" style="text-decoration: none">
           <div class="w3-container">
             <hr class="w3-clear">
-            <h2><b>{{post.title}}</b></h2>
-            <h4>{{post.content}}</h4>
-            <h5 class="text-dark"><a href = "{{post.link}}" target="_blank" > 
+
+            <h3>{{post.title}}</h3>
+            <p>{{post.content}}</p>
+            <a href="{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);">
               {% if post.link %}
-                {{post.link}}
+              {{post.link}}
               {% else %}
-              {% endif %}</a></h5>
+              {% endif %}
+            </a>
+
             <form action="/" method="post"></form>
             {% csrf_token %}
             <div class="w3-row-padding" style="margin:0 -16px">
-              <div class="w3-half">
-                {% if post.pic  %}
-                  <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
-                {% endif %}
-                <h1></h1>
-              </div>
+              {% if post.pic %}
+              <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+              {% endif %}
             </div>
+            <hr>
             <div class="flex-grow-1">
-              <div class="form-floating mb-3">
-                  <textarea class="form-control w-100" placeholder="Leave a comment here" id="my-comment" style="height:7rem;"></textarea>
-              </div>
               <div class="hstack justify-content-end gap-2">
-                  <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-right"><i class="fa fa-comment"></i>  Comment</button> 
+                <a href="/{{post.id}}" style="text-decoration: none">
+                <button type="button" class="w3-button w3-margin-bottom w3-right"><i class="fa fa-comment"></i>
+                   Comment</button></a>
               </div>
             </div>
-            <hr> 
           </div>
-            
-        </div>
-        {%endfor%}
-    
-        
-        
-      <!-- End Middle Column -->
+        </a>
+
       </div>
-      
-    <!-- End Grid -->
+      {%endfor%}
+      <!-- End Middle Column -->
     </div>
-    
-  <!-- End Page Container -->
+
+    <!-- Right Column -->
+    <div class="w3-col m3 w3-hide-small">
+      <div class="w3-card w3-round w3-white w3-center" style="border-left: 7px solid #396afc">
+        <div class="w3-container">
+          <br>
+          <p>Suggestions for you:</p>
+          <div class="list-group">
+            {%for user in randomuser%}
+              <div class="list-group-item d-flex align-items-center">
+                <img src="{{user.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
+                <div class="flex-fill pl-3 pr-3">
+                    <div><a href="/user/{{user.id}}" class="text-dark font-weight-600"><strong>u/{{user}}</strong></a></div>
+                </div>
+                <form action="/user/{{user.id}}/follow" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-primary">Follow</button>
+                </form>
+              </div>
+            {%endfor%}
+          </div>
+          <hr>
+          <p><a href="#" style="text-decoration: none;"><button class="w3-button w3-block w3-theme-l4">View all</button></a></p>
+        </div>
+      </div>
+    <!-- End Right Column -->
+    </div>
+
+    <!-- End Grid -->
   </div>
+
+  <!-- End Page Container -->
 </div>
 
 {% endblock content %}

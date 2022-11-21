@@ -10,6 +10,7 @@
         <h1>LOGIN</h1>
     </div>
     {% csrf_token %}
+
     <div class="input-box">
         {{ form.username }}
         <label for="username">Username</label>
@@ -22,6 +23,8 @@
     <button type="submit">Login To Snova</button>
     <div class="auth-action">
         <a href="/register/">Sign Up</a>
+
+
     </div>
 </form>
 <script src="assets/js/script.js"></script>

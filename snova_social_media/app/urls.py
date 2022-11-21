@@ -22,5 +22,10 @@ urlpatterns = [
     path("chat/", direct_to_first_chat),
     # path("send/", send_message),
 
-    path("notification/", notification_view)
+    path("notification/", notification_view),
+    path("user/<int:id>/follow", follow),
+    # path("follower/", follower_page)
+    path('follower/', followers),
+    # path("following/", follower_page)
+    path('following/', followings),
 ]
