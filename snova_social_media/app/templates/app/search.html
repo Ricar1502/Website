@@ -3,12 +3,14 @@
 {% load static %}
 {% block content %}
 
+
+
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
     <!-- The Grid -->
     <div class="w3-row">
         <div class="profile">
-            {% for user in username_profile_list %}
+            {% for user in user_profile_list %}
                 <div class="profile-container">
                     <div class="profile-content">
                         <div class="row">
@@ -20,10 +22,18 @@
                                                 <img src="{{user.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
                                                 <div class="flex-fill pl-3 pr-3">
                                                     <div><a href="/user/{{user.id}}" class="text-dark font-weight-600"><strong>u/{{user}}</strong></a></div>
-                                                    <div><p>{{following_list|length}} Followers</p></div>
+                                                    {% for key,value in follower_list.items %}
+                                                        {% if key == user %}
+                                                            <div><p> {{value|length}} Followers</p></div>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                     <div class="text-muted fs-13px">bio</div>
                                                 </div>
-                                                <a href="#" class="btn btn-outline-primary">Follow</a>
+                                                
+                                                <form action="/search/follow/{{user.id}}">
+                                                    
+                                                    {% include 'app/components/searchFollow.html' %}
+                                                </form>                                           
                                             </div>
                                             <hr>
                                         </div>
