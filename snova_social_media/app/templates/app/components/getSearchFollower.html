@@ -1,0 +1,6 @@
+{% for key,value in follower_list.items %}
+    {% if key == user %}
+    
+        <div><p> {{value|length}} Followers</p></div>
+    {% endif %}
+{% endfor %}

@@ -17,12 +17,23 @@
             <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
             <h1 class="w3-center">{{profile.user}}</h1>
             <hr>
-            <p><a href="#" class="btn btn-outline-primary" style="width: 100%;">Follow</a></p>
-            <div class="w3-half w3-center">
-              <p><a href="#" class="btn btn-outline-primary">Follow</a></p>
-            </div>
-            <div class="w3-half w3-center">
-              <p><a href="#" class="btn btn-outline-primary">Chat</a></p>
+            
+            <div class="mb-5">
+              <div class="w3-half w3-center">
+              
+                <form action="./{{profile.id}}" method="post">
+                  {% csrf_token %}
+                  {% include 'app/components/follow.html' %}
+                </form>
+          
+              </div>
+              <div class="w3-half w3-center">
+                <form action="{{profile.id}}/chat_redirect/" method="post">
+                  {% csrf_token %}
+                  {% include 'app/components/viewUserChat.html' %}
+                </form>
+      
+              </div>
             </div>
             <div class="profile__stats w3-center">
               <div class="stat">
@@ -106,6 +117,7 @@
             </a>
           </div>
           {% endif %}
+          
         {%endfor%}
         
       <!-- End Middle Column -->

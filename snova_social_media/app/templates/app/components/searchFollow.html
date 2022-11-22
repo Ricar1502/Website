@@ -1,0 +1,28 @@
+{% if this_profile != user  %}
+    {% for key,value in follower_list.items %}
+        {% if user == key %}
+            {% for v in value %}
+                {% if this_profile == v.following_user %}
+                    <button type="submit" name ='follow' value='unfollow' class= "btn btn-outline-primary">
+                        unfollow</button>
+                        {% endif %}
+                {%empty%}
+                    <button type="submit" name ='follow' value='follow' class= "btn btn-outline-primary">
+                        follow</button>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endif %} 
+
+{% comment %} 
+{% if user.user.is_authenticated %}
+    {% if profile.user != user  %}
+        {% if user in following_list %}
+            <button type="submit" name ='follow' class= "btn btn-outline-primary">
+                unfollow</button>
+        {% else %}
+            <button type="submit" name ='follow' class= "btn btn-outline-primary">
+                follow</button>
+            {% endif %}
+        {% endif %}
+{% endif %}  {% endcomment %}

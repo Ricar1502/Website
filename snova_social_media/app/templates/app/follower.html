@@ -14,13 +14,13 @@
                 <div class="profile-header-cover"></div>
                 <div class="profile-header-content">
                     <div class="profile-header-img">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                        <img src="{{this_profile.avatar.url}}" alt="" />
                     </div>
                     <ul class="profile-header-tab nav nav-tabs nav-tabs-v2">
                         <li class="nav-item">
                             <a href="#profile-followers" class="nav-link active" data-toggle="tab">
                                 <div class="nav-field">Followers</div>
-                                <div class="nav-value">1.3m</div>
+                                <div class="nav-value">{{follower_list|length}}</div>
                             </a>
                         </li>
                     </ul>
@@ -30,9 +30,13 @@
             <div class="profile-container">
                 <div class="profile-sidebar">
                     <div class="w3-card w3-round w3-white w3-padding desktop-sticky-top">
-                        <h4>John Smith</h4>
+                        <h4>{{this_profile.user}}</h4>
                         <p>
-                            Principal UXUI Design &amp; Brand Architecture for Studio. Creator of SeanTheme. Bringing the world closer together. Studied Computer Science and Psychology at Harvard University.
+                            {% if this.bio %}
+                            {{this_profile.bio}}
+                            {% else %}
+                            It's look like this user don't have a bio!
+                            {% endif %}
                         </p>
                         <hr class="mt-4 mb-4" />
                     </div>
@@ -44,14 +48,18 @@
                             <div class="tab-content p-0">
                                 <div class="tab-pane fade active show" id="profile-followers">
                                     <div class="list-group">
-                                        <div class="list-group-item d-flex align-items-center">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" width="50px" class="rounded-sm ml-n2" />
-                                            <div class="flex-fill pl-3 pr-3">
-                                                <div><a href="#" class="text-dark font-weight-600">Ethel Wilkes</a></div>
-                                                <div class="text-muted fs-13px">North Raundspic</div>
+                                        {% for profile in follower_list %}
+                                            <div class="list-group-item d-flex align-items-center">
+                                                <img src="{{profile.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
+                                                <div class="flex-fill pl-3 pr-3">
+                                                    <div><a href="#" class="text-dark font-weight-600">{{profile.user}}</a></div>
+                                                    {% comment %} <div class="text-muted fs-13px">North Raundspic</div> {% endcomment %}
+                                                </div>
+                                                
+                                                <a href="#" class="btn btn-outline-primary">Follow</a>
                                             </div>
-                                            <a href="#" class="btn btn-outline-primary">Follow</a>
-                                        </div>
+                                            
+                                        {% endfor %}
                                     </div>
                                     <div class="text-center p-3">
                                         <a href="#" class="text-dark text-decoration-none">Show more <b class="caret"></b></a>

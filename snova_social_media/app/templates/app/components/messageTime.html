@@ -1,0 +1,15 @@
+{% if latest_message %}
+    {% if latest_message.get_days >= 7 %}
+    {{latest_message.get_weeks}} weeks ago
+    {% elif latest_message.get_days >= 1 %}
+    {{latest_message.get_days}} days ago
+    {% elif latest_message.get_hours >= 1 %}
+    {{latest_message.get_hours}} hours ago
+
+    {% elif latest_message.get_seconds >= 60 %}
+    {{latest_message.get_minutes}} minutes ago
+    {%else %}
+    {{latest_message.get_seconds}} seconds ago
+    {% endif %}
+
+{% endif %}

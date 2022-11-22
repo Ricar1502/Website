@@ -29,7 +29,7 @@ class Profile(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200, default="")
-    content = models.CharField(max_length=200, default="")
+    content = models.CharField(max_length=10000, default="")
     link = models.CharField(max_length=2083, default="", blank=True, null=True)
     user_id = models.ForeignKey(
         Profile, on_delete=models.CASCADE)
@@ -180,6 +180,21 @@ class Messages(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+
+    def get_weeks(self):
+        return int((timezone.now() - self.created_at).days)//7
+
+    def get_days(self):
+        return int((timezone.now() - self.created_at).days)
+
+    def get_hours(self):
+        return int(self.get_seconds() // 3600)
+
+    def get_minutes(self):
+        return int((self.get_seconds() % 3600) // 60.)
+
+    def get_seconds(self):
+        return int((timezone.now() - self.created_at).seconds)
 
 
 class Notification(models.Model):

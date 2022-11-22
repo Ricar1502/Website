@@ -231,13 +231,38 @@ def send_message(request, user_id):
     print(message_value)
     return redirect(f'/chat/{user_id}')
 
+
 def delete_profile(username):
     user = User.objects.get(username=username)
     print(user)
-    deleteprofile = Profile.objects.filter(user=user).delete()
-    deleteuser = User.objects.filter(username=username).delete()
+    delete_profile = Profile.objects.filter(user=user).delete()
+    delete_user = User.objects.filter(username=username).delete()
 
 
 def delete_notification(user):
-    fnotifications = Notification.objects.filter(from_user=user).delete()
-    tnotifications = Notification.objects.filter(to_user=user).delete()
+    f_notifications = Notification.objects.filter(from_user=user).delete()
+    t_notifications = Notification.objects.filter(to_user=user).delete()
+
+
+def delete_follow(following_user, followed_user):
+    delete_follow = Follow.objects.get(
+        following_user=following_user, followed_user=followed_user)
+    delete_follow.delete()
+
+
+def delete_follow_notifications(following_user, followed_user, type=3):
+    delete_notification = Notification.objects.filter(
+        notification_type=type, from_user=following_user.user, to_user=followed_user.user)
+    delete_notification.delete()
+
+
+def add_follow(following_user, followed_user):
+    new_follow = Follow.objects.create(
+        following_user=following_user, followed_user=followed_user)
+    new_follow.save()
+
+
+def add_follow_notifications(following_user, followed_user, type=3):
+    new_notification = Notification.objects.create(
+        notification_type=3, from_user=following_user.user, to_user=followed_user.user)
+    new_notification.save()
