@@ -3,19 +3,86 @@
 {% block title %}Snova{% endblock title %}
 
 {% block content %}
-{%for rank in ranks  %}
-    <h1>Title:{{rank.post_id.title}}</h1>
-    <h2>Content:{{rank.post_id.content}}</h2>
-    <form action="/vote/" method="post">
-    {% csrf_token %}
-    <button type="submit" name = 'upvote-{{rank.post_id.id}}' id="upvote" >up vote</button>
-    {% for key,value in votes.items %}
-        {% if key == rank.post_id%}
-            {{value|length}}
-        {% endif %}
-    {% endfor %}
-    <button type="submit" name = 'downvote-{{rank.post_id.id}}' id="downvote">down vote</button>
-    </form>
-    {% include 'app/components/time.html' %}
-{%endfor%}
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+    <!-- The Grid -->
+    <div class="w3-row">
+        
+        {%for rank in ranks  %}
+            <div class="w3-card w3-white w3-round w3-margin" style="border-left: 7px solid #396afc"><br>
+                <form action="/vote/" method="post">
+                    {% csrf_token %}
+                    <div class="w3-col m1 w3-center w3-padding-bottom w3-margin-left w3-hide-small">
+                    <button name='upvote-{{rank.post_id.id}}' class="w3-button w3-padding-small" type="submit" id="upvote">
+                        <i style="color: rgb(241, 88, 88);" class="fa fa-arrow-up"></i>
+                    </button>
+                    <div style="color: rgb(26, 26, 27);">
+                        <span>
+                        {% for key,value in votes.items %}
+                            {% if key == rank.post_id%}
+                                {{value|length}}
+                            {% endif %}
+                        {% endfor %}
+                        </span>
+                    </div>
+                    <button type="submit" name='downvote-{{rank.post_id.id}}' class="w3-button w3-padding-small" id="downvote">
+                        <i style="color: rgb(115, 115, 223);" class="fa fa-arrow-down"></i>
+                    </button>
+                    </div>
+                </form>
+                <div class="w3-col m10">
+                    <a href="#" style="text-decoration: none;">
+                    <img src="{{rank.post_id.user_id.avatar.url}}" alt="Avatar"
+                        class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px">
+                    </a>
+                    <span class="w3-right w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
+                    <p><h5><a href="#" style="text-decoration: none;">{{rank.post_id.user_id.user}}</a></h5></p>
+                </div>
+
+                {% if rank.post_id.user_id == profile %}
+                    <div class="w3-dropdown-hover w3-right w3-margin-right">
+                        <button class="nav-link w3-button " type="submit" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                        </button>             
+                        <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:100px">
+                            <a href="#" class="w3-bar-item w3-button" style="text-decoration: none;color: blue;">Edit this Post</a>
+                            <a href="#" class="w3-bar-item w3-button" style="text-decoration: none;color: red;">Delete this Post</a>
+                        </div>
+                    </div> 
+                {% endif %}
+
+                <a href="/{{post.id}}" style="text-decoration: none">
+                    <div class="w3-container">
+                    <hr class="w3-clear">
+
+                    <h3><b>{{rank.post_id.title}}</b></h3>
+                    <p style="height: 5em;overflow: hidden;border-bottom: 1px solid rgb(189, 185, 185);">{{rank.post_id.content}}</p>
+                    <a href="{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);">
+                        {% if post.link %}
+                        {{post.link}}
+                        {% else %}
+                        {% endif %}
+                    </a>
+
+                    <form action="/" method="post"></form>
+                    {% csrf_token %}
+                    <div class="w3-row-padding" style="margin:0 -16px">
+                        {% if post.pic %}
+                        <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="hstack justify-content-end gap-2">
+                        <a href="/{{rank.post_id.id}}" style="text-decoration: none">
+                        <button type="button" class="w3-button w3-margin-bottom w3-right"><i class="fa fa-comment"></i>
+                             Comment</button></a>
+                        </div>
+                    </div>
+                    </div>
+                </a>
+
+            </div>
+        {%endfor%}
+    </div>
+</div>
 {% endblock content %}

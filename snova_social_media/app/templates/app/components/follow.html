@@ -2,10 +2,10 @@
     {% if profile.user != user  %}
         {% if current_user_profile in following_list %}
             <button type="submit" name ='follow' class= "btn btn-outline-primary">
-                unfollow</button>
+                Unfollow</button>
         {% else %}
             <button type="submit" name ='follow' class= "btn btn-outline-primary">
-                follow</button>
-            {% endif %}
-            {% endif %}
+                Follow</button>
+        {% endif %}
     {% endif %}
+{% endif %}

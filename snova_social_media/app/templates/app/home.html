@@ -22,11 +22,11 @@
           <div class="profile__stats w3-center">
             <div class="stat">
               <p class="stat__number">{{following_list|length}}</p>
-              <a href="/follower" class="stat__name">Followers</a>
+              <a href="user/{{profile.user.id}}/follower" class="stat__name">Followers</a>
             </div>
             <div class="stat">
               <p class="stat__number">{{follower_list|length}}</p>
-              <a href="/following" class="stat__name">Followings</a>
+              <a href="user/{{profile.user.id}}/following" class="stat__name">Followings</a>
             </div>
           </div>
         </div>
@@ -55,10 +55,15 @@
 
       <div class="w3-container w3-card w3-white w3-round w3-margin w3-hide-small" style="border-left: 7px solid #396afc"><br>
         <p>
-          <a href="/best"><span class="w3-tag w3-round-xlarge w3-medium w3-margin-right w3-theme-d1">Best</span></a>
-          <a href="/new"><span class="w3-tag w3-round-xlarge w3-medium w3-margin-right w3-theme-d5">New</span></a>
-          <a href="/controversial"><span
-              class="w3-tag w3-round-xlarge w3-margin-right w3-medium w3-theme">Controversial</span></a>
+          <a href="/best" style="text-decoration: none;color:#396afc;">
+            <span class="w3-button w3-round-xlarge w3-medium w3-margin-right"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>  Best</span>
+          </a>
+          <a href="/new" style="text-decoration: none;color:#396afc;">
+            <span class="w3-button w3-round-xlarge w3-medium w3-margin-right"><i class="fa fa-sun-o" aria-hidden="true"></i>  New</span>
+          </a>
+          <a href="/controversial" style="text-decoration: none;color:#396afc;">
+            <span class="w3-button w3-round-xlarge w3-margin-right w3-medium"><i class="fa fa-american-sign-language-interpreting" aria-hidden="true"></i>  Controversial</span>
+          </a>
         </p>
       </div>
 
@@ -84,21 +89,36 @@
             </button>
           </div>
         </form>
-        <div class="w3-col m10">
+        
+        <div class="w3-col m10 w3-block">
           <a href="#" style="text-decoration: none;">
             <img src="{{post.user_id.avatar.url}}" alt="Avatar"
-              class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px">
+              class="w3-left w3-circle w3-margin-right w3-margin-left" style="width:60px">
           </a>
-          <span class="w3-right w3-opacity w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
+
+          {% if post.user_id == profile %}
+            <div class="w3-dropdown-hover w3-right">
+              <button class="nav-link w3-button " type="submit" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+              </button>             
+              <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:100px">
+                <a href="{{post.id}}/update" class="w3-bar-item w3-button" style="text-decoration: none;color: blue;">Edit this Post</a>
+                <a href="{{post.id}}/delete" class="w3-bar-item w3-button" style="text-decoration: none;color: red;">Delete this Post</a>
+              </div>
+            </div> 
+          {% endif %}   
+
+          <span class="w3-right w3-margin-right w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
           <p><h5><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h5></p>
         </div>
+        
 
         <a href="/{{post.id}}" style="text-decoration: none">
           <div class="w3-container">
             <hr class="w3-clear">
 
             <h3><b>{{post.title}}</b></h3>
-            <p>{{post.content}}</p>
+            <p style="height: 5em;overflow: hidden;border-bottom: 1px solid rgb(189, 185, 185);">{{post.content}}</p>
             <a href="{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);">
               {% if post.link %}
               {{post.link}}
@@ -113,7 +133,6 @@
               <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
               {% endif %}
             </div>
-            <hr>
             <div class="flex-grow-1">
               <div class="hstack justify-content-end gap-2">
                 <a href="/{{post.id}}" style="text-decoration: none">
@@ -137,7 +156,7 @@
           <p>Suggestions for you:</p>
           <div class="list-group">
             {%for user in randomuser%}
-              <div class="list-group-item d-flex align-items-center">
+              <div class="list-group-item d-flex align-items-center" style="position: static;">
                 <img src="{{user.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
                 <div class="flex-fill pl-3 pr-3">
                     <div><a href="/user/{{user.id}}" class="text-dark font-weight-600"><strong>u/{{user}}</strong></a></div>
@@ -150,8 +169,7 @@
               </div>
             {%endfor%}
           </div>
-          <hr>
-          <p><a href="#" style="text-decoration: none;"><button class="w3-button w3-block w3-theme-l4">View all</button></a></p>
+          <br>
         </div>
       </div>
     <!-- End Right Column -->
