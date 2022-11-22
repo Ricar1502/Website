@@ -1,93 +1,97 @@
-    {% extends 'app/base.html' %}
-    {% load static %}
-    {% block title %}chatting{% endblock title %}
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}chatting{% endblock title %}
 
-    {% block content %} 
-    {% comment %} {% for room in rooms %}
-        <a href="{{room.id}}">
-            <div class="d-flex">
-                <img src="{{room.selected_profile.avatar.url}}" alt="avatar" width="70" height="70">
-                    <div class="ml-2">
-                        <h5>{{room.selected_profile.user}}</h5>
-                        <h1>selected room: {{room.selected_profile.id}}</h1>
-                        <p></p>
-                </div>
-                </img>
-            </div>
-        </a>
-    {% endfor %}
-    {% for message in messages %}
-        <h1>{{message.value}}</h1>
-    {% endfor %} {% endcomment %}
+{% block content %} 
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.css">
+<link rel="stylesheet" href="../../static/css/chat.css">
 
-    <section style="background-color: #eee;">
-        <div class="container py-5">
-            <div class="row vh-100">
-                <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0 " id="div1">
-                    <h5 class="font-weight-bold mb-3 text-center text-lg-start">Member</h5>
-                    <div class="card h-75">
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0 h-75"  style="overflow-y:scroll;">
-                                {% for room in rooms %}
-                                    {% if this_profile == room.this_profile %}
-                                        <li class="p-2 border-bottom">
-                                            <a href="{{room.id}}" class="d-flex justify-content-between">
-                                            <div class="d-flex flex-row">
-                                                <img src="{{room.selected_profile.avatar.url}}" alt="avatar" width="70" height="70"
-                                                class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
-                                                <div class="pt-1">
-                                                <p class="fw-bold mb-0">{{room.selected_profile.user}}</p>
-                                                <p class="small text-muted">{{latest_message.value}}.</p>
-                                                </div>
-                                            </div>
-                                            <div class="pt-1">
-                                                <p class="small text-muted mb-1">{% include 'app/components/latestMessageTime.html' %}</p>
-                                            </div>
-                                            </a>
-                                        </li>
-                                    {% elif this_profile == room.selected_profile %}
-                                        <li class="p-2 border-bottom">
-                                            <a href="{{room.id}}" class="d-flex justify-content-between">
-                                            <div class="d-flex flex-row">
-                                                <img src="{{room.this_profile.avatar.url}}" alt="avatar" width="70" height="70"
-                                                class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
-                                                <div class="pt-1">
-                                                <p class="fw-bold mb-0">{{room.this_profile.user}}</p>
-                                                <p class="small text-muted">Lorem ipsum dolor sit.</p>
-                                                </div>
-                                            </div>
-                                            <div class="pt-1">
-                                                <p class="small text-muted mb-1">5 mins ago</p>
-                                            </div>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </div>
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+    <!-- The Grid -->
+    <div class="w3-row">       
+        <div class="main-section w3-round w3-card">
+            <div class="head-section">
+                <div class="headLeft-section">
+                    <div class="headLeft-sub">
+                        <h5 class="font-weight-bold mb-3 text-center text-lg-start">Member</h5>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-7 col-xl-8 h-75 " id='div2' >
-                    <ul class="list-unstyled h-100" id="chat-box" style="overflow-y:scroll;">
-                    {% include 'app/components/message.html' %}
-                    </ul>
-                    <ul class="list-unstyled " style="overflow-y:scroll;">
-                        <form method="post" >
-                            {% csrf_token %}
-                            <li class="bg-white mb-3">
-                                <div class="form-outline">
-                                    <input name="message" class="form-control form-control-sm" type="text" placeholder="Aa" aria-label=".form-control-sm example">                            
-                                </div>
-                            </li>
-                            <button type="submit" class="btn btn-info btn-lg btn-block">Send</button>
-                        </form>                  
-                    </ul>
+                <div class="headRight-section">
+                    
+                    <div class="headRight-sub">
+                        <h3>{{room.this_profile.user}}</h3>
+                    </div>
                 </div>
             </div>
-        </div> 
-    </section>
-                <script>
-                var objDiv = document.getElementById("chat-box");
-                objDiv.scrollTop = objDiv.scrollHeight;
-            </script>
-    {% endblock content %}   
+            <div class="body-section">
+                
+                <div class="left-section mCustomScrollbar" data-mcs-theme="minimal-dark">
+                    
+                    <ul>
+                        {% for room in rooms %}
+                            {% if this_profile == room.this_profile %}
+                                <li>
+                                    <a href="{{room.id}}">
+                                    <div class="chatList">
+                                        
+                                        <div class="img">
+                                            <img src="{{room.selected_profile.avatar.url}}">
+                                        </div>
+                                        <div class="desc">
+                                            <small class="time">{% include 'app/components/latestMessageTime.html' %}</small>
+                                            <h5>{{room.selected_profile.user}}</h5>
+                                            <small>{{latest_message.value}}.</small>
+                                        </div>
+                                    </div>
+                                    </a>
+                                </li>
+                            {% elif this_profile == room.selected_profile %}
+                            
+                                <li>
+                                    <a href="{{room.id}}">
+                                    <div class="chatList">
+                                        
+                                        <div class="img">
+                                            <img src="{{room.this_profile.avatar.url}}">
+                                        </div>
+                                        <div class="desc">
+                                            <small class="time">{% include 'app/components/latestMessageTime.html' %}</small>
+                                            <h5>{{room.this_profile.user}}</h5>
+                                            <small>{{latest_message.value}}.</small>
+                                        </div>
+                                    </div>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="right-section">
+                    <div class="message mCustomScrollbar" data-mcs-theme="minimal-dark">
+                        <ul>
+                            {% include 'app/components/message.html' %}
+                        </ul>
+                    </div>
+                    <div class="right-section-bottom">
+                        <form method="post" >
+                            {% csrf_token %}
+                            <div class="form-outline">
+                                <input class="form-control-sm" type="text" name="message" placeholder="type here...">
+                                <button type="submit" class="w3-button"><i class="fa fa-send"></i></button>
+                            </div>
+                        </form>     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!-- custom scrollbar plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+{% endblock content %}   

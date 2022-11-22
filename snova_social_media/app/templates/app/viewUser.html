@@ -15,34 +15,34 @@
           <div class="w3-container">
             <h4 class="w3-center">My Profile</h4>
             <p class="w3-center"><img src="{{profile.avatar.url}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
-            <h1 class="w3-center">{{profile.user}}</h1>
+            <h1 class="w3-center">{{profile.user}} <a href="{{profile.id}}/profile"><i class="fa fa-pencil w3-xlarge" aria-hidden="true"></i></a></h1>
+            
             <hr>
             
             <div class="mb-5">
               <div class="w3-half w3-center">
-              
                 <form action="./{{profile.id}}" method="post">
                   {% csrf_token %}
                   {% include 'app/components/follow.html' %}
-                </form>
+                </form><br>
           
               </div>
               <div class="w3-half w3-center">
                 <form action="{{profile.id}}/chat_redirect/" method="post">
                   {% csrf_token %}
                   {% include 'app/components/viewUserChat.html' %}
-                </form>
+                </form><br>
       
               </div>
             </div>
             <div class="profile__stats w3-center">
               <div class="stat">
                 <p class="stat__number">{{following_list|length}}</p>
-                <a href="/follower" class="stat__name">Followers</a>
+                <a href="{{profile.user.id}}/follower" class="stat__name">Followers</a>
               </div>
               <div class="stat">
                 <p class="stat__number">{{follower_list|length}}</p>
-                <a href="/following" class="stat__name">Followings</a>
+                <a href="{{profile.user.id}}/following" class="stat__name">Followings</a>
               </div>
             </div>
           </div>
@@ -78,23 +78,38 @@
               </div>
             </form>
 
-            <div class="w3-col m10">
+            <div class="w3-col m10 w3-block">
               <a href="#" style="text-decoration: none;">
-                <img src="{{profile.avatar.url}}" alt="Avatar" class="w3-left w3-circle  w3-margin-right w3-margin-left" style="width:60px"> 
+                <img src="{{post.user_id.avatar.url}}" alt="Avatar"
+                  class="w3-left w3-circle w3-margin-right w3-margin-left" style="width:60px">
               </a>
-              <span class="w3-right w3-opacity w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
-              <h4><a href="#" style="text-decoration: none;">{{profile.user}}</a></h4><br>
+    
+              {% if post.user_id == current_user_profile %}
+                <div class="w3-dropdown-hover w3-right">
+                  <button class="nav-link w3-button " type="submit" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                  </button>             
+                  <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:100px">
+                    <a href="#" class="w3-bar-item w3-button" style="text-decoration: none;color: blue;">Edit this Post</a>
+                    <a href="#" class="w3-bar-item w3-button" style="text-decoration: none;color: red;">Delete this Post</a>
+                  </div>
+                </div> 
+              {% endif %}     
+    
+              <span class="w3-right w3-margin-right w3-padding w3-hide-small">{% include 'app/components/time.html' %}</span>
+              <p><h5><a href="#" style="text-decoration: none;">{{post.user_id.user}}</a></h5></p>
             </div>
 
 
             <a href="/{{post.id}}" style="text-decoration: none">
               <div class="w3-container">
                 <hr class="w3-clear">
-                <h3>{{post.title}}</h3>
-                <p>{{post.content}}</p>
-                <a href = "{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);"> 
+
+                <h3><b>{{post.title}}</b></h3>
+                <p style="height: 5em;overflow: hidden;border-bottom: 1px solid rgb(189, 185, 185);">{{post.content}}</p>
+                <a href="{{post.link}}" target="_blank" style="color: rgb(57, 138, 224);">
                   {% if post.link %}
-                    {{post.link}}
+                  {{post.link}}
                   {% else %}
                   {% endif %}
                 </a>
@@ -105,7 +120,6 @@
                       <img src="{{post.pic.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
                     {% endif %}
                 </div>
-                <hr>
                 <div class="flex-grow-1">
                   <div class="hstack justify-content-end gap-2">
                     <a href="/{{post.id}}" style="text-decoration: none">
@@ -117,7 +131,10 @@
             </a>
           </div>
           {% endif %}
-          
+          {% empty %}
+          <div class="w3-center w3-white w3-round-xlarge w3-padding w3-margin">
+            <h1>This user haven't post anything</h1>
+          </div>
         {%endfor%}
         
       <!-- End Middle Column -->

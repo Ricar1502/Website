@@ -40,7 +40,19 @@
                 </button>
             </form>
           </div>
-          <div class="w3-col m10">
+          <div class="w3-col m10 w3-block">
+            
+            {% if post.user_id == profile %}
+              <div class="w3-dropdown-hover w3-right">
+                <button class="nav-link w3-button " type="submit" aria-haspopup="true" aria-expanded="false" style="background-color: white;">
+                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                </button>             
+                <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:100px">
+                  <a href="#" class="w3-bar-item w3-button" style="text-decoration: none;color: blue;">Edit this Post</a>
+                  <a href="#" class="w3-bar-item w3-button" style="text-decoration: none;color: red;">Delete this Post</a>
+                </div>
+              </div> 
+            {% endif %}    
             <span class="w3-right w3-opacity w3-padding"> 
               {% include 'app/components/time.html' %}
             </span>
