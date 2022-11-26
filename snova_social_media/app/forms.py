@@ -13,6 +13,11 @@ class CreateNewPostForm(ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'content', 'link', 'pic')
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Text(optional)', 'rows': '6'}),
+            'link': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Url'}),
+        }
 
 
 class CreateNewUserForm(ModelForm):
@@ -28,6 +33,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
+        widgets = {
+            'content': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Add comment'}),
+        }
 
 
 class UpdatePost(forms.ModelForm):
@@ -36,7 +44,7 @@ class UpdatePost(forms.ModelForm):
         fields = ('title', 'content', 'pic')
 
 class UpdateProfile(forms.ModelForm):
-    class Meta: 
+    class Meta:
         model = Profile
         fields = ('avatar', 'email', 'bio')
         widgets = {
@@ -45,18 +53,24 @@ class UpdateProfile(forms.ModelForm):
 
 
 class RegisterForm(UserCreationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input'}))
-    email=forms.EmailField(widget=forms.TextInput(attrs={'class': 'input'}))
-    password1=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input pass-input'}))
-    password2=forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input pass-input'}))
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'input'}))
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'input'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(
+        attrs={'class': 'input pass-input'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(
+        attrs={'class': 'input pass-input'}))
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email',)
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input pass-input'}))
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'input'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={'class': 'input pass-input'}))
 
 
 # class LoginForm(UserCreationForm):

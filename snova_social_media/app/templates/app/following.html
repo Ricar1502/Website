@@ -1,0 +1,76 @@
+{% extends 'app/base.html' %}
+{% block title %}Following Page{% endblock title %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="../../../static/css/follow.css">
+
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+    <!-- The Grid -->
+    <div class="w3-row">
+        <div class="profile">
+            <div class="profile-header">
+                <div class="profile-header-cover"></div>
+                <div class="profile-header-content">
+                    <div class="profile-header-img">
+                        <img src="{{this_profile.avatar.url}}" alt="" />
+                    </div>
+                    <ul class="profile-header-tab nav nav-tabs nav-tabs-v2">
+                        <li class="nav-item">
+                            <a href="#profile-followings" class="nav-link active" data-toggle="tab">
+                                <div class="nav-field">Following</div>
+                                <div class="nav-value">{{following_list|length}}</div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    <div class="w3-card w3-round w3-white w3-padding desktop-sticky-top">
+                        <h4>{{this_profile.user}}</h4>
+                        <p>
+                            {% if this.bio %}
+                            {{this_profile.bio}}
+                            {% else %}
+                            It's look like this user don't have a bio!
+                            {% endif %}                        
+                        </p>
+                        <hr class="mt-4 mb-4" />
+                    </div>
+                </div>
+    
+                <div class="profile-content">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="tab-content p-0">
+                                <div class="tab-pane fade active show" id="profile-followers">
+                                    <div class="list-group">
+                                        {% for profile in following_list %}
+                                            <div class="list-group-item d-flex align-items-center">
+                                                <img src="{{profile.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
+                                                <div class="flex-fill pl-3 pr-3">
+                                                    <div><a href="/user/{{profile.user.id}}" class="text-dark font-weight-600">{{profile.user}}</a></div>
+                                                </div>
+                                                <form action="/follow/{{profile.user.id}}">
+                                                    <button type="submit" name ='follow' value='unfollow' class= "btn btn-outline-primary">
+                                                        Unfollow</button>
+                                                </form> 
+                                            </div>
+                                        {% endfor %}
+                                        {% if message != " " %}
+                                            <h1 class="w3-center w3-white w3-round-xlarge w3-padding">{{message}}</h1>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>        
+
+{% endblock content %}

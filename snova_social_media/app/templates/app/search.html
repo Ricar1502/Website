@@ -2,35 +2,50 @@
 {% block titlte %}search{% endblock titlte %}
 {% load static %}
 {% block content %}
-<div class ='d-flex justify-content-center flex-column'>
-    {% for user in username_profile_list %}
-        <div class ='bg-white mt-2 mx-auto d-flex align-items-center'>
-            <div class="ml-5">
-                <img src = "{{user.avatar.url}}" alt="avatar" width='150px' height='150px'>
-            </div>
-            <div class="mx-5">
-                
-                <h5 class="mb-5"><a class ="text-dark" href="/user/{{user.id}}"><strong>u/{{user.user}}</strong></a></h5>
-                <p>follower:
-                    {% for key,value in follower_list.items %}
-                        {% if key == user %}
-                            {{value|length}}
-                        {% endif %}
-                    {% endfor %}
-                </p>
-                <p>following:
-                    {% for key,value in following_list.items %}
-                        {% if key == user %}
-                            {{value|length}}
-                        {% endif %}
-                    {% endfor %}
-                </p>
-            </div>
+
+
+
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
+    <!-- The Grid -->
+    <div class="w3-row">
+        <div class="profile">
+            {% for user in user_profile_list %}
+                <div class="profile-container">
+                    <div class="profile-content">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="tab-content p-0">
+                                    <div class="tab-pane fade active show" id="profile-followers">
+                                        <div class="list-group">
+                                            <div class="list-group-item d-flex align-items-center">
+                                                <img src="{{user.avatar.url}}" alt="" width="50px" class="rounded-sm ml-n2" />
+                                                <div class="flex-fill pl-3 pr-3">
+                                                    <div><a href="/user/{{user.id}}" class="text-dark font-weight-600"><strong>u/{{user}}</strong></a></div>
+                                                    {% for key,value in follower_list.items %}
+                                                        {% if key == user %}
+                                                            <div><p> {{value|length}} Followers</p></div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <div class="text-muted fs-13px">bio</div>
+                                                </div>                                           
+                                            </div>
+                                            <hr>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}   
+
         </div>
-        <hr>
-    {% endfor %}
-    
+    </div>
 </div>
+
 {% endblock content %}
 
 

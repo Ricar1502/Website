@@ -1,13 +1,11 @@
 {% if user.is_authenticated %}
-    <h1>{{user}}</h1>
     {% if profile.user != user  %}
         {% if current_user_profile in following_list %}
-        <button type="submit" name ='follow'>
-            unfollow</button>
+            <button type="submit" name ='follow' class= "btn btn-outline-primary">
+                Unfollow</button>
         {% else %}
-            <button type="submit" name ='follow'>
-                follow
-            </button>
+            <button type="submit" name ='follow' class= "btn btn-outline-primary">
+                Follow</button>
         {% endif %}
-            {% endif %}
     {% endif %}
+{% endif %}

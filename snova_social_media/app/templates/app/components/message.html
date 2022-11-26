@@ -1,10 +1,10 @@
 {% for message in messages %}
     {% if  message.profile == this_profile%}
-                <li class="d-flex justify-content-end mb-4">
+                <!-- <li class="d-flex justify-content-end mb-4">
                     <div class="card float ">
                         <div class="card-header d-flex justify-content-between p-3">
                             <p class="fw-bold mb-0">{{message.profile.user}}</p>
-                            <p class="text-muted small mb-0"><i class="far fa-clock"></i> 12 mins ago</p>
+                            <p class="text-muted small mb-0"><i class="far fa-clock"></i> {% include 'app/components/messageTime.html' %}</p>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">
@@ -14,21 +14,40 @@
                     </div>
                     <img src="{{message.profile.avatar.url}}" alt="avatar"
                     class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
+                </li> -->
+
+                <li class="msg-right">
+                    <div class="msg-left-sub">
+                        <img src="{{message.profile.avatar.url}}">
+                        <div class="msg-desc">
+                            {{message.value}}
+                            </div>
+                        <small>{% include 'app/components/messageTime.html' %}</small>
+                    </div>
                 </li>
     {% else %}
-        <li class="d-flex justify-content-start mb-4">
+        <!-- <li class="d-flex justify-content-start mb-4">
             <img src="{{message.profile.avatar.url}}" alt="avatar"
             class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
             <div class="card float">
                 <div class="card-header d-flex justify-content-between p-3">
                     <p class="fw-bold mb-0">{{message.profile.user}}</p>
-                    <p class="text-muted small mb-0"><i class="far fa-clock"></i> 12 mins ago</p>
+                    <p class="text-muted small mb-0"><i class="far fa-clock"></i> {% include 'app/components/messageTime.html' %}</p>
                 </div>
                 <div class="card-body">
                     <p class="mb-0">
                         {{message.value}}
                     </p>
                 </div>
+            </div>
+        </li> -->
+        <li class="msg-left">
+            <div class="msg-left-sub">
+                <img src="{{message.profile.avatar.url}}">
+                <div class="msg-desc">
+                    {{message.value}}
+                </div>
+                <small>{% include 'app/components/messageTime.html' %}</small>
             </div>
         </li>
             

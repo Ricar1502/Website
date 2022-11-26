@@ -29,8 +29,10 @@ def home(request):
         this_user = request.user
         this_profile = Profile.objects.get(user=this_user)
         votes = get_multiple_post_vote(request, posts)
+        randomUser = get_random_user(request)
         context = {'post_list': posts, 'votes': votes, 'profile': this_profile,
-                   'follower_list': follower_list, 'following_list': following_list}
+                   'follower_list': follower_list, 'following_list': following_list,
+                   'randomuser': randomUser}
         return render(request, 'app/home.html', context)
     else:
         return redirect('/login')
@@ -93,9 +95,8 @@ def viewPost(request, id):
     post = Post.objects.get(id=id)
     comments = Comment.objects.filter(post_id=post).order_by('tree')
     votes = get_single_post_vote(request, post)
+    current_profile = Profile.objects.get(user=request.user)
     if is_post(request):
-        current_user = request.user
-        current_profile = Profile.objects.get(user=current_user)
         comment_form = CommentForm(data=request.POST, initial={
                                    'user_id': current_profile})
         if comment_form.is_valid():
@@ -105,7 +106,7 @@ def viewPost(request, id):
     else:
         comment_form = CommentForm()
 
-    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes})
+    return render(request, 'app/viewPost.html', {'post': post, 'comments': comments, 'comment_form': comment_form, 'votes': votes, 'profile': current_profile})
 
 
 def view_updatePost(request, id):
@@ -154,7 +155,7 @@ def view_user(request, id):
         redirect('/user/' + str(current_user_profile.user.id) + '/delete')
 
     comment_list = Comment.objects.all()
-    post_list = Post.objects.all()
+    post_list = Post.objects.filter(user_id=profile)
     follow(request, id)
     follower_list = get_follower_list(profile)
     following_list = get_following_list(profile)
@@ -226,13 +227,14 @@ def view_deleteProfile(request, id):
 
 
 def search_view(request):
+    this_user = request.user
+    this_profile = Profile.objects.get(user=this_user)
     username_profile_list = []
     follower_list = {}
     following_list = {}
     username = request.GET['username']
     user_object = Profile.objects.filter(
         user__username__icontains=username)
-    print(user_object)
     for user in user_object:
         username_profile_list.append(user)
         follower = Follow.objects.filter(
@@ -241,8 +243,9 @@ def search_view(request):
         following = Follow.objects.filter(
             following_user=user)
         following_list[user] = following
-    context = {'username_profile_list': username_profile_list,
-               'following_list': following_list, 'follower_list': follower_list}
+
+    context = {'user_profile_list': username_profile_list,
+               'following_list': following_list, 'follower_list': follower_list, 'this_profile': this_profile}
     return render(request, 'app/search.html', context)
 
 
@@ -269,7 +272,8 @@ def login_page(request):
         else:
             messages = "Sai username hoặc password! Đăng nhập thất bại!"
             return render(request, 'app/login.html', {'form': form, 'messages': messages})
-    form = LoginForm()
+    else:
+        form = LoginForm()
     messages = " "
     return render(request, 'app/login.html', {'form': form, 'messages': messages})
 
@@ -304,8 +308,9 @@ def new_page(request):
     ranks = Rank.objects.all().order_by('-best')
     posts = Post.objects.all().order_by('-created_at')
     votes = get_multiple_post_vote(request, posts)
+    profile = Profile.objects.get(user = request.user)
 
-    context = {'ranks': ranks, 'votes': votes, 'posts': posts}
+    context = {'ranks': ranks, 'votes': votes, 'posts': posts, 'profile': profile}
 
     return render(request, 'app/newPage.html', context)
 
@@ -314,8 +319,9 @@ def best_page(request):
     ranks = Rank.objects.all().order_by('-best')
     posts = Post.objects.all()
     votes = get_multiple_post_vote(request, posts)
+    profile = Profile.objects.get(user = request.user)
 
-    context = {'ranks': ranks, 'votes': votes}
+    context = {'ranks': ranks, 'votes': votes, 'profile': profile}
     return render(request, 'app/bestPage.html', context)
 
 
@@ -324,37 +330,29 @@ def controversial_page(request):
     ranks = Rank.objects.all().order_by('-controversial')
     posts = Post.objects.all()
     votes = get_multiple_post_vote(request, posts)
+    profile = Profile.objects.get(user = request.user)
 
-    context = {'ranks': ranks, 'votes': votes}
+    context = {'ranks': ranks, 'votes': votes, 'profile': profile}
     return render(request, 'app/bestPage.html', context)
 
 
-def follow(request, user_id):
+def follow(request, id):
     current_user_profile = Profile.objects.get(user=request.user)
     following_user = current_user_profile
-    selected_user = Profile.objects.get(id=user_id)
+    selected_user = Profile.objects.get(id=id)
     followed_user = selected_user
 
     if is_post(request):
         if Follow.objects.filter(following_user=following_user, followed_user=followed_user).first():
             print('this delete')
-            delete_follow = Follow.objects.filter(
-                following_user=following_user)
-            delete_follow.delete()
-
-            delete_notification = Notification.objects.filter(
-                notification_type=3, from_user=following_user.user, to_user=followed_user.user)
-            delete_notification.delete()
-            return redirect(f'/user/{user_id}')
+            delete_follow(following_user)
+            delete_follow_notifications(following_user, followed_user)
+            return redirect(request.META['HTTP_REFERER'])
         else:
             print('this add')
-            new_follow = Follow.objects.create(
-                following_user=following_user, followed_user=followed_user)
-            new_follow.save()
-            new_notification = Notification.objects.create(
-                notification_type=3, from_user=following_user.user, to_user=followed_user.user)
-            new_notification.save()
-            return redirect(f'/user/{user_id}')
+            add_follow(following_user, followed_user)
+            add_follow_notifications(following_user, followed_user)
+            return redirect(request.META['HTTP_REFERER'])
     else:
         return redirect('/')
 
@@ -366,8 +364,13 @@ def chat_page(request, id):
     selected_room = Room.objects.get(id=id)
     messages = Messages.objects.filter(room=selected_room)
     send_message(request, id)
+    if messages:
+        latest_message = messages.latest('created_at')
+    else:
+        latest_message = ''
+
     context = {'rooms': rooms,
-               'selected_room': selected_room, 'messages': messages, 'this_profile': this_profile}
+               'selected_room': selected_room, 'messages': messages, 'this_profile': this_profile, 'latest_message': latest_message}
     return render(request, 'app/chatPage.html', context)
 
 
@@ -380,7 +383,7 @@ def send_message(request, id):
         new_message = Messages(value=message_value,
                                profile=this_profile, room=this_room)
         new_message.save()
-    return redirect(f'/chat/{id}')
+    return redirect(request.META['HTTP_REFERER'])
 
 
 def direct_to_first_chat(request):
@@ -402,3 +405,111 @@ def notification_view(request):
         to_user=request.user).order_by('-date')
     print()
     return render(request, 'app/notifications.html', {'notifications': notifications})
+
+
+def followers_view(request,id):
+    if (request.user.is_authenticated):
+        this_profile = Profile.objects.get(id =id)
+        follower_list = get_following_list(this_profile)
+        if len(follower_list) == 0 :
+            context = {'follower_list': follower_list,
+                   'this_profile': this_profile, 'message' : "No one follows you"}
+        else:
+            context = {'follower_list': follower_list,
+                   'this_profile': this_profile, 'message' : " "}
+        return render(request, 'app/follower.html', context)
+    else:
+        return redirect('/login')
+
+
+def followings_view(request,id):
+    if (request.user.is_authenticated):
+        this_profile = Profile.objects.get(id=id)
+        following_list = get_follower_list(this_profile)
+        if len(following_list) == 0:
+            context = {'following_list': following_list,
+                   'this_profile': this_profile, 'message' : "You haven't follow anyone"}
+        else:
+            context = {'following_list': following_list,
+                   'this_profile': this_profile, 'message' : " "}
+        return render(request, 'app/following.html', context)
+    else:
+        return redirect('/login')
+
+
+def chat_redirect(request, id):
+    user = request.user
+    this_profile = Profile.objects.get(user=user)
+    selected_profile = Profile.objects.get(id=id)
+    get_all_this_profile_rooms = Room.objects.filter(this_profile=this_profile)
+    get_all_selected_profile_rooms = Room.objects.filter(
+        selected_profile=this_profile)
+
+    if is_post(request):
+        if get_all_this_profile_rooms:
+            this_room_exist = Room.objects.filter(
+                this_profile=this_profile, selected_profile=selected_profile).exists()
+            for room in get_all_this_profile_rooms:
+                if this_room_exist:
+                    return redirect(f'/chat/{room.id}')
+                else:
+                    new_room = Room(this_profile=this_profile,
+                                    selected_profile=selected_profile)
+                    new_room.save()
+                    return redirect(f'/chat/{new_room.id}')
+        elif get_all_selected_profile_rooms:
+            this_room_exist = Room.objects.filter(
+                this_profile=selected_profile, selected_profile=this_profile).exists()
+            for room in get_all_selected_profile_rooms:
+                if this_room_exist:
+                    return redirect(f'/chat/{room.id}')
+                else:
+                    new_room = Room(this_profile=this_profile,
+                                    selected_profile=selected_profile)
+                    new_room.save()
+                    return redirect(f'/chat/{new_room.id}')
+        else:
+            new_room = Room(this_profile=this_profile,
+                            selected_profile=selected_profile)
+            new_room.save()
+            return redirect(f'/chat/{new_room.id}')
+        return redirect('/')
+
+
+def follow_in_search(request, id):
+
+    this_user = request.user
+    this_profile = Profile.objects.get(user=this_user)
+    btn_click = request.GET['follow']
+    selected_profile = Profile.objects.get(id=id)
+    if Follow.objects.filter(following_user=this_profile, followed_user=selected_profile).first():
+        print('this delete')
+        delete_follow(this_profile, selected_profile)
+        delete_follow_notifications(this_profile, selected_profile)
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        print('this add')
+        add_follow(this_profile, selected_profile)
+        add_follow_notifications(this_profile, selected_profile)
+        return redirect(request.META['HTTP_REFERER'])
+
+    return redirect('/')
+
+def follow_view(request, id):
+
+    this_user = request.user
+    this_profile = Profile.objects.get(user=this_user)
+    btn_click = request.GET['follow']
+    selected_profile = Profile.objects.get(id=id)
+    if Follow.objects.filter(following_user=this_profile, followed_user=selected_profile).first():
+        print('this delete')
+        delete_follow(this_profile, selected_profile)
+        delete_follow_notifications(this_profile, selected_profile)
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        print('this add')
+        add_follow(this_profile, selected_profile)
+        add_follow_notifications(this_profile, selected_profile)
+        return redirect(request.META['HTTP_REFERER'])
+
+    return redirect('/')

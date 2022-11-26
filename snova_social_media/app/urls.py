@@ -19,10 +19,13 @@ urlpatterns = [
     path("new/", new_page),
     path("best/", best_page),
     path("controversial/", controversial_page),
-    # path("chat/", chat_page),
     path("chat/<int:id>", chat_page),
     path("chat/", direct_to_first_chat),
-    # path("send/", send_message),
-
-    path("notification/", notification_view)
+    path("notification/", notification_view),
+    path("user/<int:id>/follow", follow),
+    path('user/<int:id>/follower/', followers_view),
+    path('user/<int:id>/following/', followings_view),
+    path('user/<int:id>/chat_redirect/', chat_redirect),
+    path('search/follow/<int:id>', follow_in_search),
+    path('follow/<int:id>', follow_view),
 ]

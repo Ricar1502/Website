@@ -8,6 +8,20 @@ def is_post(request):
     return request.method == 'POST'
 
 
+def get_random_user(request):
+    random_user = []
+    all_profile = Profile.objects.all()
+    current_profile = Profile.objects.get(user=request.user)
+    all_followed = get_follower_list(current_profile)
+    for profile in all_profile:
+        if profile not in random_user:
+            if profile != current_profile:
+                if profile not in all_followed:
+                    random_user.append(profile)
+
+    return random_user
+
+
 def get_follower_list(user):
     follows = Follow.objects.all()
     followed_user_list = []
@@ -35,19 +49,24 @@ def create_if_vote_dont_exist(data, post_data, user_data, v_flag_data=None):
 def un_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).delete()
-    Notification.objects.filter(notification_type = 1, to_user= user_data.user, post= post_data).delete()
-    Notification.objects.filter(notification_type = 4, to_user= user_data.user, post= post_data).delete()
+    Notification.objects.filter(
+        notification_type=1, to_user=user_data.user, post=post_data).delete()
+    Notification.objects.filter(
+        notification_type=4, to_user=user_data.user, post=post_data).delete()
 
 
 def up_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).update(v_flag=True)
-    Notification.objects.create(notification_type = 1, to_user= user_data.user, post= post_data)
+    Notification.objects.create(
+        notification_type=1, to_user=user_data.user, post=post_data)
+
 
 def down_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).update(v_flag=False)
-    Notification.objects.create(notification_type = 4, to_user= user_data.user, post= post_data)
+    Notification.objects.create(
+        notification_type=4, to_user=user_data.user, post=post_data)
 
 
 def vote(request, selected_up_vote_btn, selected_down_vote_btn, post_id, user_id):
@@ -97,15 +116,17 @@ def save_comment(comment_form, post, current_profile):
     new_comment.post_id = post
     new_comment.user_id = current_profile
 
-    new_comment.depth += 1
+    new_comment.depth += 2
     if new_comment.parent:
         new_comment.depth += new_comment.parent.depth
     # new_comment.user_id = current_user
     # save
-    
+
     new_comment.save()
     user = get_user(post)
-    notification = Notification.objects.create(notification_type=2, to_user= user, comment = new_comment)
+    notification = Notification.objects.create(
+        notification_type=2, to_user=user, comment=new_comment)
+
 
 def get_user(post):
     userprofile = post.user_id
@@ -113,7 +134,6 @@ def get_user(post):
 
     return user
 
-   
 
 def get_single_post_vote(request, post):
     vote_list = {}
@@ -211,13 +231,38 @@ def send_message(request, user_id):
     print(message_value)
     return redirect(f'/chat/{user_id}')
 
+
 def delete_profile(username):
     user = User.objects.get(username=username)
     print(user)
-    deleteprofile = Profile.objects.filter(user=user).delete()
-    deleteuser = User.objects.filter(username=username).delete()
+    delete_profile = Profile.objects.filter(user=user).delete()
+    delete_user = User.objects.filter(username=username).delete()
 
 
 def delete_notification(user):
-    fnotifications = Notification.objects.filter(from_user=user).delete()
-    tnotifications = Notification.objects.filter(to_user=user).delete()
+    f_notifications = Notification.objects.filter(from_user=user).delete()
+    t_notifications = Notification.objects.filter(to_user=user).delete()
+
+
+def delete_follow(following_user, followed_user):
+    delete_follow = Follow.objects.get(
+        following_user=following_user, followed_user=followed_user)
+    delete_follow.delete()
+
+
+def delete_follow_notifications(following_user, followed_user, type=3):
+    delete_notification = Notification.objects.filter(
+        notification_type=type, from_user=following_user.user, to_user=followed_user.user)
+    delete_notification.delete()
+
+
+def add_follow(following_user, followed_user):
+    new_follow = Follow.objects.create(
+        following_user=following_user, followed_user=followed_user)
+    new_follow.save()
+
+
+def add_follow_notifications(following_user, followed_user, type=3):
+    new_notification = Notification.objects.create(
+        notification_type=3, from_user=following_user.user, to_user=followed_user.user)
+    new_notification.save()

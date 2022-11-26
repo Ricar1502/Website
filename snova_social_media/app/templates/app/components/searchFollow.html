@@ -1,0 +1,16 @@
+{% if this_profile != user  %}
+    {% for key,value in follower_list.items %}
+        {% if user == key %}
+            {% for v in value %}
+                {% if this_profile == v.following_user %}
+                    <button type="submit" name ='follow' value='unfollow' class= "btn btn-outline-primary">
+                        Unfollow</button>
+                {% endif %}
+                {%empty%}
+                    <button type="submit" name ='follow' value='follow' class= "btn btn-outline-primary">
+                        Follow</button>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+{% endif %} 

@@ -2,10 +2,21 @@
 {% block title %}Create Post{% endblock title %}
 
 {% block content %}
-<form enctype="multipart/form-data" action="/create_post/" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="createPost">Create post</button>
-</form>
+<link rel="stylesheet" href="../../static/css/profile.css">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="../../static/css/createPost.css">
+<link rel="shortcut icon" href="#" type="image/x-icon">
+
+<h4 style="color: white;">Create a post</h4>
+<div class="form-group">
+    <form enctype="multipart/form-data" class="login-box" action="/create_post/" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <hr>
+        <button type="submit" name="createPost">Post</button>
+    </form>
+</div>
+
+<script src="assets/js/script.js"></script>
 
 {% endblock content %}
