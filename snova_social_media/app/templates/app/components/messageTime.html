@@ -1,4 +1,4 @@
-{% if latest_message %}
+{% comment %} {% if latest_message %}
     {% if latest_message.get_days >= 7 %}
     {{latest_message.get_weeks}} weeks ago
     {% elif latest_message.get_days >= 1 %}
@@ -12,4 +12,17 @@
     {{latest_message.get_seconds}} seconds ago
     {% endif %}
 
-{% endif %}
+{% endif %} {% endcomment %}
+        {% if message.get_days >= 7 %}
+        {{message.get_weeks}} weeks ago
+        {% elif message.get_days >= 1 %}
+        {{message.get_days}} days ago
+        {% elif message.get_hours >= 1 %}
+        {{message.get_hours}} hours ago
+
+        {% elif message.get_seconds >= 60 %}
+        {{message.get_minutes}} minutes ago
+        {%else %}
+        {{message.get_seconds}} seconds ago
+        {% endif %}
+

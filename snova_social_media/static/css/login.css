@@ -8,6 +8,7 @@ body,
   box-sizing: border-box;
   font-family: "Space Grotesk", sans-serif;
 }
+
 body {
   background: #005c97;
   background: linear-gradient(to right, #363795, #005c97);
@@ -26,15 +27,18 @@ body {
   border-radius: 7px;
   border-left: 7px solid #396afc;
 }
+
 .login-box .title {
   font-size: 18px;
   text-align: center;
   padding: 15px 0;
 }
+
 .login-box .input-box {
   position: relative;
   margin-bottom: 15px;
 }
+
 .login-box .input-box .input {
   border: none;
   border-bottom: 1px solid #efefef;
@@ -47,6 +51,7 @@ body {
   font-size: 16px;
   box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
 }
+
 .login-box .input-box label {
   position: absolute;
   top: 20px;
@@ -56,12 +61,14 @@ body {
   pointer-events: none;
   transition: 0.2s;
 }
-.login-box .input-box input:focus ~ label,
-.login-box .input-box input:valid ~ label {
+
+.login-box .input-box input:focus~label,
+.login-box .input-box input:valid~label {
   top: -20px;
   left: 2px;
   font-size: 14px;
 }
+
 .login-box .input-box .view-pass {
   width: 45px;
   position: absolute;
@@ -73,6 +80,7 @@ body {
   backdrop-filter: blur(3px);
   display: none;
 }
+
 .login-box button[type="submit"] {
   display: block;
   width: 100%;
@@ -87,10 +95,12 @@ body {
   background: linear-gradient(to right, #2948ff, #396afc);
   margin-top: 30px;
 }
+
 .login-box .auth-action {
   display: flex;
   justify-content: space-between;
 }
+
 .login-box .auth-action a {
   display: inline-block;
   padding: 15px 0;
