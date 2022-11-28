@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../../static/css/chat.css">
 
 <!-- Page Container -->
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px" id="chat">
     <!-- The Grid -->
     <div class="w3-row">       
         <div class="main-section w3-round w3-card">
@@ -43,7 +43,14 @@
                                         <div class="desc">
                                             <small class="time">{% include 'app/components/latestMessageTime.html' %}</small>
                                             <h5>{{room.selected_profile.user}}</h5>
-                                            <small>{{latest_message.value}}.</small>
+                                            <small>
+                                                {% for key,value in message_dict.items  %}
+                                                    {% if room == key %}
+                                                        {{value}}
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                            </small>
                                         </div>
                                     </div>
                                     </a>
@@ -60,7 +67,12 @@
                                         <div class="desc">
                                             <small class="time">{% include 'app/components/latestMessageTime.html' %}</small>
                                             <h5>{{room.this_profile.user}}</h5>
-                                            <small>{{latest_message.value}}.</small>
+                                            <small>  
+                                                {% for key,value in message_dict.items  %}
+                                                    {% if room == key %}
+                                                        {{value}}
+                                                    {% endif %}
+                                            {% endfor %}</small>
                                         </div>
                                     </div>
                                     </a>
@@ -69,7 +81,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="right-section">
+                <div class="right-section" id="right-section">
                     <div class="message mCustomScrollbar" data-mcs-theme="minimal-dark">
                         <ul>
                             {% include 'app/components/message.html' %}
@@ -93,5 +105,23 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- custom scrollbar plugin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+{% comment %} 
+    $(document).ready(function()
+{
+    function refresh()
+    {
+        var div = $('#chat'),
+            divHtml = div.html();
 
+        div.html(divHtml);
+    }
+
+    setInterval(function()
+    {
+        refresh()
+        console.log('refresh')
+    }, 5000); //300000 is 5minutes in ms
+}) {% endcomment %}
+</script>
 {% endblock content %}   

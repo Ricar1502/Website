@@ -1,4 +1,22 @@
-{% if latest_message %}
+{% for key,value in message_time_dict.items  %} 
+    {% if room == key %}
+        
+        {% if value.get_days >= 7 %}
+        {{value.get_weeks}} weeks ago
+        {% elif value.get_days >= 1 %}
+        {{value.get_days}} days ago
+        {% elif value.get_hours >= 1 %}
+        {{value.get_hours}} hours ago
+
+        {% elif value.get_seconds >= 60 %}
+        {{value.get_minutes}} minutes ago
+        {%else %}
+        {{value.get_seconds}} seconds ago
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+{% comment %} {% if latest_message %}
     {% if latest_message.get_days >= 7 %}
     {{latest_message.get_weeks}} weeks ago
     {% elif latest_message.get_days >= 1 %}
@@ -12,4 +30,4 @@
     {{latest_message.get_seconds}} seconds ago
     {% endif %}
 
-{% endif %}
+{% endif %} {% endcomment %}

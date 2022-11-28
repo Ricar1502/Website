@@ -308,9 +308,10 @@ def new_page(request):
     ranks = Rank.objects.all().order_by('-best')
     posts = Post.objects.all().order_by('-created_at')
     votes = get_multiple_post_vote(request, posts)
-    profile = Profile.objects.get(user = request.user)
+    profile = Profile.objects.get(user=request.user)
 
-    context = {'ranks': ranks, 'votes': votes, 'posts': posts, 'profile': profile}
+    context = {'ranks': ranks, 'votes': votes,
+               'posts': posts, 'profile': profile}
 
     return render(request, 'app/newPage.html', context)
 
@@ -319,7 +320,7 @@ def best_page(request):
     ranks = Rank.objects.all().order_by('-best')
     posts = Post.objects.all()
     votes = get_multiple_post_vote(request, posts)
-    profile = Profile.objects.get(user = request.user)
+    profile = Profile.objects.get(user=request.user)
 
     context = {'ranks': ranks, 'votes': votes, 'profile': profile}
     return render(request, 'app/bestPage.html', context)
@@ -330,7 +331,7 @@ def controversial_page(request):
     ranks = Rank.objects.all().order_by('-controversial')
     posts = Post.objects.all()
     votes = get_multiple_post_vote(request, posts)
-    profile = Profile.objects.get(user = request.user)
+    profile = Profile.objects.get(user=request.user)
 
     context = {'ranks': ranks, 'votes': votes, 'profile': profile}
     return render(request, 'app/bestPage.html', context)
@@ -366,11 +367,24 @@ def chat_page(request, id):
     send_message(request, id)
     if messages:
         latest_message = messages.latest('created_at')
+
     else:
         latest_message = ''
+    get_all_messages = Messages.objects.filter()
+    message_dict = {}
+    message_time_dict = {}
+    get_all_message_in_room = Messages.objects.filter(room=selected_room)
+    print(get_all_message_in_room)
+    print(get_all_message_in_room)
+    print(get_all_message_in_room)
+    print(get_all_message_in_room)
+    print(get_all_message_in_room)
+    for message in get_all_messages:
+        message_dict[message.room] = message.value
+        message_time_dict[message.room] = message
 
     context = {'rooms': rooms,
-               'selected_room': selected_room, 'messages': messages, 'this_profile': this_profile, 'latest_message': latest_message}
+               'selected_room': selected_room, 'messages': messages, 'this_profile': this_profile, 'latest_message': latest_message, 'message_dict': message_dict, 'message_time_dict': message_time_dict,'get_all_message_in_room':get_all_message_in_room}
     return render(request, 'app/chatPage.html', context)
 
 
@@ -407,31 +421,31 @@ def notification_view(request):
     return render(request, 'app/notifications.html', {'notifications': notifications})
 
 
-def followers_view(request,id):
+def followers_view(request, id):
     if (request.user.is_authenticated):
-        this_profile = Profile.objects.get(id =id)
+        this_profile = Profile.objects.get(id=id)
         follower_list = get_following_list(this_profile)
-        if len(follower_list) == 0 :
+        if len(follower_list) == 0:
             context = {'follower_list': follower_list,
-                   'this_profile': this_profile, 'message' : "No one follows you"}
+                       'this_profile': this_profile, 'message': "No one follows you"}
         else:
             context = {'follower_list': follower_list,
-                   'this_profile': this_profile, 'message' : " "}
+                       'this_profile': this_profile, 'message': " "}
         return render(request, 'app/follower.html', context)
     else:
         return redirect('/login')
 
 
-def followings_view(request,id):
+def followings_view(request, id):
     if (request.user.is_authenticated):
         this_profile = Profile.objects.get(id=id)
         following_list = get_follower_list(this_profile)
         if len(following_list) == 0:
             context = {'following_list': following_list,
-                   'this_profile': this_profile, 'message' : "You haven't follow anyone"}
+                       'this_profile': this_profile, 'message': "You haven't follow anyone"}
         else:
             context = {'following_list': following_list,
-                   'this_profile': this_profile, 'message' : " "}
+                       'this_profile': this_profile, 'message': " "}
         return render(request, 'app/following.html', context)
     else:
         return redirect('/login')
@@ -494,6 +508,7 @@ def follow_in_search(request, id):
         return redirect(request.META['HTTP_REFERER'])
 
     return redirect('/')
+
 
 def follow_view(request, id):
 
