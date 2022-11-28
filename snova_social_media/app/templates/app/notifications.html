@@ -22,7 +22,7 @@
 					<span class="w3-tag w3-blue w3-round-xlarge w3-medium w3-margin-right">New</span>
 					<div class="w3-container">
 						<div class="list-group">
-							{% for notification in notifications %}
+							{% comment %} {% for notification in notifications %}
 							<div class="list-group-item d-flex align-items-center" style="position: static;">
 								<div class="flex-fill pl-3 pr-3">
 									
@@ -59,7 +59,9 @@
 									
 								</div>							
 							</div>
-							{% endfor %}
+							{% endfor %} {% endcomment %}
+							{% include 'app/components/notificationPost.html' %}
+
 						</div>
 						<br>
 					</div>

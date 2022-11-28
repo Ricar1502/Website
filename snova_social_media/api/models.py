@@ -209,3 +209,15 @@ class Notification(models.Model):
     comment = models.ForeignKey(
         'Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.notification_type == 1:
+            return f'{self.from_user} upvote {self.to_user}'
+        elif self.notification_type == 2:
+            return f'{self.from_user} comment {self.to_user}'
+        elif self.notification_type == 3:
+            return f'{self.from_user} follow {self.to_user}'
+        elif self.notification_type == 4:
+            return f'{self.from_user} downvote {self.to_user}'
+        else:
+            return f'{self.from_user} upload new post '

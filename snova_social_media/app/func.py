@@ -50,23 +50,23 @@ def un_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).delete()
     Notification.objects.filter(
-        notification_type=1, to_user=user_data.user, post=post_data).delete()
+        notification_type=1, to_user=post_data.user_id.user, from_user=user_data.user, post=post_data).delete()
     Notification.objects.filter(
-        notification_type=4, to_user=user_data.user, post=post_data).delete()
+        notification_type=4, to_user=post_data.user_id.user, from_user=user_data.user, post=post_data).delete()
 
 
 def up_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).update(v_flag=True)
     Notification.objects.create(
-        notification_type=1, to_user=user_data.user, post=post_data)
+        notification_type=1, to_user=post_data.user_id.user, from_user=user_data.user, post=post_data)
 
 
 def down_vote(data, post_data, user_data):
     data.objects.filter(
         post_id=post_data, user_id=user_data).update(v_flag=False)
     Notification.objects.create(
-        notification_type=4, to_user=user_data.user, post=post_data)
+        notification_type=4, to_user=post_data.user_id.user, from_user=user_data.user, post=post_data)
 
 
 def vote(request, selected_up_vote_btn, selected_down_vote_btn, post_id, user_id):
